@@ -46,11 +46,11 @@ export function JobCard({ job, locale, isRtl, labels }: JobCardProps) {
   return (
     <Card
       className={cn(
-        "group mx-auto w-full cursor-pointer overflow-hidden rounded-lg border border-[#78A3BE] bg-white transition-all duration-300",
+        "group mx-auto w-full flex cursor-pointer overflow-hidden rounded-lg border border-[#78A3BE] bg-white transition-all duration-300",
         CARD_HOVER_SHADOW
       )}
     >
-      <CardContent className="grid gap-3 p-4 sm:p-5">
+      <CardContent className="h-full grid gap-3 p-4 sm:p-5">
         <Badge className="w-fit rounded-full bg-[linear-gradient(180deg,#006EA8_0%,#005685_100%)] px-3 py-1 text-[12px] text-white group-hover:border group-hover:border-white/30 group-hover:bg-white/15">
           {getLocalizedName(job.category?.name, locale) || labels.department}
         </Badge>
