@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import parse from "html-react-parser"
 import { cn } from "@/lib/utils"
 import { Globe, ArrowLeft } from "lucide-react"
 import { Link } from "@/i18n/navigation"
@@ -56,9 +57,9 @@ export function ServiceDetailsClient({
                 </h1>
               </StaggerItem>
               <StaggerItem>
-                <p className="max-w-[900px] text-[16px] font-normal leading-[1.7] text-[#525252] sm:text-[18px]">
-                  {service.description}
-                </p>
+                <div className="max-w-[900px] text-[16px] font-normal leading-[1.7] text-[#525252] sm:text-[18px] [&_p+p]:mt-3">
+                  {parse(service.description || "")}
+                </div>
               </StaggerItem>
             </div>
 
@@ -124,9 +125,9 @@ export function ServiceDetailsClient({
                               <h3 className="text-[20px] font-bold leading-[1.2] text-[#262626] group-hover:text-white">
                                 {feature.title}
                               </h3>
-                              <p className="text-[14px] font-normal leading-[1.6] text-[#525252] group-hover:text-[#FAFAFA]">
-                                {feature.description}
-                              </p>
+                              <div className="text-[14px] font-normal leading-[1.6] text-[#525252] group-hover:text-[#FAFAFA] [&_p+p]:mt-2">
+                                {parse(feature.description || "")}
+                              </div>
                             </div>
                           </div>
                         </div>

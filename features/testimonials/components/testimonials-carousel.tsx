@@ -256,7 +256,10 @@ function StorySlideInner({
   tilt: number
 }) {
   const imageRef = useRef<HTMLDivElement | null>(null)
+  const quoteRef = useRef<HTMLParagraphElement | null>(null)
   const [hovered, setHovered] = useState(false)
+  const [expanded, setExpanded] = useState(false)
+  const [canExpand, setCanExpand] = useState(false)
   const [rect, setRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null)
 
   useEffect(() => {
@@ -275,6 +278,16 @@ function StorySlideInner({
     }
   }, [hovered])
 
+  useEffect(() => {
+    if (!hovered || expanded) return
+    const el = quoteRef.current
+    if (!el) return
+    const measure = () => setCanExpand(el.scrollHeight > el.clientHeight + 1)
+    measure()
+    const frame = requestAnimationFrame(measure)
+    return () => cancelAnimationFrame(frame)
+  }, [hovered, expanded, story.quote])
+
   function handleEnter() {
     if (imageRef.current) {
       const r = imageRef.current.getBoundingClientRect()
@@ -285,6 +298,7 @@ function StorySlideInner({
 
   function handleLeave() {
     setHovered(false)
+    setExpanded(false)
   }
 
   return (
@@ -315,21 +329,56 @@ function StorySlideInner({
               animate={hovered ? { opacity: 1, y: 0, scale: 1, rotate: tilt } : { opacity: 0, y: 32, scale: 0.96, rotate: tilt }}
               transition={{ type: "spring", stiffness: 280, damping: 26, opacity: { duration: 0.2 } }}
               onMouseEnter={() => setHovered(true)}
-              onMouseLeave={() => setHovered(false)}
+              onMouseLeave={handleLeave}
               style={{ position: "fixed", top: rect.top, left: rect.left, width: rect.width, height: rect.height, zIndex: 30, pointerEvents: "auto" }}
               className={cn(
-                "mx-auto hidden lg:block h-[min(380px,94%)] w-[calc(100%-12px)] max-w-[445px] origin-center overflow-visible rounded-[32px]",
+                "mx-auto hidden lg:block h-[min(380px,94%)] w-[calc(100%-12px)] max-w-[445px] origin-center overflow-hidden rounded-[32px]",
                 "border-0 bg-[url('/contact/button-noise.png'),linear-gradient(180deg,#006EA8_0%,#005685_100%)]",
                 "bg-size-[120px_120px,auto] bg-blend-[plus-lighter,normal] text-white",
                 "shadow-[0px_42px_107px_rgba(123,190,255,0.34),0px_24px_32px_rgba(0,86,133,0.19),0px_10px_13px_rgba(0,86,133,0.22),0px_4px_5px_rgba(0,86,133,0.15),0px_0px_0px_4px_#E8F2FF,0px_0px_0px_5px_#FFFFFF,inset_0px_1px_18px_2px_#E8F2FF,inset_0px_1px_4px_2px_#C2DDFF]"
               )}
             >
-              <Card className="h-full overflow-visible border-0 bg-transparent shadow-none">
-                <CardContent className={cn("flex h-full flex-col justify-between gap-8 p-6 text-start sm:gap-10 sm:p-8 lg:p-10", isRtl && "text-end")}>
-                  <p className="text-[18px] leading-[1.5] sm:text-[20px] lg:text-[24px]">&ldquo;{story.quote}&rdquo;</p>
-                  <div className="space-y-4 sm:space-y-5">
+              <Card className="h-full min-h-0 overflow-hidden border-0 bg-transparent shadow-none">
+                <CardContent
+                  className={cn(
+                    "flex h-full min-h-0 flex-col justify-between gap-4 p-5 text-start sm:gap-5 sm:p-6 lg:p-7",
+                    isRtl && "text-end"
+                  )}
+                >
+                  <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden">
+                    <p
+                      ref={quoteRef}
+                      className={cn(
+                        "min-h-0 text-[14px] leading-[1.45] sm:text-[15px] lg:text-[16px]",
+                        expanded ? "overflow-y-auto" : "line-clamp-3"
+                      )}
+                    >
+                      &ldquo;{story.quote}&rdquo;
+                    </p>
+                    {(canExpand || expanded) && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setExpanded((prev) => !prev)
+                        }}
+                        className="shrink-0 self-start text-[12px] font-semibold underline underline-offset-2 opacity-90 transition-opacity hover:opacity-100"
+                      >
+                        {expanded
+                          ? isRtl
+                            ? "عرض أقل"
+                            : "Show less"
+                          : isRtl
+                            ? "عرض المزيد"
+                            : "Show more"}
+                      </button>
+                    )}
+                  </div>
+                  <div className="shrink-0 space-y-3">
                     <StoryMeta role={role} location={location} inverted />
-                    <p className="text-[26px] font-bold leading-[1.5] sm:text-[32px] lg:text-[46px]">{story.name}</p>
+                    <p className="truncate text-[22px] font-bold leading-[1.2] sm:text-[26px] lg:text-[30px]">
+                      {story.name}
+                    </p>
                   </div>
                 </CardContent>
               </Card>

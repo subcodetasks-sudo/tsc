@@ -1,4 +1,5 @@
 import Image from "next/image"
+import parse from "html-react-parser"
 import { Link } from "@/i18n/navigation"
 import type { News } from "@/lib/api/types"
 import { formatNewsDate } from "@/features/news/lib/format-news-date"
@@ -36,9 +37,9 @@ export function RelatedNewsCard({ item, locale, imageIndex = 0 }: RelatedNewsCar
           <h3 className="line-clamp-2 text-[20px] font-bold leading-[1.16] text-[#171717] group-hover:text-[#006EA8]">
             {item.title}
           </h3>
-          <p className="line-clamp-3 text-[14px] leading-[1.5] text-[#525252]">
-            {item.excerpt}
-          </p>
+          <div className="line-clamp-3 text-[14px] leading-[1.5] text-[#525252] [&_p]:mb-0">
+            {parse(item.excerpt || "")}
+          </div>
         </div>
         <p className="inline-flex items-center gap-2 text-[16px] font-medium leading-[1.16] text-[#525252]">
           <NewsCalendarIcon className="h-6 w-6 shrink-0 text-[#40A0CA]" />

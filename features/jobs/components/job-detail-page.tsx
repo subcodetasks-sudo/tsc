@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation"
 import { getLocale, getTranslations, setRequestLocale } from "next-intl/server"
+import parse from "html-react-parser"
 import { Link } from "@/i18n/navigation"
 import { formatPostedLabel, getJobTitle, getLocalizedStateName } from "@/features/jobs/lib/job-display"
 import { getJobDetailForLocale } from "@/features/jobs/lib/jobs-for-locale"
@@ -24,14 +25,21 @@ function localizedField(
   return value[locale] || value.en || value.ar || value.de || ""
 }
 
+const sectionBodyClassName =
+  "text-[16px] leading-[1.5] text-[#525252] [&_li]:mb-2 [&_ol]:list-decimal [&_ol]:ps-6 [&_p]:mb-4 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:ps-6"
+
 function renderSectionBody(text: string) {
   const trimmed = text.trim()
   if (!trimmed) return null
 
+  if (trimmed.includes("<") && trimmed.includes(">")) {
+    return <div className={sectionBodyClassName}>{parse(trimmed)}</div>
+  }
+
   return trimmed.split(/\n{2,}/).map((paragraph, index) => (
-    <p key={index} className="text-[16px] leading-[1.5] text-[#525252]">
+    <div key={index} className="text-[16px] leading-[1.5] text-[#525252]">
       {paragraph.trim()}
-    </p>
+    </div>
   ))
 }
 

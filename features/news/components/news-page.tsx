@@ -1,5 +1,6 @@
 import Image from "next/image"
 import { getLocale, getTranslations, setRequestLocale } from "next-intl/server"
+import parse from "html-react-parser"
 import { Link } from "@/i18n/navigation"
 import { SectionShell, StaggerInView, StaggerItem } from "@/features/shared-home"
 import { getNewsForLocale } from "@/features/news/lib/news-fallback"
@@ -55,9 +56,9 @@ export async function NewsPage({ locale: propLocale }: { locale?: string } = {})
                   <h2 className="font-heading text-[24px] font-bold leading-[1.2] text-[#171717] sm:text-[28px] lg:text-[32px]">
                     {featured.title}
                   </h2>
-                  <p className="text-[16px] leading-[1.35] text-[#525252] sm:text-[18px] lg:text-[20px]">
-                    {featured.excerpt}
-                  </p>
+                  <div className="text-[16px] leading-[1.35] text-[#525252] sm:text-[18px] lg:text-[20px] [&_p]:mb-0">
+                    {parse(featured.excerpt || "")}
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap items-center justify-between gap-4">
@@ -94,9 +95,9 @@ export async function NewsPage({ locale: propLocale }: { locale?: string } = {})
                         {item.title}
                       </Link>
                     </h3>
-                    <p className="line-clamp-3 text-[14px] leading-[1.35] text-[#525252] sm:text-[16px]">
-                      {item.excerpt}
-                    </p>
+                    <div className="line-clamp-3 text-[14px] leading-[1.35] text-[#525252] sm:text-[16px] [&_p]:mb-0">
+                      {parse(item.excerpt || "")}
+                    </div>
                   </div>
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <NewsReadMoreButton

@@ -1,4 +1,5 @@
 import { getLocale } from "next-intl/server"
+import parse from "html-react-parser"
 import { getServices } from "@/lib/api/services/services.service"
 import { SectionShell, StaggerInView, StaggerItem } from "@/features/shared-home"
 import Image from "next/image"
@@ -126,9 +127,9 @@ export default async function ServicesPage() {
                               <h3 className="text-[22px] font-bold leading-[1.2] text-[#262626] group-hover:text-white">
                                 {service.title}
                               </h3>
-                              <p className="text-[14px] font-normal leading-[1.6] text-[#525252] group-hover:text-[#FAFAFA] line-clamp-4">
-                                {service.description}
-                              </p>
+                              <div className="line-clamp-4 text-[14px] font-normal leading-[1.6] text-[#525252] group-hover:text-[#FAFAFA] [&_p]:mb-0">
+                                {parse(service.description || "")}
+                              </div>
                             </div>
                           </div>
 

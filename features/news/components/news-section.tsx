@@ -1,4 +1,5 @@
 import Image from "next/image"
+import parse from "html-react-parser"
 import { Link } from "@/i18n/navigation"
 import { getLocale, getTranslations, setRequestLocale } from "next-intl/server"
 import { SectionShell, StaggerInView, StaggerItem } from "@/features/shared-home"
@@ -69,9 +70,9 @@ export async function NewsSection({ override }: NewsSectionProps) {
               <h3 className="font-heading text-[24px] font-bold leading-[1.2] text-[#171717] sm:text-[28px] lg:text-[32px]">
                 {featured.title}
               </h3>
-              <p className="max-w-[620px] text-[16px] leading-[1.35] text-[#525252] sm:text-[18px] lg:text-[20px]">
-                {featured.excerpt}
-              </p>
+              <div className="max-w-[620px] text-[16px] leading-[1.35] text-[#525252] sm:text-[18px] lg:text-[20px] [&_p]:mb-0">
+                {parse(featured.excerpt || "")}
+              </div>
               <NewsReadMoreButton href={`/news/${featured.slug}`} label={t("readMore")} />
             </div>
           </article>
@@ -110,9 +111,9 @@ export async function NewsSection({ override }: NewsSectionProps) {
                       )}>
                         {item.title}
                       </h3>
-                      <p className="line-clamp-3 text-[14px] leading-[1.35] text-[#525252]">
-                        {item.excerpt}
-                      </p>
+                      <div className="line-clamp-3 text-[14px] leading-[1.35] text-[#525252] [&_p]:mb-0">
+                        {parse(item.excerpt || "")}
+                      </div>
                     </div>
                     <div className="flex items-center justify-start gap-3">
                       <p className={cn("inline-flex items-center gap-2 text-[13px] leading-[1.16] text-[#525252] sm:text-[14px]", isRtl ? "justify-end" : "justify-start")}>
