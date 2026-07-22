@@ -95,14 +95,14 @@ export default async function ServicesPage() {
                         >
                           <div className="space-y-6">
                             {/* Icon / Image circle */}
-                            <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#40A0CA] bg-white transition-colors group-hover:border-white group-hover:bg-white">
+                            <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#40A0CA] bg-white transition-colors group-hover:border-white group-hover:bg-white">
                               {service.icon ? (
                                 <Image
                                   src={service.icon}
                                   alt=""
-                                  width={24}
-                                  height={24}
-                                  className="h-6 w-6 object-cover"
+                                  fill
+                                  sizes="48px"
+                                  className="object-cover"
                                   unoptimized
                                 />
                               ) : (
