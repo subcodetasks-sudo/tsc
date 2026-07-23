@@ -22,7 +22,7 @@ export function RelatedNewsCard({ item, locale, imageIndex = 0 }: RelatedNewsCar
       href={`/news/${item.slug}`}
       className="group flex gap-4 rounded-[16px] transition hover:opacity-95 text-start"
     >
-      <div className="relative aspect-[202.5/167] w-[min(48%,202px)] shrink-0 overflow-hidden rounded-[16px] bg-[#E8F2FF]">
+      <div className="relative aspect-[3/2] w-[min(48%,202px)] shrink-0 overflow-hidden rounded-[16px] bg-[#E8F2FF]">
         <Image
           src={imageSrc}
           alt=""

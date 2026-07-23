@@ -36,7 +36,7 @@ export function JobDetailHero({
       <div className="mx-auto max-w-[1312px] px-4 sm:px-6 lg:px-8">
         <div className="relative">
           {/* Banner cover image */}
-          <div className="relative h-[280px] overflow-hidden rounded-[16px] bg-[#E8F2FF] sm:h-[360px] lg:h-[440px]">
+          <div className="relative aspect-[21/9] overflow-hidden rounded-[16px] bg-[#E8F2FF]">
             <JobCoverImage
               src={bannerSrc}
               alt=""

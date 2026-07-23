@@ -56,13 +56,13 @@ export async function NewsSection({ override }: NewsSectionProps) {
       <StaggerInView className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-10">
         <StaggerItem>
           <article className="flex flex-col gap-6">
-            <div className="overflow-hidden rounded-2xl">
+            <div className="relative aspect-[3/2] w-full overflow-hidden rounded-2xl">
               <Image
                 src={resolveNewsImageUrl(featured.image, 0)}
                 alt={featured.title}
-                width={1287}
-                height={858}
-                className="h-[min(72vw,445px)] w-full object-cover"
+                fill
+                className="object-cover"
+                sizes="(min-width: 1024px) 55vw, 100vw"
                 unoptimized={resolveNewsImageUrl(featured.image, 0).startsWith("http")}
               />
             </div>
@@ -124,13 +124,13 @@ export async function NewsSection({ override }: NewsSectionProps) {
                   </div>
 
 
-                     <div className={cn("overflow-hidden rounded-2xl shadow-sm", isRtl ? "order-2 lg:order-1" : "order-1")}>
+                     <div className={cn("relative aspect-[3/2] overflow-hidden rounded-2xl shadow-sm", isRtl ? "order-2 lg:order-1" : "order-1")}>
                     <Image
                       src={resolveNewsImageUrl(item.image, idx + 1)}
                       alt={item.title}
-                      width={480}
-                      height={320}
-                      className="h-[140px] w-full shrink-0 rounded-[14px] object-cover lg:h-[220px] lg:w-full"
+                      fill
+                      className="rounded-[14px] object-cover"
+                      sizes="(min-width: 1024px) 30vw, 100vw"
                       unoptimized={resolveNewsImageUrl(item.image, idx + 1).startsWith("http")}
                     />
                   </div>

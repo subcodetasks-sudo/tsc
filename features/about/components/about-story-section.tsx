@@ -105,7 +105,7 @@ export function AboutStorySection({
         </StaggerItem>
 
         <StaggerItem>
-          <div className="relative h-[400px] lg:h-[480px] w-full overflow-hidden rounded-[16px] border border-[#dce9f4] shadow-[0_20px_42px_rgba(0,25,45,0.16)] bg-gray-50">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[16px] border border-[#dce9f4] shadow-[0_20px_42px_rgba(0,25,45,0.16)] bg-gray-50">
             {videoUrl ? (
               videoUrl.includes("youtube.com") || videoUrl.includes("youtu.be") ? (
                 <iframe

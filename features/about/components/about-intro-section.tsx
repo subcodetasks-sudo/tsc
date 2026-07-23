@@ -34,7 +34,7 @@ export function AboutIntroSection({
       <StaggerInView className="space-y-10 lg:space-y-12">
         <StaggerItem>
           <div className="relative min-h-[400px] lg:min-h-[500px]">
-            <div className="absolute bottom-0 h-[300px] w-[70%] overflow-hidden rounded-[16px] border border-[#dce9f4] shadow-[0_20px_42px_rgba(0,25,45,0.16)] ltr:left-0 rtl:right-0 lg:h-[400px]">
+            <div className="absolute bottom-0 aspect-[21/9] w-[70%] overflow-hidden rounded-[16px] border border-[#dce9f4] shadow-[0_20px_42px_rgba(0,25,45,0.16)] ltr:left-0 rtl:right-0">
               <Image
                 src={featuredImageSrc}
                 alt={featuredImageAlt}

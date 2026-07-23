@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import { useMemo, useRef, useState, useTransition } from "react"
+import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { PrimaryButton } from "@/components/ui/primary-button"
 import type { AboutPageContent, AboutFeature } from "@/lib/api/services/about.service"
@@ -96,24 +97,33 @@ function LocaleCard({
 }
 
 function ImageUploadBox({
-  label, file, preview, existingUrl, onFile, onClear,
+  label, file, preview, existingUrl, onFile, onClear, aspectRatio = "4:3",
 }: {
   label: string; file: File | null; preview: string | null
   existingUrl?: string | null; onFile: (f: File) => void; onClear: () => void
+  aspectRatio?: string
 }) {
+  const tMedia = useTranslations("Admin.mediaUpload")
   const inputRef = useRef<HTMLInputElement>(null)
   const displaySrc = preview || existingUrl
+  const previewStyle = { aspectRatio: aspectRatio.replace(":", " / "), width: 144 }
 
   return (
     <div className="rounded-[8px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 space-y-2">
       <p className="text-xs font-bold uppercase tracking-widest text-[#006EA8]">{label}</p>
       <div className="flex items-start gap-3">
         {displaySrc ? (
-          <div className="relative h-24 w-36 flex-shrink-0 rounded-lg overflow-hidden border border-[#E5E7EB]">
+          <div
+            className="relative flex-shrink-0 rounded-lg overflow-hidden border border-[#E5E7EB]"
+            style={previewStyle}
+          >
             <Image src={displaySrc} alt={label} fill className="object-cover" unoptimized />
           </div>
         ) : (
-          <div className="flex h-24 w-36 flex-shrink-0 items-center justify-center rounded-lg border-2 border-dashed border-[#78A3BE] bg-white">
+          <div
+            className="flex flex-shrink-0 items-center justify-center rounded-lg border-2 border-dashed border-[#78A3BE] bg-white"
+            style={previewStyle}
+          >
             <Upload className="h-6 w-6 text-[#78A3BE]" />
           </div>
         )}
@@ -141,6 +151,9 @@ function ImageUploadBox({
           )}
         </div>
       </div>
+      <p className="text-[11px] font-medium text-[#006EA8]">
+        {tMedia("aspectRatio", { ratio: aspectRatio })}
+      </p>
       <input
         ref={inputRef}
         type="file"
@@ -400,6 +413,7 @@ export function AdminAboutPanel({
             existingUrl={content?.image}
             onFile={handlePrimaryImage}
             onClear={() => { setPrimaryImage(null); setPrimaryPreview(null) }}
+            aspectRatio="21:9"
           />
         </div>
       )}
@@ -427,6 +441,7 @@ export function AdminAboutPanel({
             existingUrl={content?.secondImage}
             onFile={handleSecondaryImage}
             onClear={() => { setSecondaryImage(null); setSecondaryPreview(null) }}
+            aspectRatio="4:3"
           />
 
           {/* Video Upload - MUST be a file, NOT a URL string */}

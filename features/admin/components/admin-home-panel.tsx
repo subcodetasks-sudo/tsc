@@ -240,6 +240,7 @@ export function AdminHomePanel({
   loadError?: string | null;
 }) {
   const t = useTranslations("Admin.home");
+  const tMedia = useTranslations("Admin.mediaUpload");
   const heroT = useTranslations("Landing.hero");
   const categoriesT = useTranslations("Landing.categories");
   const jobsT = useTranslations("Landing.jobs");
@@ -681,6 +682,10 @@ export function AdminHomePanel({
                         </button>
                       )}
                     </div>
+
+                    <p className="text-[11px] font-medium text-[#006EA8]">
+                      {tMedia("aspectRatio", { ratio: "1:1" })}
+                    </p>
 
                     {/* Preview thumbnail */}
                     {stepPreviews[index] && (

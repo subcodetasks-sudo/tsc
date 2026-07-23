@@ -87,7 +87,7 @@ export async function NewsDetailPage({ slug, locale: propLocale }: NewsDetailPag
         <div className="mt-10 flex flex-col gap-12 lg:mt-12 lg:flex-row lg:items-start lg:gap-10 xl:gap-12">
           <article className="min-w-0 flex-1 lg:max-w-[867px]">
             <div className="flex flex-col gap-12">
-              <div className="relative aspect-[867/600] w-full overflow-hidden rounded-[16px] bg-[#E8F2FF]">
+              <div className="relative aspect-[3/2] w-full overflow-hidden rounded-[16px] bg-[#E8F2FF]">
                 <Image
                   src={heroSrc}
                   alt={article.title}

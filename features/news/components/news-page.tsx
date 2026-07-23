@@ -40,13 +40,13 @@ export async function NewsPage({ locale: propLocale }: { locale?: string } = {})
         {featured ? (
           <StaggerItem>
             <article className="grid items-center gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-10">
-              <div className="overflow-hidden rounded-2xl">
+              <div className="relative aspect-[3/2] overflow-hidden rounded-2xl">
                 <Image
                   src={resolveNewsImageUrl(featured.image, 0)}
                   alt={featured.title}
-                  width={860}
-                  height={445}
-                  className="h-[min(60vw,445px)] w-full object-cover"
+                  fill
+                  className="object-cover"
+                  sizes="(min-width: 1024px) 55vw, 100vw"
                   unoptimized={resolveNewsImageUrl(featured.image, 0).startsWith("http")}
                 />
               </div>
@@ -77,13 +77,13 @@ export async function NewsPage({ locale: propLocale }: { locale?: string } = {})
           {gridItems.map((item, index) => (
             <StaggerItem key={item.id}>
               <article className="flex h-full flex-col gap-4">
-                <Link locale={locale} href={`/news/${item.slug}`} className="block overflow-hidden rounded-2xl">
+                <Link locale={locale} href={`/news/${item.slug}`} className="relative block aspect-[3/2] overflow-hidden rounded-2xl">
                   <Image
                     src={resolveNewsImageUrl(item.image, index + 1)}
                     alt={item.title}
-                    width={416}
-                    height={223}
-                    className="h-[223px] w-full object-cover transition-transform duration-300 hover:scale-[1.02]"
+                    fill
+                    className="object-cover transition-transform duration-300 hover:scale-[1.02]"
+                    sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw"
                     unoptimized={resolveNewsImageUrl(item.image, index + 1).startsWith("http")}
                   />
                 </Link>

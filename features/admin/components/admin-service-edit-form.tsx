@@ -140,6 +140,7 @@ export function AdminServiceEditForm({
         title={t("serviceImage")}
         imageSrc={imagePreview || existingImage || null}
         hasNewFile={Boolean(imagePreview)}
+        aspectRatio="21:9"
         onSelect={(file) => {
           setValue("imageFile", file, { shouldDirty: true })
           setValue("imagePreview", URL.createObjectURL(file), { shouldDirty: true })
@@ -156,6 +157,7 @@ export function AdminServiceEditForm({
         imageSrc={iconPreview || existingIcon || null}
         hasNewFile={Boolean(iconPreview)}
         shape="circle"
+        aspectRatio="1:1"
         onSelect={(file) => {
           setValue("iconFile", file, { shouldDirty: true })
           setValue("iconPreview", URL.createObjectURL(file), { shouldDirty: true })

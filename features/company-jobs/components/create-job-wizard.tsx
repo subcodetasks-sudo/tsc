@@ -487,6 +487,7 @@ export function CreateJobWizard({
                 sizeHintLabel={t("imageSizeHint")}
                 tooLargeLabel={t("errors.imageSize")}
                 compressFailedLabel={t("errors.imageCompress")}
+                aspectRatio="21:9"
                 error={imageError ?? undefined}
                 className="flex-col"
                 required={!isAdminMode}

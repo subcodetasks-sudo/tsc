@@ -49,7 +49,7 @@ export function ServiceDetailsClient({
             </StaggerItem>
             <div className="flex flex-col gap-6">
               <StaggerItem>
-                <h1 className="max-w-[850px] font-heading text-[32px] font-bold capitalize leading-[1.3] text-[#171717] sm:text-[40px] lg:text-[46px]">
+                <h1 className="max-w-[850px] font-heading text-[32px] font-bold leading-[1.3] text-[#171717] sm:text-[40px] lg:text-[46px]">
                   {service.title}
                 </h1>
               </StaggerItem>

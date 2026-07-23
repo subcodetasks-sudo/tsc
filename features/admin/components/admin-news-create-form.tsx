@@ -107,6 +107,7 @@ export function AdminNewsCreateForm({ locale }: { locale: string }) {
         title={t("fields.image")}
         imageSrc={imagePreview ?? null}
         hasNewFile={Boolean(imagePreview)}
+        aspectRatio="3:2"
         onSelect={(file) => {
           setValue("imageFile", file, { shouldDirty: true })
           setValue("imagePreview", URL.createObjectURL(file), { shouldDirty: true })

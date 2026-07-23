@@ -125,6 +125,7 @@ export function AdminServiceCreateForm({ locale }: { locale: string }) {
         title={t("serviceImage")}
         imageSrc={imagePreview ?? null}
         hasNewFile={Boolean(imagePreview)}
+        aspectRatio="21:9"
         onSelect={(file) => {
           setValue("imageFile", file, { shouldDirty: true })
           setValue("imagePreview", URL.createObjectURL(file), { shouldDirty: true })
@@ -141,6 +142,7 @@ export function AdminServiceCreateForm({ locale }: { locale: string }) {
         imageSrc={iconPreview ?? null}
         hasNewFile={Boolean(iconPreview)}
         shape="circle"
+        aspectRatio="1:1"
         onSelect={(file) => {
           setValue("iconFile", file, { shouldDirty: true })
           setValue("iconPreview", URL.createObjectURL(file), { shouldDirty: true })

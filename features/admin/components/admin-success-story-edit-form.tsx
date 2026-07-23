@@ -162,6 +162,7 @@ export function AdminSuccessStoryEditForm({ story, locale }: { story: any; local
         }}
         onError={setError}
         shape="circle"
+        aspectRatio="1:1"
       />
 
       {/* Buttons */}

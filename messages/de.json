@@ -1310,6 +1310,7 @@
       "upload": "Bild hochladen",
       "remove": "Entfernen",
       "hint": "PNG, JPG oder WEBP · Max. 5MB",
+      "aspectRatio": "Seitenverhältnis auf der Website: {ratio}",
       "errors": {
         "unsupportedFileType": "Nicht unterstützter Dateityp. Verwenden Sie PNG, JPG oder WEBP",
         "fileTooLarge": "Datei ist größer als 5MB"

@@ -14,6 +14,7 @@ export function CategoryIconUpload({
   onChange,
   onRemove,
   onError,
+  aspectRatio = "1:1",
 }: {
   iconSrc: string | null
   hasNewFile: boolean
@@ -21,6 +22,7 @@ export function CategoryIconUpload({
   onChange: (file: File) => void
   onRemove: () => void
   onError?: (message: string) => void
+  aspectRatio?: string
 }) {
   const tMedia = useTranslations("Admin.mediaUpload")
   const inputRef = useRef<HTMLInputElement>(null)
@@ -74,6 +76,11 @@ export function CategoryIconUpload({
         )}
       </div>
       <p className="text-[11px] text-[#9CA3AF]">{tMedia("hint")}</p>
+      {aspectRatio ? (
+        <p className="text-[11px] font-medium text-[#006EA8]">
+          {tMedia("aspectRatio", { ratio: aspectRatio })}
+        </p>
+      ) : null}
     </div>
   )
 }

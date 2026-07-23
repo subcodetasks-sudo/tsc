@@ -328,7 +328,7 @@ function StorySlideInner({
         onMouseEnter={handleEnter}
         onMouseLeave={handleLeave}
       >
-        <div ref={imageRef} className="relative mx-auto h-[min(72vw,445px)] w-full max-w-[445px] shrink-0 overflow-visible">
+        <div ref={imageRef} className="relative mx-auto aspect-square w-full max-w-[445px] shrink-0 overflow-visible">
           <Image
             src={imageSrc}
             alt={story.name}

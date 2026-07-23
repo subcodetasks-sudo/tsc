@@ -3,6 +3,7 @@
 import Image from "next/image"
 import { useRef, useState } from "react"
 import { Loader2, Upload } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { compressImageFile } from "@/lib/images/compress-image"
 import { cn } from "@/lib/utils"
 
@@ -17,6 +18,8 @@ type JobImageUploadProps = {
   sizeHintLabel: string
   tooLargeLabel: string
   compressFailedLabel: string
+  /** Website display aspect ratio, e.g. "21:9" */
+  aspectRatio?: string
   error?: string
   className?: string
   required?: boolean
@@ -42,10 +45,12 @@ export function JobImageUpload({
   sizeHintLabel,
   tooLargeLabel,
   compressFailedLabel,
+  aspectRatio = "21:9",
   error,
   className,
   required = true,
 }: JobImageUploadProps) {
+  const tMedia = useTranslations("Admin.mediaUpload")
   const inputRef = useRef<HTMLInputElement>(null)
   const [localError, setLocalError] = useState<string | null>(null)
   const [compressing, setCompressing] = useState(false)
@@ -93,11 +98,12 @@ export function JobImageUpload({
             disabled={compressing}
             onClick={() => inputRef.current?.click()}
             className={cn(
-              "group relative flex w-full h-[220px] items-center justify-center overflow-hidden rounded-[12px] border border-dashed border-[#78A3BE] bg-white transition",
+              "group relative flex w-full items-center justify-center overflow-hidden rounded-[12px] border border-dashed border-[#78A3BE] bg-white transition",
               "hover:border-[#40A0CA] hover:shadow-[0_8px_24px_rgba(0,110,168,0.08)]",
               previewUrl ? "border-solid border-[#D4D4D4]" : "py-6",
               compressing && "pointer-events-none opacity-70"
             )}
+            style={{ aspectRatio: aspectRatio.replace(":", " / ") }}
           >
             {previewUrl ? (
               <>
@@ -133,6 +139,11 @@ export function JobImageUpload({
 
           <div className="flex min-w-0 flex-1 flex-col justify-center gap-3 text-start text-sm text-[#525252]">
             <p>{sizeHintLabel}</p>
+            {aspectRatio ? (
+              <p className="text-xs font-medium text-[#006EA8]">
+                {tMedia("aspectRatio", { ratio: aspectRatio })}
+              </p>
+            ) : null}
             {file ? (
               <>
                 <div className="rounded-lg border border-[#E8F2FF] bg-white px-3 py-2">

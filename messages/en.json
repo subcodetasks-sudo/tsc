@@ -1310,6 +1310,7 @@
       "upload": "Upload Image",
       "remove": "Remove",
       "hint": "PNG, JPG or WEBP · Max size 5MB",
+      "aspectRatio": "Website aspect ratio: {ratio}",
       "errors": {
         "unsupportedFileType": "Unsupported file type. Use PNG, JPG or WEBP",
         "fileTooLarge": "File is larger than 5MB"

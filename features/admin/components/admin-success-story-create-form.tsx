@@ -142,6 +142,7 @@ export function AdminSuccessStoryCreateForm({ locale }: { locale: string }) {
         }}
         onError={setError}
         shape="circle"
+        aspectRatio="1:1"
       />
 
       {/* Buttons */}
