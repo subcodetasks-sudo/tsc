@@ -20,7 +20,6 @@ export default async function AdminFaqsPage({ params }: { params: Promise<{ loca
   let faqs: Faq[] = []
   try {
     const result = await getAdminFaqs(token, { per_page: 100 }, locale)
-    console.log("result", result)
     faqs = result.data
   } catch {
     // ignore
