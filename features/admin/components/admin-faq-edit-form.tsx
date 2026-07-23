@@ -28,6 +28,7 @@ export function AdminFaqEditForm({ faq, locale }: { faq: any; locale: string }) 
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
     formState: { errors },
@@ -108,8 +109,10 @@ export function AdminFaqEditForm({ faq, locale }: { faq: any; locale: string }) 
           label={t("fields.answer")}
           locale={editLocale}
           register={register}
+          control={control}
           fieldPath={`answer.${editLocale}`}
-          multiline
+          rich
+          rows={4}
         />
       </div>
 

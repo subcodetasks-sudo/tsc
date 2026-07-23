@@ -1,7 +1,9 @@
+import parse from "html-react-parser"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { getTranslations } from "next-intl/server"
 import { LegalPageShell } from "@/features/legal/components/legal-page-shell"
 import { loadFaqs } from "@/features/legal/services/legal-content.service"
+import { normalizeRichTextHtml } from "@/lib/rich-text"
 
 async function getFallbackFaqs() {
   const contactT = await getTranslations("Landing.contact")
@@ -62,8 +64,8 @@ export default async function FaqsPage({ params }: Props) {
                   {faq.question}
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="pb-4 text-[16px] leading-[1.8] text-[#525252]">
-                {faq.answer}
+              <AccordionContent className="pb-4 text-[16px] leading-[1.8] text-[#525252] [&_p]:mb-3 [&_p:last-child]:mb-0 [&_ul]:my-2 [&_ul]:list-disc [&_ul]:ps-5 [&_ol]:my-2 [&_ol]:list-decimal [&_ol]:ps-5 [&_a]:text-[#006EA8] [&_a]:underline [&_strong]:font-semibold">
+                {parse(normalizeRichTextHtml(faq.answer))}
               </AccordionContent>
             </AccordionItem>
           ))}

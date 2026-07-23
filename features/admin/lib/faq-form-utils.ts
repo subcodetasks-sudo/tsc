@@ -1,3 +1,4 @@
+import { normalizeRichTextHtml } from "@/lib/rich-text"
 import { LOCALES, type LocaleKey, type LocalizedText, type FaqFormValues } from "./faq-form-schema"
 
 export function emptyLocalizedText(): LocalizedText {
@@ -17,7 +18,7 @@ export function buildFaqFormData(values: FaqFormValues, id?: number): FormData {
 
   for (const lang of LOCALES) {
     const question = values.question[lang]?.trim()
-    const answer = values.answer[lang]?.trim()
+    const answer = normalizeRichTextHtml(values.answer[lang])
     if (question) formData.append(`question[${lang}]`, question)
     if (answer) formData.append(`answer[${lang}]`, answer)
   }
@@ -77,7 +78,7 @@ export function mapFaqToFormDefaults(faq: any, locale: string): FaqFormValues {
     for (const loc of LOCALES) {
       const item = allLocales[loc] ?? {}
       question[loc] = parseLocalizedField(item.question ?? item, loc)[loc] || ""
-      answer[loc] = parseLocalizedField(item.answer ?? item, loc)[loc] || ""
+      answer[loc] = normalizeRichTextHtml(parseLocalizedField(item.answer ?? item, loc)[loc] || "")
     }
 
     return { question, answer }
@@ -85,6 +86,9 @@ export function mapFaqToFormDefaults(faq: any, locale: string): FaqFormValues {
 
   const question = parseLocalizedField(faq?.question, locale as LocaleKey)
   const answer = parseLocalizedField(faq?.answer, locale as LocaleKey)
+  for (const loc of LOCALES) {
+    answer[loc] = normalizeRichTextHtml(answer[loc])
+  }
 
   return { question, answer }
 }

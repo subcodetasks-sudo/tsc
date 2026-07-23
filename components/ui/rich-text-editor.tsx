@@ -20,6 +20,7 @@ import {
   Undo2,
   Redo2,
 } from "lucide-react"
+import { normalizeRichTextHtml } from "@/lib/rich-text"
 import { cn } from "@/lib/utils"
 
 function isEmptyHtml(html: string) {
@@ -79,6 +80,8 @@ export function RichTextEditor({
   className,
   minHeight = "96px",
 }: RichTextEditorProps) {
+  const normalizedValue = normalizeRichTextHtml(value)
+
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -97,7 +100,7 @@ export function RichTextEditor({
       Placeholder.configure({ placeholder }),
       TextAlign.configure({ types: ["paragraph"] }),
     ],
-    content: value || "",
+    content: normalizedValue || "",
     editorProps: {
       attributes: {
         dir,
@@ -119,12 +122,12 @@ export function RichTextEditor({
   useEffect(() => {
     if (!editor) return
     const current = editor.getHTML()
-    const next = value || ""
+    const next = normalizedValue || ""
     if (isEmptyHtml(current) && isEmptyHtml(next)) return
     if (current !== next) {
       editor.commands.setContent(next, { emitUpdate: false })
     }
-  }, [editor, value])
+  }, [editor, normalizedValue])
 
   useEffect(() => {
     if (!editor) return

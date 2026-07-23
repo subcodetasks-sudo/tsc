@@ -1,5 +1,6 @@
 import { api } from "../client"
 import type { PaginationMeta } from "../types"
+import { normalizeRichTextHtml } from "@/lib/rich-text"
 
 export type Faq = {
   id: number | string
@@ -52,7 +53,7 @@ function normalizeFaq(item: unknown, index: number, locale = "ar"): Faq | null {
   const row = item as Record<string, unknown>
   const id = typeof row.id === "number" ? row.id : index + 1
   const question = extractLocalizedString(row.question ?? row.title ?? row, locale)
-  const answer = extractLocalizedString(row.answer ?? row.content ?? row, locale)
+  const answer = normalizeRichTextHtml(extractLocalizedString(row.answer ?? row.content ?? row, locale))
   if (!question && !answer) return null
   return { id, question: question || "", answer: answer || "" }
 }

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useTransition } from "react"
+import parse from "html-react-parser"
 import { useRouter } from "@/i18n/navigation"
 import { useLocale, useTranslations } from "next-intl"
 import { PrimaryButton } from "@/components/ui/primary-button"
@@ -8,6 +9,7 @@ import { Trash2, Pencil, AlertTriangle, Plus } from "lucide-react"
 import { AdminTableCell, AdminTableRow, AdminTableShell } from "./admin-table-shell"
 import { deleteFaqAction } from "@/features/admin/actions/admin-actions"
 import { AdminPageLayout } from "./admin-page-layout"
+import { normalizeRichTextHtml } from "@/lib/rich-text"
 import type { Faq } from "@/lib/api/services/faqs.service"
 
 export function AdminFaqsPanel({ faqs, locale: propLocale }: { faqs: Faq[]; locale?: string }) {
@@ -83,7 +85,9 @@ export function AdminFaqsPanel({ faqs, locale: propLocale }: { faqs: Faq[]; loca
           {faqs.map((faq, index) => (
             <AdminTableRow key={faq.id} striped={index % 2 === 1} onClick={() => router.push(`/dashboard/admin/faqs/${faq.id}/edit`)}>
               <AdminTableCell className="w-[40%] font-semibold text-[#111827]">{faq.question}</AdminTableCell>
-              <AdminTableCell className="w-[48%] truncate text-sm text-gray-600">{faq.answer}</AdminTableCell>
+              <AdminTableCell className="w-[48%] truncate text-sm text-gray-600 [&_br]:hidden [&_p]:m-0 [&_p]:inline [&_p+p]:before:content-['_|_'] [&_strong]:font-semibold">
+                {faq.answer ? parse(normalizeRichTextHtml(faq.answer)) : "—"}
+              </AdminTableCell>
               <AdminTableCell className="w-[12%] text-center">
                 <div className="flex items-center justify-center gap-2">
                   <button type="button" onClick={(e) => { e.stopPropagation(); router.push(`/dashboard/admin/faqs/${faq.id}/edit`) }} className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-[#EAF4FB] text-[#006EA8] hover:bg-[#006EA8] hover:text-white transition-colors" title={isRTL ? "تعديل" : "Edit"}><Pencil className="h-4 w-4" /></button>

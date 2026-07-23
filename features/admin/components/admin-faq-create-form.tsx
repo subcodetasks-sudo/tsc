@@ -27,6 +27,7 @@ export function AdminFaqCreateForm({ locale }: { locale: string }) {
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<FaqFormValues>({
@@ -92,8 +93,10 @@ export function AdminFaqCreateForm({ locale }: { locale: string }) {
           label={t("fields.answer")}
           locale={editLocale}
           register={register}
+          control={control}
           fieldPath={`answer.${editLocale}`}
-          multiline
+          rich
+          rows={4}
         />
       </div>
 
