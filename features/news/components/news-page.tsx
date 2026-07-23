@@ -39,7 +39,7 @@ export async function NewsPage({ locale: propLocale }: { locale?: string } = {})
 
         {featured ? (
           <StaggerItem>
-            <article className="grid items-center gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-10">
+            <article className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-10">
               <div className="relative aspect-[3/2] overflow-hidden rounded-2xl">
                 <Image
                   src={resolveNewsImageUrl(featured.image, 0)}
@@ -56,8 +56,17 @@ export async function NewsPage({ locale: propLocale }: { locale?: string } = {})
                   <h2 className="font-heading text-[24px] font-bold leading-[1.2] text-[#171717] sm:text-[28px] lg:text-[32px]">
                     {featured.title}
                   </h2>
-                  <div className="text-[16px] leading-[1.35] text-[#525252] sm:text-[18px] lg:text-[20px] [&_p]:mb-0">
-                    {parse(featured.excerpt || "")}
+                  <div className="space-y-2">
+                    <div className="line-clamp-5 text-[16px] leading-[1.35] text-[#525252] sm:text-[18px] lg:text-[20px] [&_p]:mb-0">
+                      {parse(featured.excerpt || "")}
+                    </div>
+                    <Link
+                      locale={locale}
+                      href={`/news/${featured.slug}`}
+                      className="block text-end text-[14px] font-medium leading-[1.16] text-[#006EA8] hover:underline sm:text-[16px]"
+                    >
+                      {newsT("showMore")}
+                    </Link>
                   </div>
                 </div>
 

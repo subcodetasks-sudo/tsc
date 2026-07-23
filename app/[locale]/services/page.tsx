@@ -60,7 +60,7 @@ export default async function ServicesPage() {
             </StaggerItem>
             <div className="flex flex-col gap-4">
               <StaggerItem>
-                <h1 className="max-w-[850px] font-heading text-[32px] font-bold capitalize leading-[1.3] text-[#171717] sm:text-[42px] lg:text-[52px]">
+                <h1 className="max-w-[850px] font-heading text-lg font-bold capitalize leading-[1.3] text-[#171717] sm:text-[28px] lg:text-[40px]">
                   {t("title")}
                 </h1>
               </StaggerItem>

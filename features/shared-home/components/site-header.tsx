@@ -99,7 +99,8 @@ function DropdownChevron({ className }: { className?: string }) {
 
 const LOCALE_OPTIONS = [
   { locale: "de", label: "Deutsch", flag: <DEFlag /> },
-  { locale: "en", label: "English", flag: <GBFlag /> },
+  // TEMP: English hidden from locale switcher
+  // { locale: "en", label: "English", flag: <GBFlag /> },
   { locale: "ar", label: "العربية", flag: <SAFlag /> },
 ] as const
 
