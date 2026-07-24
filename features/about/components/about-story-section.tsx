@@ -60,9 +60,9 @@ export function AboutStorySection({
               <Image src="/footer/icon-link.svg" alt="" width={16} height={16} aria-hidden />
               <span>{eyebrow}</span>
             </div>
-            <h2 className="max-w-[540px] text-balance text-[40px] leading-[1.12] font-bold text-[#171717] lg:text-[44px]">
+            {/* <h2 className="max-w-[540px] text-balance text-[40px] leading-[1.12] font-bold text-[#171717] lg:text-[44px]">
               {parse(title)}
-            </h2>
+            </h2> */}
 
             {/* Tabs List */}
             <div className="flex w-full flex-wrap items-center gap-0 border-b border-[#e5e5e5]" role="tablist" aria-label={title}>

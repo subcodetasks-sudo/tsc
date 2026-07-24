@@ -128,7 +128,7 @@ export function DashboardJobsTable({
                   {showCompanyActions ? (
                     <CompanyJobActionsMenu
                       jobId={row.id}
-                      locale={locale ?? "en"}
+                      locale={locale ?? "de"}
                       status={row.rawStatus ?? row.status}
                     />
                   ) : null}
