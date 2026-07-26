@@ -42,7 +42,8 @@ export async function NewsSection({ override }: NewsSectionProps) {
           </div>
         </StaggerItem>
         <StaggerItem>
-          <h2 className="max-w-[866px] font-heading text-[28px] font-bold capitalize leading-[1.5] text-[#171717] sm:text-[32px] lg:text-[36px]">
+          <h2 className="max-w-[866px] font-heading text-[28px] font-bold normal-case
+ leading-[1.5] text-[#171717] sm:text-[32px] lg:text-[36px]">
             {title}
           </h2>
         </StaggerItem>
@@ -101,7 +102,7 @@ export async function NewsSection({ override }: NewsSectionProps) {
                     isRtl && "lg:grid-cols-[1fr_60%]"
                   )}
                 >
-               
+
 
                   <div className={cn("flex flex-1 flex-col justify-between gap-4 p-2 lg:p-0", isRtl ? "text-right lg:text-right" : "text-left lg:text-left", isRtl ? "order-1 lg:order-2" : "order-2")}>
                     <div className="space-y-2">
@@ -124,7 +125,7 @@ export async function NewsSection({ override }: NewsSectionProps) {
                   </div>
 
 
-                     <div className={cn("relative aspect-[3/2] overflow-hidden rounded-2xl shadow-sm", isRtl ? "order-2 lg:order-1" : "order-1")}>
+                  <div className={cn("relative aspect-[3/2] overflow-hidden rounded-2xl shadow-sm", isRtl ? "order-2 lg:order-1" : "order-1")}>
                     <Image
                       src={resolveNewsImageUrl(item.image, idx + 1)}
                       alt={item.title}

@@ -52,7 +52,7 @@ export async function CategoriesSection({ override }: CategoriesSectionProps) {
     <SectionShell id="categories" stagger={false} className="overflow-hidden bg-white py-12 sm:py-16 lg:py-[82px]">
       <div className="flex flex-col gap-10 lg:gap-16">
         {/* Header section with stagger animation */}
-        <StaggerInView 
+        <StaggerInView
           className="flex flex-col items-start gap-6 text-start"
           leadDelay={0.55}
           staggerDelay={0.15}
@@ -65,7 +65,8 @@ export async function CategoriesSection({ override }: CategoriesSectionProps) {
           </StaggerItem>
           <div className="flex flex-col gap-6">
             <StaggerItem>
-              <h2 className="max-w-[683px] font-heading text-[28px] font-bold capitalize leading-[1.5] text-[#171717] sm:text-[32px] lg:text-[36px]">
+              <h2 className="max-w-[683px] font-heading text-[28px] font-bold normal-case
+ leading-[1.5] text-[#171717] sm:text-[32px] lg:text-[36px]">
                 {title}
               </h2>
             </StaggerItem>
@@ -78,7 +79,7 @@ export async function CategoriesSection({ override }: CategoriesSectionProps) {
         </StaggerInView>
 
         {/* Cards grid with stagger animation - slightly delayed after header */}
-        <StaggerInView 
+        <StaggerInView
           className="overflow-hidden"
           leadDelay={0.75}
           staggerDelay={0.08}
@@ -141,7 +142,8 @@ export async function CategoriesSection({ override }: CategoriesSectionProps) {
                 <CardContent className="flex h-full min-h-[140px] flex-col justify-between gap-2 overflow-hidden px-5 py-4">
                   <div className="space-y-1 text-start">
                     <p className="text-[36px] font-bold leading-[1.1] sm:text-[44px]">{metricDisplay}</p>
-                    <p className="text-[13px] font-normal capitalize leading-[1.3]">{t("metricLabel")}</p>
+                    <p className="text-[13px] font-normal normal-case
+ leading-[1.3]">{t("metricLabel")}</p>
                   </div>
                   <Link locale={locale} href="/jobs" className="block w-full">
                     <Button

@@ -144,8 +144,8 @@ export function AdminTicketDetail({ ticketId, isOpen, onClose, locale, onTicketU
   const attachments = ticket && Array.isArray(ticket.attachments) ? ticket.attachments : []
   const attachment = ticket
     ? (ticket as typeof ticket & { file?: string; attachment?: string }).file ||
-      (ticket as typeof ticket & { attachment?: string }).attachment ||
-      attachments[0]
+    (ticket as typeof ticket & { attachment?: string }).attachment ||
+    attachments[0]
     : undefined
 
   return (
@@ -189,7 +189,8 @@ export function AdminTicketDetail({ ticketId, isOpen, onClose, locale, onTicketU
                     {getStatusLabel(ticket.status || "pending")}
                   </span>
 
-                  <span className="bg-[#032C44] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full capitalize">
+                  <span className="bg-[#032C44] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full normal-case
+">
                     {getPriorityLabel(ticket.priority || "high")}
                   </span>
 
@@ -204,7 +205,8 @@ export function AdminTicketDetail({ ticketId, isOpen, onClose, locale, onTicketU
                       <span className="text-gray-400 mx-1.5">|</span>
                       <span className="text-gray-500">{ticketUser.email}</span>
                     </div>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#E4ECF5] text-[#006EA8] capitalize">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#E4ECF5] text-[#006EA8] normal-case
+">
                       {ticketUser.role === "company"
                         ? isAr
                           ? "شركة"

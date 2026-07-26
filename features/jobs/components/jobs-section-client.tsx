@@ -103,7 +103,8 @@ export function JobsSectionClient({ jobs, categories, title, description }: Jobs
           </p>
         </StaggerItem>
         <StaggerItem>
-          <h2 className="max-w-[520px] font-heading text-balance text-[28px] font-bold capitalize leading-[1.5] text-[#171717] sm:text-[32px] lg:text-[36px]">
+          <h2 className="max-w-[520px] font-heading text-balance text-[28px] font-bold normal-case
+ leading-[1.5] text-[#171717] sm:text-[32px] lg:text-[36px]">
             {sectionTitle}
           </h2>
         </StaggerItem>
@@ -141,7 +142,7 @@ export function JobsSectionClient({ jobs, categories, title, description }: Jobs
             {locale === "ar" ? "لا توجد وظائف حالياً في هذا التصنيف." : "No jobs currently available in this category."}
           </p>
           <p className="mt-3 text-[14px] leading-[1.6] text-[#525252]">
-            {locale === "ar" 
+            {locale === "ar"
               ? "جرّب اختيار تصنيف آخر أو افتح كل الوظائف لرؤية المزيد من الفرص."
               : "Try another category or view all jobs to see more opportunities."}
           </p>
@@ -154,7 +155,7 @@ export function JobsSectionClient({ jobs, categories, title, description }: Jobs
           </button>
         </StaggerInView>
       ) : (
-        <StaggerInView 
+        <StaggerInView
           key={activeFilter} // المفتاح الوحيد الذي يحل المشكلة
           className="mx-auto mt-10 w-full max-w-[1312px]"
         >

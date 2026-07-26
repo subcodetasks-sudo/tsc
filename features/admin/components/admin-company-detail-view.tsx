@@ -97,7 +97,7 @@ export function AdminCompanyDetailView({ company, locale }: { company: User; loc
 
       {/* Profile Card */}
       <div className="rounded-xl border border-[#E5E7EB] bg-white overflow-hidden shadow-sm">
-        
+
         {/* Cover Banner */}
         <div className="relative w-full h-[180px] md:h-[260px] bg-gradient-to-r from-[#032C44] to-[#41A0CA]">
           {companyProfile.coverImageUrl && (
@@ -173,7 +173,8 @@ export function AdminCompanyDetailView({ company, locale }: { company: User; loc
 
             <div className="flex items-center gap-3">
               <span className={cn(
-                "px-3 py-1 rounded-full text-xs font-semibold capitalize",
+                "px-3 py-1 rounded-full text-xs font-semibold normal-case
+",
                 !isSuspended ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#FEF3C7] text-[#92400E]"
               )}>
                 {!isSuspended ? (isAr ? "نشط" : "Active") : (isAr ? "معلق" : "Suspended")}
@@ -265,7 +266,7 @@ export function AdminCompanyDetailView({ company, locale }: { company: User; loc
                   />
                 </div>
               </div>
-              
+
               <div className="flex justify-end gap-3 pt-4">
                 <button
                   type="submit"

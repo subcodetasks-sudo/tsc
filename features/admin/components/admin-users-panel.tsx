@@ -287,7 +287,8 @@ export function AdminUsersPanel({
               <AdminTableCell className="w-[10%] min-w-[110px]">
                 <span
                   className={cn(
-                    "inline-flex rounded-full px-2.5 py-1 text-xs font-semibold capitalize",
+                    "inline-flex rounded-full px-2.5 py-1 text-xs font-semibold normal-case
+",
                     user.emailVerified ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#FEE2E2] text-[#991B1B]"
                   )}
                 >

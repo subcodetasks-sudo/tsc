@@ -100,18 +100,18 @@ export async function ProcessSection({ steps: overrideSteps, title: titleOverrid
   setRequestLocale(locale)
   const t = await getTranslations("Landing.process")
   const isRtl = locale === "ar"
-  
+
   // Get process steps - handle both array and async responses
   const processSteps = getProcessSteps()
   const stepKeys = Array.isArray(processSteps) ? processSteps : ["createAccount", "completeProfile", "apply"]
-  
+
   const steps = overrideSteps?.length
     ? overrideSteps
     : (stepKeys as readonly string[]).map((step, index) => ({
-        title: t(`steps.${step}.title`),
-        description: t(`steps.${step}.description`),
-        icon: defaultStepIcons[index],
-      }))
+      title: t(`steps.${step}.title`),
+      description: t(`steps.${step}.description`),
+      icon: defaultStepIcons[index],
+    }))
 
   const title = titleOverride ?? t("title")
   const description = descriptionOverride ?? t("description")
@@ -122,11 +122,12 @@ export async function ProcessSection({ steps: overrideSteps, title: titleOverrid
 
       <StaggerInView leadDelay={0.55}>
         <div className="relative space-y-6 text-center">
-          <div className="mx-auto flex w-fit items-center gap-2 rounded-[8px] bg-[#04324F] px-4 py-2">
+          {/* <div className="mx-auto flex w-fit items-center gap-2 rounded-[8px] bg-[#04324F] px-4 py-2">
             <Image src="/footer/icon-link.svg" alt="" width={16} height={16} />
             <span className="text-[12px] leading-[1.16] font-normal text-[#40A0CA]">{t("eyebrow")}</span>
-          </div>
-          <h2 className="mx-auto max-w-[866px] text-balance font-heading text-[28px] font-bold capitalize leading-[1.5] text-[#F5F5F5] sm:text-[32px] lg:text-[36px]">
+          </div> */}
+          <h2 className="mx-auto max-w-[866px] text-balance font-heading text-[28px] font-bold normal-case
+ leading-[1.5] text-[#F5F5F5] sm:text-[32px] lg:text-[36px]">
             {title}
           </h2>
           <p className="mx-auto max-w-[500px] text-[14px] leading-[1.16] text-[#D4D4D4] sm:text-[16px]">

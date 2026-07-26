@@ -201,7 +201,8 @@ export function TestimonialsCarousel({ stories, labels, isRtl }: TestimonialsCar
               </StaggerItem>
               <div className="space-y-4 sm:space-y-6">
                 <StaggerItem immediate>
-                  <h2 className="max-w-[635px] font-heading text-[28px] font-bold capitalize leading-[1.5] text-[#171717] sm:text-[32px] lg:text-[36px]">
+                  <h2 className="max-w-[635px] font-heading text-[28px] font-bold normal-case
+ leading-[1.5] text-[#171717] sm:text-[32px] lg:text-[36px]">
                     {labels.title}
                   </h2>
                 </StaggerItem>

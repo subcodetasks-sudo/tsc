@@ -51,7 +51,8 @@ export function DashboardJobsTable({
 }: DashboardJobsTableProps) {
   return (
     <div className={cn("flex w-full flex-col gap-6", isRTL && "rtl")} dir={isRTL ? "rtl" : "ltr"}>
-      <h2 className={cn("text-xl font-semibold capitalize leading-[150%] text-[#262626]", isRTL && "text-right")}>
+      <h2 className={cn("text-xl font-semibold normal-case
+ leading-[150%] text-[#262626]", isRTL && "text-right")}>
         {title}
       </h2>
 
@@ -138,6 +139,6 @@ export function DashboardJobsTable({
           )}
         </div>
       </div>
-    </div>
+    </div >
   )
 }

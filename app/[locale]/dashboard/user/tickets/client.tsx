@@ -275,12 +275,12 @@ export default function TicketsClient({ locale, initialTickets, initialMeta }: P
     statusFilter === "all"
       ? tickets
       : tickets.filter((t) => {
-          const status = t.status || "pending";
-          if (statusFilter === "open") {
-            return status === "open" || status === "answered";
-          }
-          return status === statusFilter;
-        });
+        const status = t.status || "pending";
+        if (statusFilter === "open") {
+          return status === "open" || status === "answered";
+        }
+        return status === statusFilter;
+      });
 
   const gradientTitleClasses = cn(
     "bg-clip-text text-transparent font-bold",
@@ -356,7 +356,8 @@ export default function TicketsClient({ locale, initialTickets, initialMeta }: P
                         </h3>
                         {/* Priority badge */}
                         <span className={cn(
-                          "text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full capitalize",
+                          "text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full normal-case
+",
                           getPriorityColor(ticket.priority || "high")
                         )}>
                           {getPriorityLabel(ticket.priority || "high")}
@@ -456,7 +457,8 @@ export default function TicketsClient({ locale, initialTickets, initialMeta }: P
                         {getStatusLabel(activeTicket.status || "pending")}
                       </span>
                       <span className={cn(
-                        "text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full capitalize",
+                        "text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full normal-case
+",
                         getPriorityColor(activeTicket.priority || "high")
                       )}>
                         {getPriorityLabel(activeTicket.priority || "high")}
@@ -666,7 +668,7 @@ export default function TicketsClient({ locale, initialTickets, initialMeta }: P
                 {isAr
                   ? "هل أنت متأكد أنك تريد حذف هذه التذكرة؟ لا يمكن التراجع عن هذا الإجراء."
                   : isDe ? "Sind Sie sicher, dass Sie dieses Ticket löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
-                  : "Are you sure you want to delete this ticket? This action cannot be undone."}
+                    : "Are you sure you want to delete this ticket? This action cannot be undone."}
               </DialogDescription>
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
                 <button

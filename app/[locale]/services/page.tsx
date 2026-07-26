@@ -60,7 +60,8 @@ export default async function ServicesPage() {
             </StaggerItem>
             <div className="flex flex-col gap-4">
               <StaggerItem>
-                <h1 className="max-w-[850px] font-heading text-lg font-bold capitalize leading-[1.3] text-[#171717] sm:text-[28px] lg:text-[40px]">
+                <h1 className="max-w-[850px] font-heading text-lg font-bold normal-case
+ leading-[1.3] text-[#171717] sm:text-[28px] lg:text-[40px]">
                   {t("title")}
                 </h1>
               </StaggerItem>
@@ -127,10 +128,10 @@ export default async function ServicesPage() {
                               {t("exploreDetails")}
                             </span>
                             {isRTL ? (
-                <ArrowUpLeft className="h-5 w-5 text-[#006EA8] transition-transform duration-300 group-hover:text-white" />
-              ) : (
-                <ArrowUpRight className="h-5 w-5 text-[#006EA8] transition-transform duration-300 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              )}
+                              <ArrowUpLeft className="h-5 w-5 text-[#006EA8] transition-transform duration-300 group-hover:text-white" />
+                            ) : (
+                              <ArrowUpRight className="h-5 w-5 text-[#006EA8] transition-transform duration-300 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                            )}
                           </div>
                         </div>
                       </Link>

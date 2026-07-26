@@ -140,7 +140,7 @@ export function AdminUserDetailView({ user, locale }: { user: User; locale: stri
                 )}
               </div>
             </div>
-            
+
             <div className="text-center">
               <h3 className="text-xl font-bold text-[#111827]">{user.name}</h3>
               <p className="text-sm text-[#6B7280]">{user.email}</p>
@@ -148,12 +148,13 @@ export function AdminUserDetailView({ user, locale }: { user: User; locale: stri
 
             <div className="flex items-center gap-3 mt-1">
               <span className={cn(
-                "px-3 py-1 rounded-full text-xs font-semibold capitalize",
+                "px-3 py-1 rounded-full text-xs font-semibold normal-case
+",
                 !isSuspended ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#FEF3C7] text-[#92400E]"
               )}>
                 {!isSuspended ? (isAr ? "نشط" : "Active") : (isAr ? "معلق" : "Suspended")}
               </span>
-              
+
               <button
                 type="button"
                 disabled={statusPending}
@@ -234,7 +235,7 @@ export function AdminUserDetailView({ user, locale }: { user: User; locale: stri
                   />
                 </div>
               </div>
-              
+
               <div className="flex justify-end gap-3 pt-4">
                 <button
                   type="submit"
@@ -306,9 +307,10 @@ export function AdminUserDetailView({ user, locale }: { user: User; locale: stri
                     <span className="text-sm font-medium text-[#262626]">
                       {isAr ? "الجنس" : "Gender"}
                     </span>
-                    <div className="w-full border-b border-[#E5E7EB] py-2 text-sm text-[#525252] capitalize">
-                      {isAr 
-                        ? (userProfile?.gender === "male" ? "ذكر" : userProfile?.gender === "female" ? "أنثى" : userProfile?.gender || "—") 
+                    <div className="w-full border-b border-[#E5E7EB] py-2 text-sm text-[#525252] normal-case
+">
+                      {isAr
+                        ? (userProfile?.gender === "male" ? "ذكر" : userProfile?.gender === "female" ? "أنثى" : userProfile?.gender || "—")
                         : (userProfile?.gender || "—")}
                     </div>
                   </div>

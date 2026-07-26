@@ -159,7 +159,8 @@ export function AdminTicketInlineView({ initialTicket, ticketId, locale }: Props
                 >
                   {getStatusLabel(ticket.status || "pending")}
                 </span>
-                <span className="bg-[#032C44] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full capitalize">
+                <span className="bg-[#032C44] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full normal-case
+">
                   {getPriorityLabel(ticket.priority || "high")}
                 </span>
                 <span className="text-xs text-gray-400">{formatDate(ticket.created_at)}</span>
@@ -173,7 +174,8 @@ export function AdminTicketInlineView({ initialTicket, ticketId, locale }: Props
                     <span className="text-gray-400 mx-1.5">|</span>
                     <span className="text-gray-500">{ticketUser.email}</span>
                   </div>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#E4ECF5] text-[#006EA8] capitalize">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#E4ECF5] text-[#006EA8] normal-case
+">
                     {ticketUser.role === "company" ? (isAr ? "شركة" : "Company") : (isAr ? "باحث عن عمل" : "Job Seeker")}
                   </span>
                 </div>

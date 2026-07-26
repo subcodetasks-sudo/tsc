@@ -56,7 +56,8 @@ export function JobsPageClient({
                 <Image src="/footer/icon-link.svg" alt="" width={16} height={16} aria-hidden />
                 <span className="text-[12px] font-normal leading-[1.16]">{hero.eyebrow}</span>
               </span>
-              <h1 className="font-heading  text-[36px] font-bold leading-[1.5] text-[#171717] capitalize text-center"> 
+              <h1 className="font-heading  text-[36px] font-bold leading-[1.5] text-[#171717] normal-case
+ text-center">
                 {hero.title}
               </h1>
               <p className="max-w-[700px] text-[16px] leading-[1.16] text-[#525252] text-center font-normal">
@@ -79,7 +80,7 @@ export function JobsPageClient({
                     }}
                     placeholder={hero.searchPlaceholder}
                     className="h-[44px] flex-1 min-w-0 rounded-[12px] border border-[#40A0CA] px-4 text-[#171717] placeholder:text-[#737373]/80 text-[14px] font-normal focus:border-[#006EA8] focus:ring-1 focus:ring-[#006EA8] shadow-sm transition-colors"
-                    style={{background:'linear-gradient(180deg,rgba(0,110,168,0.12) 0%,rgba(0,86,133,0.12) 100%)'}}
+                    style={{ background: 'linear-gradient(180deg,rgba(0,110,168,0.12) 0%,rgba(0,86,133,0.12) 100%)' }}
                   />
                   <PrimaryButton
                     type="submit"
