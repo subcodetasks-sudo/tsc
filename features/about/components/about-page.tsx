@@ -55,7 +55,7 @@ export async function AboutPage() {
         videoUrl={videoUrl}
       />
 
-      <ProcessSection
+      {/* <ProcessSection
         steps={homeContent.processSteps}
         title={homeContent.process.title}
         description={homeContent.process.description}
@@ -76,7 +76,7 @@ export async function AboutPage() {
             : "Our story and team image"
         }
         features={features}
-      />
+      /> */}
 
       <SupportSection override={homeContent.sections.footer} />
     </main>

@@ -340,6 +340,10 @@ export async function SiteFooter() {
             <Link locale={locale} href="/privacy" className="transition-colors hover:text-[#40A0CA]">
               {contactT("legal.privacy")}
             </Link>
+            <div className="h-4 w-px bg-[#40A0CA]" />
+            <Link locale={locale} href="/legal-information" className="transition-colors hover:text-[#40A0CA]">
+              {contactT("legal.legalInformation")}
+            </Link>
           </div>
         </div>
       </div>

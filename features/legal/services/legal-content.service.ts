@@ -221,14 +221,32 @@ export async function loadFaqs(locale: string): Promise<FaqItem[]> {
   return items
 }
 
-export async function loadLegalPageContent(locale: string, page: "terms" | "privacy"): Promise<LegalPageContent | null> {
+type LegalPageKind = "terms" | "privacy" | "legal-information"
+
+const LEGAL_PAGE_KEYS: Record<LegalPageKind, string[]> = {
+  terms: ["terms_of_service", "terms", "terms_and_conditions", "service_terms"],
+  privacy: ["privacy_policy", "privacy", "privacy_policy_text"],
+  "legal-information": ["legal_information", "legal_info", "legal_notice"],
+}
+
+const LEGAL_PAGE_EYEBROWS: Record<LegalPageKind, string> = {
+  terms: "Terms",
+  privacy: "Privacy",
+  "legal-information": "Legal",
+}
+
+const LEGAL_PAGE_FALLBACK_TITLES: Record<LegalPageKind, string> = {
+  terms: "Terms of Service",
+  privacy: "Privacy Policy",
+  "legal-information": "Legal Information",
+}
+
+export async function loadLegalPageContent(locale: string, page: LegalPageKind): Promise<LegalPageContent | null> {
   const normalizedLocale = normalizeLocale(locale)
   const settings = await loadPublicSettings(normalizedLocale)
-  const keys = page === "terms"
-    ? ["terms_of_service", "terms", "terms_and_conditions", "service_terms"]
-    : ["privacy_policy", "privacy", "privacy_policy_text"]
-
-  const fallbackTitle = page === "terms" ? "Terms of Service" : "Privacy Policy"
+  const keys = LEGAL_PAGE_KEYS[page]
+  const eyebrow = LEGAL_PAGE_EYEBROWS[page]
+  const fallbackTitle = LEGAL_PAGE_FALLBACK_TITLES[page]
 
   for (const key of keys) {
     const value = settings[key]
@@ -237,7 +255,7 @@ export async function loadLegalPageContent(locale: string, page: "terms" | "priv
     if (nested) {
       const sectionTitle = nested.title || fallbackTitle
       return {
-        eyebrow: page === "terms" ? "Terms" : "Privacy",
+        eyebrow,
         title: sectionTitle,
         description: sectionTitle,
         sections: [
@@ -255,7 +273,7 @@ export async function loadLegalPageContent(locale: string, page: "terms" | "priv
     }
 
     return {
-      eyebrow: page === "terms" ? "Terms" : "Privacy",
+      eyebrow,
       title: fallbackTitle,
       description: text,
       sections: [

@@ -86,24 +86,24 @@ export function formatJobSalary(
     const min = Math.min(from, to)
     const max = Math.max(from, to)
     // Show numbers in logical order but flip visual order for RTL locales
-    return isRTL ? `$${max} – $${min}${periodLabel}` : `$${min} – $${max}${periodLabel}`
+    return isRTL ? `€${max} – €${min}${periodLabel}` : `€${min} – €${max}${periodLabel}`
   }
-  if (from != null) return `$${from}${periodLabel}`
-  if (to != null) return `$${to}${periodLabel}`
+  if (from != null) return `€${from}${periodLabel}`
+  if (to != null) return `€${to}${periodLabel}`
   return "—"
 }
 
-/** Sidebar / hero salary block — e.g. "$1000 - $1200" */
+/** Sidebar / hero salary block — e.g. "€1000 - €1200" */
 export function formatJobSalaryRange(job: Job | UnknownJob | undefined, isRTL = false): string {
   const { from, to } = resolveJobSalaryRange(job)
   if (from != null && to != null) {
     const min = Math.min(from, to)
     const max = Math.max(from, to)
     // Respect RTL when requested: show max - min visually on RTL pages
-    return isRTL ? `$${max} - $${min}` : `$${min} - $${max}`
+    return isRTL ? `€${max} - €${min}` : `€${min} - €${max}`
   }
-  if (from != null) return `$${from}`
-  if (to != null) return `$${to}`
+  if (from != null) return `€${from}`
+  if (to != null) return `€${to}`
   return "—"
 }
 

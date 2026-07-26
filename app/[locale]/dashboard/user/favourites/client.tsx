@@ -81,10 +81,10 @@ export default function FavouritesClient({ locale, initialJobs }: Props) {
               const salaryFrom = job.salary_from;
               const salaryTo = job.salary_to;
               const salaryLabel = salaryFrom != null && salaryTo != null
-                ? `$${salaryFrom} - $${salaryTo}`
-                : salaryFrom != null ? `$${salaryFrom}` : salaryTo != null ? `$${salaryTo}` : null;
+                ? `€${salaryFrom} - €${salaryTo}`
+                : salaryFrom != null ? `€${salaryFrom}` : salaryTo != null ? `€${salaryTo}` : null;
               const employmentType = translateEmploymentType(job.employment_type || job.job_type, locale) || (isAr ? "دوام كامل" : isDe ? "Vollzeit" : "Full-time");
-              const salaryPeriod = isAr ? "/شهرياً" : isDe ? "/Monat" : "/month";
+              const salaryPeriod = isAr ? "/سنوياً" : isDe ? "/Jahr" : "/year";
               const companySubLabel = job.category?.name || job.company?.company_type?.name || "";
 
               return (

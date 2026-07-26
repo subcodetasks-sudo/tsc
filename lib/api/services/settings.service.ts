@@ -5,7 +5,8 @@ export type SiteSetting = {
   key: string
   value: string | Record<string, unknown> | number | boolean
   type?: string
-  is_public?: boolean
+  /** GET /settings returns this camelCase; POST is still sent as multipart field "is_public". */
+  isPublic?: boolean
   label?: string
 }
 

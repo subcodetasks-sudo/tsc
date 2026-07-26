@@ -96,7 +96,7 @@ export function JobsPageContent({
               </div>
               <div className="mt-3 flex items-center justify-between text-[29px] leading-[1.1] font-bold text-[#0f172a]">
                 <p>
-                  $1200 <span className="text-[24px] font-medium text-[#2b8ab6]">{salaryPeriodLabel}</span>
+                  €1200 <span className="text-[24px] font-medium text-[#2b8ab6]">{salaryPeriodLabel}</span>
                 </p>
                 <p className="text-[28px] font-semibold text-[#0f172a]">{timeLabel}</p>
               </div>

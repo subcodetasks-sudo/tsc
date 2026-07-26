@@ -368,12 +368,14 @@ export function AdminAboutPanel({
         <button type="button" className={tabClass("main")} onClick={() => setActiveTab("main")} title="Edit header section">
           {isRTL ? "عنوان الهيدر / وصف الهيدر" : "Header / Description"}
         </button>
+        {/* Second Section / Features tabs are temporarily disabled — AboutStorySection is commented out on the About page
         <button type="button" className={tabClass("second")} onClick={() => setActiveTab("second")} title="Edit second section">
           {isRTL ? "القسم الثاني" : "Second Section"}
         </button>
         <button type="button" className={tabClass("features")} onClick={() => setActiveTab("features")} title="Edit features">
           {isRTL ? `المزايا (${currentTranslation.features.length})` : `Features (${currentTranslation.features.length})`}
         </button>
+        */}
       </div>
 
       {/* Alert Messages */}
@@ -419,6 +421,7 @@ export function AdminAboutPanel({
       )}
 
       {/* ── TAB: Second Section ── */}
+      {/*
       {activeTab === "second" && (
         <div className="space-y-5">
           <div className="space-y-3 rounded-[8px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
@@ -433,7 +436,6 @@ export function AdminAboutPanel({
             />
           </div>
 
-          {/* Secondary Image */}
           <ImageUploadBox
             label={isRTL ? "صورة القسم الثاني" : "Second Section Image"}
             file={secondaryImage}
@@ -444,7 +446,6 @@ export function AdminAboutPanel({
             aspectRatio="4:3"
           />
 
-          {/* Video Upload - MUST be a file, NOT a URL string */}
           <div className="rounded-[8px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 space-y-3">
             <p className="text-xs font-bold uppercase tracking-widest text-[#006EA8]">
               {isRTL ? "الفيديو (ملف مرفوع فقط)" : "Video (File Upload Only)"}
@@ -507,8 +508,10 @@ export function AdminAboutPanel({
           </div>
         </div>
       )}
+      */}
 
       {/* ── TAB: Features ── */}
+      {/*
       {activeTab === "features" && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -546,6 +549,7 @@ export function AdminAboutPanel({
           </div>
         </div>
       )}
+      */}
 
       {/* Submit */}
       <div className="flex flex-wrap gap-3 border-t border-[#E5E7EB] pt-4">

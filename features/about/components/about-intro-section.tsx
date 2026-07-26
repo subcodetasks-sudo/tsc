@@ -93,15 +93,15 @@ export function AboutIntroSection({
         </StaggerItem>
 
         <StaggerItem>
-          <h1 className="max-w-[820px] text-balance text-[44px] leading-[1.08] font-bold text-[#001222] lg:text-[56px]">
+          <h1 className="text-balance text-center text-4xl leading-[1.08] font-bold text-[#001222] lg:text-[56px] relative after:absolute after:content-[''] after:-bottom-2 after:left-1/2 after:-translate-x-1/2 after:h-1 after:w-14 after:rounded-full after:bg-[#40A0CA]">
             {parse(title)}
           </h1>
         </StaggerItem>
 
         <StaggerItem>
-          <div className="max-w-[720px] space-y-4 text-[17px] leading-relaxed text-[#385066]">
-            <div>{parse(descriptionOne)}</div>
-            <div>{parse(descriptionTwo)}</div>
+          <div className=" space-y-4 text-[17px] leading-relaxed text-[#385066]">
+            <div className="text-justify">{parse(descriptionOne)}</div>
+            <div className="text-justify">{parse(descriptionTwo)}</div>
           </div>
         </StaggerItem>
       </StaggerInView>

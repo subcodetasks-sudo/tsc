@@ -253,7 +253,7 @@
       },
       "moreDetails": "More Details",
       "showAll": "Show All Jobs",
-      "salaryPeriod": "/month",
+      "salaryPeriod": "/year",
       "items": {
         "frontend": {
           "department": "IT",
@@ -302,7 +302,7 @@
       "filter": "Filter",
       "department": "Department",
       "postedAgo": "14 hours ago",
-      "salaryPeriod": " /month",
+      "salaryPeriod": " /year",
       "employmentFullTime": "Full-time",
       "companyName": "Company name",
       "companySubLabel": "Title",
@@ -316,7 +316,7 @@
       "detail": {
         "lookingFor": "We're looking for a...",
         "shareWith": "Share With:",
-        "monthly": "Monthly",
+        "monthly": "Yearly",
         "details": "Details",
         "industry": "Industry",
         "employmentType": "Employment Type",
@@ -336,8 +336,8 @@
         "state": "State",
         "categories": "Categories",
         "salary": "Salary",
-        "salaryMin": "$1",
-        "salaryMax": "$10k",
+        "salaryMin": "€1",
+        "salaryMax": "€10k",
         "from": "From",
         "to": "To",
         "stateOptions": {
@@ -637,7 +637,8 @@
       "legal": {
         "terms": "Terms Of Service",
         "faqs": "FAQs",
-        "privacy": "Privacy Policy"
+        "privacy": "Privacy Policy",
+        "legalInformation": "Legal Information"
       }
     }
   },
@@ -685,8 +686,8 @@
       "title": "Job title",
       "image": "Click to upload or change image",
       "select": "Select",
-      "salaryFrom": "$ from",
-      "salaryTo": "$ to",
+      "salaryFrom": "€ from",
+      "salaryTo": "€ to",
       "ageFrom": "from",
       "ageTo": "to"
     },
@@ -786,6 +787,14 @@
       "eyebrow": "Terms",
       "title": "Terms of Service",
       "description": "Use of the platform is subject to these terms.",
+      "privacyAction": "Privacy Policy",
+      "contactAction": "Contact Us"
+    },
+    "legalInformation": {
+      "eyebrow": "Legal",
+      "title": "Legal Information",
+      "description": "Legal and regulatory information about the operator of this platform.",
+      "termsAction": "Terms of Service",
       "privacyAction": "Privacy Policy",
       "contactAction": "Contact Us"
     }

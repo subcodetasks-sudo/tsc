@@ -56,10 +56,10 @@ export function AboutStorySection({
       <StaggerInView className="grid items-center gap-8 lg:grid-cols-2">
         <StaggerItem>
           <div className="space-y-6">
-            <div className="inline-flex w-fit items-center gap-2 rounded-full bg-[#EAF4FB] px-4 py-2 text-[13px] font-semibold tracking-[0.02em] text-[#0f7abd]">
+            {/* <div className="inline-flex w-fit items-center gap-2 rounded-full bg-[#EAF4FB] px-4 py-2 text-[13px] font-semibold tracking-[0.02em] text-[#0f7abd]">
               <Image src="/footer/icon-link.svg" alt="" width={16} height={16} aria-hidden />
               <span>{eyebrow}</span>
-            </div>
+            </div> */}
             {/* <h2 className="max-w-[540px] text-balance text-[40px] leading-[1.12] font-bold text-[#171717] lg:text-[44px]">
               {parse(title)}
             </h2> */}

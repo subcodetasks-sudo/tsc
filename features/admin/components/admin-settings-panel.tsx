@@ -131,6 +131,10 @@ export function AdminSettingsPanel({
   const [privacyState, setPrivacyState] = useState(privacyInit)
   const [privacyLocale, setPrivacyLocale] = useState<LocaleTab>(defaultLocaleTab)
 
+  const legalInfoInit = getLegalDocument("legal_information")
+  const [legalInfoState, setLegalInfoState] = useState(legalInfoInit)
+  const [legalInfoLocale, setLegalInfoLocale] = useState<LocaleTab>(defaultLocaleTab)
+
 
 
   // 3. For any unrecognized settings
@@ -152,6 +156,7 @@ export function AdminSettingsPanel({
     "hero_stats",
     "terms_of_service",
     "privacy_policy",
+    "legal_information",
   ]
   const otherSettings = settings.filter((s) => !knownKeys.includes(s.key))
   const [editingOtherKey, setEditingOtherKey] = useState<string | null>(null)
@@ -170,6 +175,13 @@ export function AdminSettingsPanel({
   const privacyContentValue = privacyState[privacyContentKey]
   const setPrivacyTitle = (v: string) => setPrivacyState((prev) => ({ ...prev, [privacyTitleKey]: v }))
   const setPrivacyContent = (v: string) => setPrivacyState((prev) => ({ ...prev, [privacyContentKey]: v }))
+
+  const legalInfoTitleKey = legalInfoLocale === "ar" ? "titleAr" : legalInfoLocale === "en" ? "titleEn" : "titleDe"
+  const legalInfoContentKey = legalInfoLocale === "ar" ? "contentAr" : legalInfoLocale === "en" ? "contentEn" : "contentDe"
+  const legalInfoTitleValue = legalInfoState[legalInfoTitleKey]
+  const legalInfoContentValue = legalInfoState[legalInfoContentKey]
+  const setLegalInfoTitle = (v: string) => setLegalInfoState((prev) => ({ ...prev, [legalInfoTitleKey]: v }))
+  const setLegalInfoContent = (v: string) => setLegalInfoState((prev) => ({ ...prev, [legalInfoContentKey]: v }))
 
   // 4. Save functions
   function saveGeneral(e: React.FormEvent) {
@@ -342,6 +354,36 @@ export function AdminSettingsPanel({
           setError(isRTL ? "فشل في حفظ سياسة الخصوصية" : "Failed to save Privacy Policy")
         } else {
           setSuccess(isRTL ? "تم حفظ سياسة الخصوصية بنجاح" : "Privacy Policy saved successfully")
+          router.refresh()
+        }
+      } catch (err) {
+        setError(isRTL ? "حدث خطأ غير متوقع" : "An unexpected error occurred")
+      }
+    })
+  }
+
+  function saveLegalInfo(e: React.FormEvent) {
+    e.preventDefault()
+    setError(null)
+    setSuccess(null)
+    startTransition(async () => {
+      try {
+        const fd = new FormData()
+        fd.append(
+          "value",
+          JSON.stringify({
+            title: { ar: legalInfoState.titleAr, en: legalInfoState.titleEn, de: legalInfoState.titleDe },
+            content: { ar: legalInfoState.contentAr, en: legalInfoState.contentEn, de: legalInfoState.contentDe },
+          })
+        )
+        fd.append("type", "json")
+        fd.append("is_public", "1")
+        const res = await saveSettingAction("legal_information", fd, locale)
+
+        if (!res.ok) {
+          setError(isRTL ? "فشل في حفظ البيانات القانونية" : "Failed to save Legal Information")
+        } else {
+          setSuccess(isRTL ? "تم حفظ البيانات القانونية بنجاح" : "Legal Information saved successfully")
           router.refresh()
         }
       } catch (err) {
@@ -765,7 +807,66 @@ export function AdminSettingsPanel({
         </div>
       </form>
 
-      {/* Card 6: Other Settings (if any exist) */}
+      {/* Card 6: Legal Information */}
+      <form onSubmit={saveLegalInfo} className="rounded-[12px] border border-[#E5E7EB] bg-white p-5 sm:p-6 shadow-sm mt-6">
+        <div className="flex items-center gap-2 border-b border-[#E5E7EB] pb-3 mb-5">
+          <FileText className="h-5 w-5 text-[#006EA8]" />
+          <h3 className="font-bold text-[#111827]">{isRTL ? "البيانات القانونية" : "Legal Information"}</h3>
+        </div>
+
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-medium text-[#6B7280]">{isRTL ? "اللغة" : "Language"}</label>
+            {LOCALE_TABS.map((loc) => (
+              <button
+                key={loc}
+                type="button"
+                onClick={() => setLegalInfoLocale(loc)}
+                className={`px-3 py-1.5 text-xs font-semibold rounded ${
+                  legalInfoLocale === loc ? "bg-[#006EA8] text-white" : "bg-[#EBF5FB] text-[#006EA8]"
+                }`}
+              >
+                {loc.toUpperCase()}
+              </button>
+            ))}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#374151] mb-1">
+              {isRTL ? "العنوان" : "Title"}
+            </label>
+            <input
+              type="text"
+              dir={legalInfoLocale === "ar" ? "rtl" : "ltr"}
+              value={legalInfoTitleValue}
+              onChange={(e) => setLegalInfoTitle(e.target.value)}
+              className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2 text-sm focus:border-[#006EA8] focus:outline-none focus:ring-1 focus:ring-[#006EA8] bg-white text-[#111827]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#374151] mb-1">
+              {isRTL ? "المحتوى" : "Content"}
+            </label>
+            <RichTextEditor
+              key={`legal-info-content-${legalInfoLocale}`}
+              value={legalInfoContentValue}
+              onChange={setLegalInfoContent}
+              dir={legalInfoLocale === "ar" ? "rtl" : "ltr"}
+              minHeight="280px"
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-3 border-t border-[#E5E7EB] pt-4 mt-6">
+          <PrimaryButton type="submit" disabled={pending} className="h-9 px-4 text-xs">
+            <Save className="h-4 w-4 me-2" />
+            {pending ? (isRTL ? "جاري الحفظ..." : "Saving...") : (isRTL ? "حفظ التعديلات" : "Save Changes")}
+          </PrimaryButton>
+        </div>
+      </form>
+
+      {/* Card 7: Other Settings (if any exist) */}
       {otherSettings.length > 0 && (
         <div className="rounded-[12px] border border-[#E5E7EB] bg-white p-5 sm:p-6 shadow-sm mt-6">
           <div className="flex items-center gap-2 border-b border-[#E5E7EB] pb-3 mb-4">

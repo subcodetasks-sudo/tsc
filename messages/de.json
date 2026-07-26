@@ -253,7 +253,7 @@
       },
       "moreDetails": "Mehr Details",
       "showAll": "Alle Jobs anzeigen",
-      "salaryPeriod": "/Monat",
+      "salaryPeriod": "/Jahr",
       "items": {
         "frontend": {
           "department": "IT",
@@ -302,7 +302,7 @@
       "filter": "Filter",
       "department": "Abteilung",
       "postedAgo": "vor 14 Stunden",
-      "salaryPeriod": " /Monat",
+      "salaryPeriod": " /Jahr",
       "employmentFullTime": "Vollzeit",
       "companyName": "Firmenname",
       "companySubLabel": "Standort",
@@ -316,7 +316,7 @@
       "detail": {
         "lookingFor": "Wir suchen eine/n...",
         "shareWith": "Teilen über:",
-        "monthly": "Monatlich",
+        "monthly": "Jährlich",
         "details": "Details",
         "industry": "Branche",
         "employmentType": "Beschäftigungsart",
@@ -336,8 +336,8 @@
         "state": "Bundesland",
         "categories": "Kategorien",
         "salary": "Gehalt",
-        "salaryMin": "$1",
-        "salaryMax": "$10k",
+        "salaryMin": "€1",
+        "salaryMax": "€10k",
         "from": "Von",
         "to": "Bis",
         "stateOptions": {
@@ -637,7 +637,8 @@
       "legal": {
         "terms": "Nutzungsbedingungen",
         "faqs": "FAQs",
-        "privacy": "Datenschutz"
+        "privacy": "Datenschutz",
+        "legalInformation": "Impressum"
       }
     }
   },
@@ -780,6 +781,14 @@
       "title": "Datenschutzerklärung",
       "description": "Wir erfassen die Informationen, die zur Bereitstellung von Onboarding, Matching und Kontounterstützung erforderlich sind.",
       "termsAction": "Nutzungsbedingungen",
+      "contactAction": "Kontaktieren Sie uns"
+    },
+    "legalInformation": {
+      "eyebrow": "Rechtliches",
+      "title": "Impressum",
+      "description": "Rechtliche und regulatorische Informationen zum Betreiber dieser Plattform.",
+      "termsAction": "Nutzungsbedingungen",
+      "privacyAction": "Datenschutzerklärung",
       "contactAction": "Kontaktieren Sie uns"
     },
     "terms": {

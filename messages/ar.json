@@ -219,7 +219,7 @@
       },
       "moreDetails": "المزيد من التفاصيل",
       "showAll": "عرض كل الوظائف",
-      "salaryPeriod": "/شهرياً",
+      "salaryPeriod": "/سنوياً",
       "items": {
         "frontend": {
           "department": "تقنية المعلومات",
@@ -268,7 +268,7 @@
       "filter": "تصفية",
       "department": "القسم",
       "postedAgo": "منذ 14 ساعة",
-      "salaryPeriod": " /شهريا",
+      "salaryPeriod": " /سنوياً",
       "employmentFullTime": "دوام كامل",
       "companyName": "اسم الشركة",
       "companySubLabel": "المسمى",
@@ -282,7 +282,7 @@
       "detail": {
         "lookingFor": "نبحث عن...",
         "shareWith": "شارك عبر:",
-        "monthly": "شهرياً",
+        "monthly": "سنوياً",
         "details": "التفاصيل",
         "industry": "المجال",
         "employmentType": "نوع التوظيف",
@@ -302,8 +302,8 @@
         "state": "الولاية",
         "categories": "الفئات",
         "salary": "الراتب",
-        "salaryMin": "$1",
-        "salaryMax": "$10k",
+        "salaryMin": "€1",
+        "salaryMax": "€10k",
         "from": "من",
         "to": "إلى",
         "stateOptions": {
@@ -603,7 +603,8 @@
       "legal": {
         "terms": "شروط الخدمة",
         "faqs": "الأسئلة الشائعة",
-        "privacy": "سياسة الخصوصية"
+        "privacy": "سياسة الخصوصية",
+        "legalInformation": "البيانات القانونية"
       }
     }
   },
@@ -782,6 +783,14 @@
       "title": "سياسة الخصوصية",
       "description": "نقوم بجمع المعلومات اللازمة لتقديم خدمات التسجيل والمطابقة ودعم الحساب.",
       "termsAction": "شروط الخدمة",
+      "contactAction": "تواصل معنا"
+    },
+    "legalInformation": {
+      "eyebrow": "قانوني",
+      "title": "البيانات القانونية",
+      "description": "معلومات قانونية وتنظيمية حول الجهة المشغلة لهذه المنصة.",
+      "termsAction": "شروط الخدمة",
+      "privacyAction": "سياسة الخصوصية",
       "contactAction": "تواصل معنا"
     },
     "terms": {
