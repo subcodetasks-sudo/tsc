@@ -6,7 +6,11 @@ import { useTranslations } from "next-intl"
 import type { SiteSetting } from "@/lib/api/services/settings.service"
 import { saveSettingAction } from "@/features/admin/actions/admin-actions"
 import { PrimaryButton } from "@/components/ui/primary-button"
-import { Settings, PhoneCall, Share2, BarChart3, Globe, Save, HelpCircle } from "lucide-react"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
+import { Settings, PhoneCall, Share2, BarChart3, Globe, Save, HelpCircle, FileText } from "lucide-react"
+
+const LOCALE_TABS = ["ar", "en", "de"] as const
+type LocaleTab = (typeof LOCALE_TABS)[number]
 
 export function AdminSettingsPanel({
   settings,
@@ -60,6 +64,36 @@ export function AdminSettingsPanel({
 
 
 
+  // Helper for title/content legal settings (JSON object containing { title: {ar,en,de}, content: {ar,en,de} })
+  const getLegalDocument = (key: string) => {
+    const empty = { titleAr: "", titleEn: "", titleDe: "", contentAr: "", contentEn: "", contentDe: "" }
+    const raw = settings.find((item) => item.key === key)?.value
+    if (!raw) return empty
+
+    let parsed: unknown = raw
+    if (typeof parsed === "string") {
+      try {
+        parsed = JSON.parse(parsed)
+      } catch {
+        return empty
+      }
+    }
+    if (!parsed || typeof parsed !== "object") return empty
+
+    const record = parsed as Record<string, unknown>
+    const title = (record.title && typeof record.title === "object" ? record.title : {}) as Record<string, string>
+    const content = (record.content && typeof record.content === "object" ? record.content : {}) as Record<string, string>
+
+    return {
+      titleAr: title.ar || "",
+      titleEn: title.en || "",
+      titleDe: title.de || "",
+      contentAr: content.ar || "",
+      contentEn: content.en || "",
+      contentDe: content.de || "",
+    }
+  }
+
   // 2. Component States (General, Contact, Socials, Hero Stats)
   const footerDescInit = getFooterDescription()
   const [generalState, setGeneralState] = useState({
@@ -87,6 +121,16 @@ export function AdminSettingsPanel({
     twitter: getSettingValue("twitter_url", ""),
   })
 
+  const defaultLocaleTab: LocaleTab = LOCALE_TABS.includes(locale as LocaleTab) ? (locale as LocaleTab) : "ar"
+
+  const termsInit = getLegalDocument("terms_of_service")
+  const [termsState, setTermsState] = useState(termsInit)
+  const [termsLocale, setTermsLocale] = useState<LocaleTab>(defaultLocaleTab)
+
+  const privacyInit = getLegalDocument("privacy_policy")
+  const [privacyState, setPrivacyState] = useState(privacyInit)
+  const [privacyLocale, setPrivacyLocale] = useState<LocaleTab>(defaultLocaleTab)
+
 
 
   // 3. For any unrecognized settings
@@ -106,10 +150,26 @@ export function AdminSettingsPanel({
     "linkedin_url",
     "twitter_url",
     "hero_stats",
+    "terms_of_service",
+    "privacy_policy",
   ]
   const otherSettings = settings.filter((s) => !knownKeys.includes(s.key))
   const [editingOtherKey, setEditingOtherKey] = useState<string | null>(null)
   const [otherValue, setOtherValue] = useState("")
+
+  const termsTitleKey = termsLocale === "ar" ? "titleAr" : termsLocale === "en" ? "titleEn" : "titleDe"
+  const termsContentKey = termsLocale === "ar" ? "contentAr" : termsLocale === "en" ? "contentEn" : "contentDe"
+  const termsTitleValue = termsState[termsTitleKey]
+  const termsContentValue = termsState[termsContentKey]
+  const setTermsTitle = (v: string) => setTermsState((prev) => ({ ...prev, [termsTitleKey]: v }))
+  const setTermsContent = (v: string) => setTermsState((prev) => ({ ...prev, [termsContentKey]: v }))
+
+  const privacyTitleKey = privacyLocale === "ar" ? "titleAr" : privacyLocale === "en" ? "titleEn" : "titleDe"
+  const privacyContentKey = privacyLocale === "ar" ? "contentAr" : privacyLocale === "en" ? "contentEn" : "contentDe"
+  const privacyTitleValue = privacyState[privacyTitleKey]
+  const privacyContentValue = privacyState[privacyContentKey]
+  const setPrivacyTitle = (v: string) => setPrivacyState((prev) => ({ ...prev, [privacyTitleKey]: v }))
+  const setPrivacyContent = (v: string) => setPrivacyState((prev) => ({ ...prev, [privacyContentKey]: v }))
 
   // 4. Save functions
   function saveGeneral(e: React.FormEvent) {
@@ -229,6 +289,66 @@ export function AdminSettingsPanel({
   }
 
 
+
+  function saveTerms(e: React.FormEvent) {
+    e.preventDefault()
+    setError(null)
+    setSuccess(null)
+    startTransition(async () => {
+      try {
+        const fd = new FormData()
+        fd.append(
+          "value",
+          JSON.stringify({
+            title: { ar: termsState.titleAr, en: termsState.titleEn, de: termsState.titleDe },
+            content: { ar: termsState.contentAr, en: termsState.contentEn, de: termsState.contentDe },
+          })
+        )
+        fd.append("type", "json")
+        fd.append("is_public", "1")
+        const res = await saveSettingAction("terms_of_service", fd, locale)
+
+        if (!res.ok) {
+          setError(isRTL ? "فشل في حفظ شروط الخدمة" : "Failed to save Terms of Service")
+        } else {
+          setSuccess(isRTL ? "تم حفظ شروط الخدمة بنجاح" : "Terms of Service saved successfully")
+          router.refresh()
+        }
+      } catch (err) {
+        setError(isRTL ? "حدث خطأ غير متوقع" : "An unexpected error occurred")
+      }
+    })
+  }
+
+  function savePrivacy(e: React.FormEvent) {
+    e.preventDefault()
+    setError(null)
+    setSuccess(null)
+    startTransition(async () => {
+      try {
+        const fd = new FormData()
+        fd.append(
+          "value",
+          JSON.stringify({
+            title: { ar: privacyState.titleAr, en: privacyState.titleEn, de: privacyState.titleDe },
+            content: { ar: privacyState.contentAr, en: privacyState.contentEn, de: privacyState.contentDe },
+          })
+        )
+        fd.append("type", "json")
+        fd.append("is_public", "1")
+        const res = await saveSettingAction("privacy_policy", fd, locale)
+
+        if (!res.ok) {
+          setError(isRTL ? "فشل في حفظ سياسة الخصوصية" : "Failed to save Privacy Policy")
+        } else {
+          setSuccess(isRTL ? "تم حفظ سياسة الخصوصية بنجاح" : "Privacy Policy saved successfully")
+          router.refresh()
+        }
+      } catch (err) {
+        setError(isRTL ? "حدث خطأ غير متوقع" : "An unexpected error occurred")
+      }
+    })
+  }
 
   function saveOther(key: string) {
     setError(null)
@@ -527,7 +647,125 @@ export function AdminSettingsPanel({
 
       </div>
 
-      {/* Card 5: Other Settings (if any exist) */}
+      {/* Card 4: Terms of Service */}
+      <form onSubmit={saveTerms} className="rounded-[12px] border border-[#E5E7EB] bg-white p-5 sm:p-6 shadow-sm mt-6">
+        <div className="flex items-center gap-2 border-b border-[#E5E7EB] pb-3 mb-5">
+          <FileText className="h-5 w-5 text-[#006EA8]" />
+          <h3 className="font-bold text-[#111827]">{isRTL ? "شروط الخدمة والأحكام" : "Terms of Service"}</h3>
+        </div>
+
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-medium text-[#6B7280]">{isRTL ? "اللغة" : "Language"}</label>
+            {LOCALE_TABS.map((loc) => (
+              <button
+                key={loc}
+                type="button"
+                onClick={() => setTermsLocale(loc)}
+                className={`px-3 py-1.5 text-xs font-semibold rounded ${
+                  termsLocale === loc ? "bg-[#006EA8] text-white" : "bg-[#EBF5FB] text-[#006EA8]"
+                }`}
+              >
+                {loc.toUpperCase()}
+              </button>
+            ))}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#374151] mb-1">
+              {isRTL ? "العنوان" : "Title"}
+            </label>
+            <input
+              type="text"
+              dir={termsLocale === "ar" ? "rtl" : "ltr"}
+              value={termsTitleValue}
+              onChange={(e) => setTermsTitle(e.target.value)}
+              className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2 text-sm focus:border-[#006EA8] focus:outline-none focus:ring-1 focus:ring-[#006EA8] bg-white text-[#111827]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#374151] mb-1">
+              {isRTL ? "المحتوى" : "Content"}
+            </label>
+            <RichTextEditor
+              key={`terms-content-${termsLocale}`}
+              value={termsContentValue}
+              onChange={setTermsContent}
+              dir={termsLocale === "ar" ? "rtl" : "ltr"}
+              minHeight="280px"
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-3 border-t border-[#E5E7EB] pt-4 mt-6">
+          <PrimaryButton type="submit" disabled={pending} className="h-9 px-4 text-xs">
+            <Save className="h-4 w-4 me-2" />
+            {pending ? (isRTL ? "جاري الحفظ..." : "Saving...") : (isRTL ? "حفظ التعديلات" : "Save Changes")}
+          </PrimaryButton>
+        </div>
+      </form>
+
+      {/* Card 5: Privacy Policy */}
+      <form onSubmit={savePrivacy} className="rounded-[12px] border border-[#E5E7EB] bg-white p-5 sm:p-6 shadow-sm mt-6">
+        <div className="flex items-center gap-2 border-b border-[#E5E7EB] pb-3 mb-5">
+          <FileText className="h-5 w-5 text-[#006EA8]" />
+          <h3 className="font-bold text-[#111827]">{isRTL ? "سياسة الخصوصية" : "Privacy Policy"}</h3>
+        </div>
+
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-medium text-[#6B7280]">{isRTL ? "اللغة" : "Language"}</label>
+            {LOCALE_TABS.map((loc) => (
+              <button
+                key={loc}
+                type="button"
+                onClick={() => setPrivacyLocale(loc)}
+                className={`px-3 py-1.5 text-xs font-semibold rounded ${
+                  privacyLocale === loc ? "bg-[#006EA8] text-white" : "bg-[#EBF5FB] text-[#006EA8]"
+                }`}
+              >
+                {loc.toUpperCase()}
+              </button>
+            ))}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#374151] mb-1">
+              {isRTL ? "العنوان" : "Title"}
+            </label>
+            <input
+              type="text"
+              dir={privacyLocale === "ar" ? "rtl" : "ltr"}
+              value={privacyTitleValue}
+              onChange={(e) => setPrivacyTitle(e.target.value)}
+              className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2 text-sm focus:border-[#006EA8] focus:outline-none focus:ring-1 focus:ring-[#006EA8] bg-white text-[#111827]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#374151] mb-1">
+              {isRTL ? "المحتوى" : "Content"}
+            </label>
+            <RichTextEditor
+              key={`privacy-content-${privacyLocale}`}
+              value={privacyContentValue}
+              onChange={setPrivacyContent}
+              dir={privacyLocale === "ar" ? "rtl" : "ltr"}
+              minHeight="280px"
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-3 border-t border-[#E5E7EB] pt-4 mt-6">
+          <PrimaryButton type="submit" disabled={pending} className="h-9 px-4 text-xs">
+            <Save className="h-4 w-4 me-2" />
+            {pending ? (isRTL ? "جاري الحفظ..." : "Saving...") : (isRTL ? "حفظ التعديلات" : "Save Changes")}
+          </PrimaryButton>
+        </div>
+      </form>
+
+      {/* Card 6: Other Settings (if any exist) */}
       {otherSettings.length > 0 && (
         <div className="rounded-[12px] border border-[#E5E7EB] bg-white p-5 sm:p-6 shadow-sm mt-6">
           <div className="flex items-center gap-2 border-b border-[#E5E7EB] pb-3 mb-4">

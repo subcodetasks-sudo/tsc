@@ -3,7 +3,7 @@ import type { ApiResponse } from "../types"
 
 export type SiteSetting = {
   key: string
-  value: string | Record<string, string> | number | boolean
+  value: string | Record<string, unknown> | number | boolean
   type?: string
   is_public?: boolean
   label?: string

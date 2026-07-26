@@ -39,11 +39,42 @@ export type LegalPageContent = {
 }
 
 function normalizeLocale(locale: string): Locale {
-  if (locale === "ar" || locale === "de") {
+  if (locale === "ar" || locale === "en") {
     return locale
   }
 
-  return "en"
+  return "de"
+}
+
+type NestedLegalContent = {
+  title?: string
+  content: string
+}
+
+/**
+ * The admin "terms of service" / "privacy policy" settings store value as
+ * `{ title: { ar, en, de }, content: { ar, en, de } }` (rich HTML per locale).
+ * Detect that shape before falling back to the flat `{ ar, en, de }` string map.
+ */
+function pickNestedLegalContent(value: unknown, locale: string): NestedLegalContent | null {
+  if (!value || typeof value !== "object") {
+    return null
+  }
+
+  const record = value as Record<string, unknown>
+  if (!("content" in record)) {
+    return null
+  }
+
+  const content = pickLocalizedText(record.content, locale)
+  if (!content) {
+    return null
+  }
+
+  return {
+    title: pickLocalizedText(record.title, locale),
+    content,
+  }
 }
 
 function pickLocalizedText(value: unknown, locale: string): string | undefined {
@@ -164,16 +195,30 @@ async function loadPublicSettings(locale: string): Promise<Record<string, unknow
   }, {})
 }
 
+const MAX_FAQ_PAGES = 20
+
 export async function loadFaqs(locale: string): Promise<FaqItem[]> {
   const normalizedLocale = normalizeLocale(locale)
-  const payload = await fetchJson<{ data?: unknown }>("/faqs?per_page=6", normalizedLocale)
+  const items: FaqItem[] = []
+  let page = 1
+  let lastPage = 1
 
-  if (!payload) {
-    return []
-  }
+  do {
+    const payload = await fetchJson<{ data?: unknown; meta?: { last_page?: number } }>(
+      `/faqs?per_page=50&page=${page}`,
+      normalizedLocale,
+    )
 
-  const items = normalizeFaqItems(payload)
-  return items.slice(0, 6)
+    if (!payload) {
+      break
+    }
+
+    items.push(...normalizeFaqItems(payload))
+    lastPage = payload.meta?.last_page ?? 1
+    page += 1
+  } while (page <= lastPage && page <= MAX_FAQ_PAGES)
+
+  return items
 }
 
 export async function loadLegalPageContent(locale: string, page: "terms" | "privacy"): Promise<LegalPageContent | null> {
@@ -183,8 +228,27 @@ export async function loadLegalPageContent(locale: string, page: "terms" | "priv
     ? ["terms_of_service", "terms", "terms_and_conditions", "service_terms"]
     : ["privacy_policy", "privacy", "privacy_policy_text"]
 
+  const fallbackTitle = page === "terms" ? "Terms of Service" : "Privacy Policy"
+
   for (const key of keys) {
     const value = settings[key]
+
+    const nested = pickNestedLegalContent(value, normalizedLocale)
+    if (nested) {
+      const sectionTitle = nested.title || fallbackTitle
+      return {
+        eyebrow: page === "terms" ? "Terms" : "Privacy",
+        title: sectionTitle,
+        description: sectionTitle,
+        sections: [
+          {
+            title: sectionTitle,
+            content: normalizeRichTextHtml(nested.content),
+          },
+        ],
+      }
+    }
+
     const text = pickLocalizedText(value, normalizedLocale)
     if (!text) {
       continue
@@ -192,12 +256,12 @@ export async function loadLegalPageContent(locale: string, page: "terms" | "priv
 
     return {
       eyebrow: page === "terms" ? "Terms" : "Privacy",
-      title: page === "terms" ? "Terms of Service" : "Privacy Policy",
+      title: fallbackTitle,
       description: text,
       sections: [
         {
-          title: page === "terms" ? "Terms of Service" : "Privacy Policy",
-          content: text,
+          title: fallbackTitle,
+          content: normalizeRichTextHtml(text),
         },
       ],
     }

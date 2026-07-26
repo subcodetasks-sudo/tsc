@@ -18,13 +18,7 @@ type NewsDetailPageProps = {
 }
 
 const richTextClassName =
-  "text-[16px] leading-[1.5] text-[#525252] [&_h2]:mt-6 [&_h2]:text-[20px] [&_h2]:font-bold [&_h2]:leading-[1.16] [&_h2]:text-[#171717] [&_li]:mb-2 [&_ol]:list-decimal [&_ol]:ps-6 [&_p]:mb-4 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:ps-6"
-
-function renderHtml(text: string, className: string) {
-  const trimmed = text.trim()
-  if (!trimmed) return null
-  return <div className={className}>{parse(trimmed)}</div>
-}
+  "text-[16px] leading-[1.5] text-[#525252] [&_h2]:mt-6 [&_h2]:text-[20px] [&_h2]:font-bold [&_h2]:leading-[1.16] [&_h2]:text-[#171717] [&_li]:mb-2 [&_ol]:list-decimal [&_ol]:ps-6 [&_p]:mb-4 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:ps-6 [&_dl]:mb-4 [&_dt]:text-[19px] [&_dt]:font-bold [&_dt]:leading-[1.3] [&_dt]:text-[#171717] [&_dd]:text-[15px] [&_dd]:ps-6 [&_dd]:mb-2"
 
 function renderArticleContent(content: string) {
   const trimmed = content.trim()
@@ -62,14 +56,6 @@ export async function NewsDetailPage({ slug, locale: propLocale }: NewsDetailPag
   const allNews = await getNewsForLocale(locale, newsT, { per_page: 12 })
   const related = allNews.filter((item) => item.slug !== slug).slice(0, 6)
 
-  const detailSections = [
-    { title: pageT("content.sectionOneTitle"), body: pageT("content.sectionOneBody") },
-    { title: pageT("content.sectionTwoTitle"), body: pageT("content.sectionTwoBody") },
-    { title: pageT("content.sectionThreeTitle"), body: pageT("content.sectionThreeBody") },
-    { title: pageT("content.sectionFourTitle"), body: pageT("content.sectionFourBody") },
-  ]
-
-  const hasRichContent = article.content.length > article.excerpt.length + 20
   const heroSrc = resolveNewsImageUrl(article.image, 0)
   const heroRemote = heroSrc.startsWith("http")
 
@@ -114,30 +100,7 @@ export async function NewsDetailPage({ slug, locale: propLocale }: NewsDetailPag
                   </p>
                 </div>
 
-                <div className="space-y-6 text-start">
-                  {article.excerpt
-                    ? renderHtml(
-                        article.excerpt,
-                        "text-[16px] font-medium leading-[1.5] text-[#171717] [&_p]:mb-4 [&_p:last-child]:mb-0"
-                      )
-                    : null}
-
-                  {hasRichContent ? (
-                    <div className="space-y-4">{renderArticleContent(article.content)}</div>
-                  ) : (
-                    <div className="space-y-6">
-                      {renderHtml(pageT("content.opening"), "text-[16px] leading-[1.5] text-[#525252] [&_p]:mb-4 [&_p:last-child]:mb-0")}
-                      {detailSections.map((section) => (
-                        <div key={section.title} className="space-y-3">
-                          <h2 className="text-[20px] font-bold leading-[1.16] text-[#171717]">
-                            {section.title}
-                          </h2>
-                          {renderHtml(section.body, "text-[16px] leading-[1.5] text-[#525252] [&_p]:mb-4 [&_p:last-child]:mb-0")}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                <div className="space-y-6 text-start">{renderArticleContent(article.content)}</div>
 
                 <JobDetailShare label={pageT("shareWith")} />
               </div>

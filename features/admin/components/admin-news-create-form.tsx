@@ -28,6 +28,7 @@ export function AdminNewsCreateForm({ locale }: { locale: string }) {
 
   const {
     register,
+    control,
     handleSubmit,
     setValue,
     watch,
@@ -97,8 +98,9 @@ export function AdminNewsCreateForm({ locale }: { locale: string }) {
           label={t("fields.description")}
           locale={editLocale}
           register={register}
+          control={control}
           fieldPath={`description.${editLocale}`}
-          multiline
+          rich
           rows={5}
         />
       </div>

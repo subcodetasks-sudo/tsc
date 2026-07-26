@@ -45,3 +45,7 @@ There is no test runner configured in this repo (no jest/vitest/playwright) — 
 ### UI
 - shadcn/ui components live in `components/ui` (style: `radix-nova`, base color `neutral`, icon library `lucide`, no class prefix — see `components.json`). `components/motion` holds animation wrapper components (built on `motion`/Framer Motion).
 - Path alias `@/*` maps to the repo root (see `tsconfig.json`).
+
+### Real-time (tickets/notifications)
+- `lib/echo.ts`'s `getEcho()` lazily creates a single shared Laravel Echo/Pusher connection (browser-only). Channel authorization goes through the local `/api/broadcasting/auth` route (cookie-based), not a bearer token in JS, because `access_token` is httpOnly — never wire a Pusher authorizer directly to the upstream API.
+- Requires `NEXT_PUBLIC_PUSHER_APP_KEY` / `NEXT_PUBLIC_PUSHER_APP_CLUSTER` env vars.

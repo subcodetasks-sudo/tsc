@@ -13,6 +13,7 @@ import {
   Underline as UnderlineIcon,
   List,
   ListOrdered,
+  ListTree,
   Link as LinkIcon,
   AlignLeft,
   AlignCenter,
@@ -21,6 +22,7 @@ import {
   Redo2,
 } from "lucide-react"
 import { normalizeRichTextHtml } from "@/lib/rich-text"
+import { DescriptionListKit } from "@/components/ui/rich-text-description-list"
 import { cn } from "@/lib/utils"
 
 function isEmptyHtml(html: string) {
@@ -99,6 +101,7 @@ export function RichTextEditor({
       }),
       Placeholder.configure({ placeholder }),
       TextAlign.configure({ types: ["paragraph"] }),
+      ...DescriptionListKit,
     ],
     content: normalizedValue || "",
     editorProps: {
@@ -108,6 +111,7 @@ export function RichTextEditor({
           "rich-text-editor-body max-w-none px-3 py-2 text-sm text-[#111827] outline-none",
           "[&_p]:my-1 [&_ul]:my-1 [&_ol]:my-1 [&_li]:my-0.5",
           "[&_ul]:list-disc [&_ul]:ps-5 [&_ol]:list-decimal [&_ol]:ps-5",
+          "[&_dl]:my-1 [&_dt]:font-bold [&_dt]:text-base [&_dd]:ps-5 [&_dd]:my-0.5 [&_dd]:text-sm",
           "focus:outline-none"
         ),
         style: `min-height: ${minHeight}`,
@@ -218,6 +222,13 @@ export function RichTextEditor({
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         >
           <ListOrdered className="h-3.5 w-3.5" />
+        </ToolbarButton>
+        <ToolbarButton
+          label="Description list"
+          active={editor.isActive("descriptionList")}
+          onClick={() => editor.chain().focus().toggleDescriptionList().run()}
+        >
+          <ListTree className="h-3.5 w-3.5" />
         </ToolbarButton>
         <ToolbarButton label="Link" active={editor.isActive("link")} onClick={setLink}>
           <LinkIcon className="h-3.5 w-3.5" />

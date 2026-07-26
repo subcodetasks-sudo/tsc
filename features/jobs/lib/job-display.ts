@@ -135,7 +135,7 @@ export function translateEmploymentType(value: string | undefined | null, locale
 
 export function formatDetailEmployment(
   job: Pick<Job, "employment_type" | "job_type" | "gender">,
-  locale = "en"
+  locale = "de"
 ): string | null {
   const raw = job.employment_type?.trim() || job.job_type?.trim()
   if (raw) return translateEmploymentType(raw, locale)
@@ -298,7 +298,7 @@ export function formatAgeRange(job: unknown, locale = "ar"): string {
 
 export function formatApplicationDeadline(
   deadline?: string,
-  locale = "en"
+  locale = "de"
 ): string {
   if (!deadline) return "—"
   const date = new Date(deadline)
@@ -352,7 +352,7 @@ export function formatPostedAgo(
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
   const diffDays = Math.floor(diffHours / 24)
 
-  const intlLocale = RELATIVE_LOCALE[locale] ?? "en"
+  const intlLocale = RELATIVE_LOCALE[locale] ?? "de"
   if (diffHours < 1) {
     return new Intl.RelativeTimeFormat(intlLocale, { numeric: "always" }).format(
       -Math.max(1, Math.floor(diffMs / (1000 * 60))),

@@ -29,6 +29,7 @@ export function AdminNewsEditForm({ newsItem, locale }: { newsItem: any; locale:
 
   const {
     register,
+    control,
     handleSubmit,
     setValue,
     watch,
@@ -116,8 +117,9 @@ export function AdminNewsEditForm({ newsItem, locale }: { newsItem: any; locale:
           label={t("fields.description")}
           locale={editLocale}
           register={register}
+          control={control}
           fieldPath={`description.${editLocale}`}
-          multiline
+          rich
           rows={5}
         />
       </div>
