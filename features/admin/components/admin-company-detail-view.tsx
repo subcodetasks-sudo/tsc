@@ -173,8 +173,7 @@ export function AdminCompanyDetailView({ company, locale }: { company: User; loc
 
             <div className="flex items-center gap-3">
               <span className={cn(
-                "px-3 py-1 rounded-full text-xs font-semibold normal-case
-",
+                "px-3 py-1 rounded-full text-xs font-semibold normal-case",
                 !isSuspended ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#FEF3C7] text-[#92400E]"
               )}>
                 {!isSuspended ? (isAr ? "نشط" : "Active") : (isAr ? "معلق" : "Suspended")}

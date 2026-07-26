@@ -356,8 +356,7 @@ export default function TicketsClient({ locale, initialTickets, initialMeta }: P
                         </h3>
                         {/* Priority badge */}
                         <span className={cn(
-                          "text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full normal-case
-",
+                          "text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full normal-case",
                           getPriorityColor(ticket.priority || "high")
                         )}>
                           {getPriorityLabel(ticket.priority || "high")}
@@ -457,8 +456,7 @@ export default function TicketsClient({ locale, initialTickets, initialMeta }: P
                         {getStatusLabel(activeTicket.status || "pending")}
                       </span>
                       <span className={cn(
-                        "text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full normal-case
-",
+                        "text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full normal-case",
                         getPriorityColor(activeTicket.priority || "high")
                       )}>
                         {getPriorityLabel(activeTicket.priority || "high")}

@@ -148,8 +148,7 @@ export function AdminUserDetailView({ user, locale }: { user: User; locale: stri
 
             <div className="flex items-center gap-3 mt-1">
               <span className={cn(
-                "px-3 py-1 rounded-full text-xs font-semibold normal-case
-",
+                "px-3 py-1 rounded-full text-xs font-semibold normal-case",
                 !isSuspended ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#FEF3C7] text-[#92400E]"
               )}>
                 {!isSuspended ? (isAr ? "نشط" : "Active") : (isAr ? "معلق" : "Suspended")}

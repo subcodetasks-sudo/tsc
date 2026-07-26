@@ -264,8 +264,7 @@ export function AdminTicketsPanel({ tickets: initialTickets = [], locale }: Prop
                           {ticket.subject}
                         </h3>
                         <span className={cn(
-                          "text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full normal-case
-",
+                          "text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full normal-case",
                           getPriorityColor(ticket.priority || "high")
                         )}>
                           {getPriorityLabel(ticket.priority || "high")}
