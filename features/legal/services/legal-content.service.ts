@@ -1,4 +1,5 @@
 import { normalizeRichTextHtml } from "@/lib/rich-text"
+import { legalLocaleSettingKey } from "@/features/legal/lib/legal-setting-keys"
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://dashboardtalent.talent-sc.de/api/v1"
 
@@ -53,7 +54,8 @@ type NestedLegalContent = {
 
 /**
  * The admin "terms of service" / "privacy policy" settings store value as
- * `{ title: { ar, en, de }, content: { ar, en, de } }` (rich HTML per locale).
+ * `{ title: { ar, en, de }, content: { ar, en, de } }` (rich HTML per locale),
+ * or as split per-locale keys `{base}_{locale}` with `{ title, content }` strings.
  * Detect that shape before falling back to the flat `{ ar, en, de }` string map.
  */
 function pickNestedLegalContent(value: unknown, locale: string): NestedLegalContent | null {
@@ -62,6 +64,17 @@ function pickNestedLegalContent(value: unknown, locale: string): NestedLegalCont
   }
 
   const record = value as Record<string, unknown>
+
+  // Per-locale blob: { title: string, content: string }
+  if (typeof record.content === "string") {
+    const content = record.content.trim()
+    if (!content) return null
+    return {
+      title: typeof record.title === "string" ? record.title.trim() || undefined : undefined,
+      content,
+    }
+  }
+
   if (!("content" in record)) {
     return null
   }
@@ -249,6 +262,25 @@ export async function loadLegalPageContent(locale: string, page: LegalPageKind):
   const fallbackTitle = LEGAL_PAGE_FALLBACK_TITLES[page]
 
   for (const key of keys) {
+    // Prefer per-locale split keys (avoids MySQL TEXT limit on monolithic JSON)
+    const localeKey = legalLocaleSettingKey(key, normalizedLocale)
+    const localeValue = settings[localeKey]
+    const fromLocaleKey = pickNestedLegalContent(localeValue, normalizedLocale)
+    if (fromLocaleKey) {
+      const sectionTitle = fromLocaleKey.title || fallbackTitle
+      return {
+        eyebrow,
+        title: sectionTitle,
+        description: sectionTitle,
+        sections: [
+          {
+            title: sectionTitle,
+            content: normalizeRichTextHtml(fromLocaleKey.content),
+          },
+        ],
+      }
+    }
+
     const value = settings[key]
 
     const nested = pickNestedLegalContent(value, normalizedLocale)

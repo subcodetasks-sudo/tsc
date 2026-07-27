@@ -23,9 +23,11 @@ const imageHosts = [
 const nextConfig: NextConfig = {
   experimental: {
     serverActions: {
-      // Job create wizard uploads images via Server Actions (default limit is 1 MB)
-      bodySizeLimit: "10mb",
+      // Legal/privacy HTML + job image uploads via Server Actions (default is 1 MB)
+      bodySizeLimit: "20mb",
     },
+    // Ensure large multipart bodies are not clipped by the Next proxy layer
+    proxyClientMaxBodySize: "20mb",
   },
   images: {
     remotePatterns: imageHosts.map((hostname) => ({

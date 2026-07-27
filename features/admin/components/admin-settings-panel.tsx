@@ -4,7 +4,11 @@ import { useState, useTransition } from "react"
 import { useRouter } from "@/i18n/navigation"
 import { useTranslations } from "next-intl"
 import type { SiteSetting } from "@/lib/api/services/settings.service"
-import { saveSettingAction } from "@/features/admin/actions/admin-actions"
+import { saveSettingAction, saveLegalDocumentAction } from "@/features/admin/actions/admin-actions"
+import {
+  allLegalLocaleSettingKeys,
+  parseLegalDocumentFromSettings,
+} from "@/features/legal/lib/legal-setting-keys"
 import { PrimaryButton } from "@/components/ui/primary-button"
 import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { Settings, PhoneCall, Share2, BarChart3, Globe, Save, HelpCircle, FileText } from "lucide-react"
@@ -64,35 +68,8 @@ export function AdminSettingsPanel({
 
 
 
-  // Helper for title/content legal settings (JSON object containing { title: {ar,en,de}, content: {ar,en,de} })
-  const getLegalDocument = (key: string) => {
-    const empty = { titleAr: "", titleEn: "", titleDe: "", contentAr: "", contentEn: "", contentDe: "" }
-    const raw = settings.find((item) => item.key === key)?.value
-    if (!raw) return empty
-
-    let parsed: unknown = raw
-    if (typeof parsed === "string") {
-      try {
-        parsed = JSON.parse(parsed)
-      } catch {
-        return empty
-      }
-    }
-    if (!parsed || typeof parsed !== "object") return empty
-
-    const record = parsed as Record<string, unknown>
-    const title = (record.title && typeof record.title === "object" ? record.title : {}) as Record<string, string>
-    const content = (record.content && typeof record.content === "object" ? record.content : {}) as Record<string, string>
-
-    return {
-      titleAr: title.ar || "",
-      titleEn: title.en || "",
-      titleDe: title.de || "",
-      contentAr: content.ar || "",
-      contentEn: content.en || "",
-      contentDe: content.de || "",
-    }
-  }
+  // Helper for title/content legal settings (per-locale keys or legacy monolithic JSON)
+  const getLegalDocument = (key: string) => parseLegalDocumentFromSettings(settings, key)
 
   // 2. Component States (General, Contact, Socials, Hero Stats)
   const footerDescInit = getFooterDescription()
@@ -157,6 +134,9 @@ export function AdminSettingsPanel({
     "terms_of_service",
     "privacy_policy",
     "legal_information",
+    ...allLegalLocaleSettingKeys("terms_of_service"),
+    ...allLegalLocaleSettingKeys("privacy_policy"),
+    ...allLegalLocaleSettingKeys("legal_information"),
   ]
   const otherSettings = settings.filter((s) => !knownKeys.includes(s.key))
   const [editingOtherKey, setEditingOtherKey] = useState<string | null>(null)
@@ -190,30 +170,31 @@ export function AdminSettingsPanel({
     setSuccess(null)
     startTransition(async () => {
       try {
-        const appNameFd = new FormData()
-        appNameFd.append("value", generalState.appName)
-        appNameFd.append("type", "string")
-        appNameFd.append("is_public", "1")
-        const r1 = await saveSettingAction("app_name", appNameFd, locale)
-
-        const logoFd = new FormData()
-        logoFd.append("value", generalState.logo)
-        logoFd.append("type", "string")
-        logoFd.append("is_public", "1")
-        const r2 = await saveSettingAction("logo", logoFd, locale)
-
-        const footerFd = new FormData()
-        footerFd.append(
-          "value",
-          JSON.stringify({
-            ar: generalState.footerDescAr,
-            en: generalState.footerDescEn,
-            de: generalState.footerDescDe,
-          })
+        const r1 = await saveSettingAction(
+          "app_name",
+          { value: generalState.appName, type: "string", is_public: "1" },
+          locale
         )
-        footerFd.append("type", "json")
-        footerFd.append("is_public", "1")
-        const r3 = await saveSettingAction("footer_description", footerFd, locale)
+
+        const r2 = await saveSettingAction(
+          "logo",
+          { value: generalState.logo, type: "string", is_public: "1" },
+          locale
+        )
+
+        const r3 = await saveSettingAction(
+          "footer_description",
+          {
+            value: JSON.stringify({
+              ar: generalState.footerDescAr,
+              en: generalState.footerDescEn,
+              de: generalState.footerDescDe,
+            }),
+            type: "json",
+            is_public: "1",
+          },
+          locale
+        )
 
         if (!r1.ok || !r2.ok || !r3.ok) {
           setError(isRTL ? "فشل في حفظ بعض الإعدادات العامة" : "Failed to save some general settings")
@@ -244,11 +225,11 @@ export function AdminSettingsPanel({
 
         let ok = true
         for (const item of keys) {
-          const fd = new FormData()
-          fd.append("value", item.v)
-          fd.append("type", item.type)
-          fd.append("is_public", "1")
-          const res = await saveSettingAction(item.k, fd, locale)
+          const res = await saveSettingAction(
+            item.k,
+            { value: item.v, type: item.type, is_public: "1" },
+            locale
+          )
           if (!res.ok) ok = false
         }
 
@@ -280,11 +261,11 @@ export function AdminSettingsPanel({
 
         let ok = true
         for (const item of keys) {
-          const fd = new FormData()
-          fd.append("value", item.v)
-          fd.append("type", "string")
-          fd.append("is_public", "1")
-          const res = await saveSettingAction(item.k, fd, locale)
+          const res = await saveSettingAction(
+            item.k,
+            { value: item.v, type: "string", is_public: "1" },
+            locale
+          )
           if (!res.ok) ok = false
         }
 
@@ -308,20 +289,13 @@ export function AdminSettingsPanel({
     setSuccess(null)
     startTransition(async () => {
       try {
-        const fd = new FormData()
-        fd.append(
-          "value",
-          JSON.stringify({
-            title: { ar: termsState.titleAr, en: termsState.titleEn, de: termsState.titleDe },
-            content: { ar: termsState.contentAr, en: termsState.contentEn, de: termsState.contentDe },
-          })
-        )
-        fd.append("type", "json")
-        fd.append("is_public", "1")
-        const res = await saveSettingAction("terms_of_service", fd, locale)
+        const res = await saveLegalDocumentAction("terms_of_service", termsState, locale)
 
         if (!res.ok) {
-          setError(isRTL ? "فشل في حفظ شروط الخدمة" : "Failed to save Terms of Service")
+          setError(
+            res.message ||
+              (isRTL ? "فشل في حفظ شروط الخدمة" : "Failed to save Terms of Service")
+          )
         } else {
           setSuccess(isRTL ? "تم حفظ شروط الخدمة بنجاح" : "Terms of Service saved successfully")
           router.refresh()
@@ -338,20 +312,13 @@ export function AdminSettingsPanel({
     setSuccess(null)
     startTransition(async () => {
       try {
-        const fd = new FormData()
-        fd.append(
-          "value",
-          JSON.stringify({
-            title: { ar: privacyState.titleAr, en: privacyState.titleEn, de: privacyState.titleDe },
-            content: { ar: privacyState.contentAr, en: privacyState.contentEn, de: privacyState.contentDe },
-          })
-        )
-        fd.append("type", "json")
-        fd.append("is_public", "1")
-        const res = await saveSettingAction("privacy_policy", fd, locale)
+        const res = await saveLegalDocumentAction("privacy_policy", privacyState, locale)
 
         if (!res.ok) {
-          setError(isRTL ? "فشل في حفظ سياسة الخصوصية" : "Failed to save Privacy Policy")
+          setError(
+            res.message ||
+              (isRTL ? "فشل في حفظ سياسة الخصوصية" : "Failed to save Privacy Policy")
+          )
         } else {
           setSuccess(isRTL ? "تم حفظ سياسة الخصوصية بنجاح" : "Privacy Policy saved successfully")
           router.refresh()
@@ -368,20 +335,13 @@ export function AdminSettingsPanel({
     setSuccess(null)
     startTransition(async () => {
       try {
-        const fd = new FormData()
-        fd.append(
-          "value",
-          JSON.stringify({
-            title: { ar: legalInfoState.titleAr, en: legalInfoState.titleEn, de: legalInfoState.titleDe },
-            content: { ar: legalInfoState.contentAr, en: legalInfoState.contentEn, de: legalInfoState.contentDe },
-          })
-        )
-        fd.append("type", "json")
-        fd.append("is_public", "1")
-        const res = await saveSettingAction("legal_information", fd, locale)
+        const res = await saveLegalDocumentAction("legal_information", legalInfoState, locale)
 
         if (!res.ok) {
-          setError(isRTL ? "فشل في حفظ البيانات القانونية" : "Failed to save Legal Information")
+          setError(
+            res.message ||
+              (isRTL ? "فشل في حفظ البيانات القانونية" : "Failed to save Legal Information")
+          )
         } else {
           setSuccess(isRTL ? "تم حفظ البيانات القانونية بنجاح" : "Legal Information saved successfully")
           router.refresh()
@@ -397,14 +357,17 @@ export function AdminSettingsPanel({
     setSuccess(null)
     startTransition(async () => {
       try {
-        const fd = new FormData()
-        fd.append("value", otherValue)
-        fd.append("type", "string")
-        fd.append("is_public", "1")
-        const res = await saveSettingAction(key, fd, locale)
+        const res = await saveSettingAction(
+          key,
+          { value: otherValue, type: "string", is_public: "1" },
+          locale
+        )
 
         if (!res.ok) {
-          setError(isRTL ? `فشل حفظ الإعداد: ${key}` : `Failed to save setting: ${key}`)
+          setError(
+            res.message ||
+              (isRTL ? `فشل حفظ الإعداد: ${key}` : `Failed to save setting: ${key}`)
+          )
         } else {
           setSuccess(isRTL ? "تم حفظ الإعداد بنجاح" : "Setting saved successfully")
           setEditingOtherKey(null)

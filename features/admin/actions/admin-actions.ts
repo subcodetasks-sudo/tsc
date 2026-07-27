@@ -19,6 +19,10 @@ import {
   deleteFaq,
 } from "@/lib/api/services/faqs.service"
 import { updateSetting } from "@/lib/api/services/settings.service"
+import {
+  parseLegalDocumentFromSettings,
+  type LegalDocumentState,
+} from "@/features/legal/lib/legal-setting-keys"
 import { updateAbout } from "../../../lib/api/services/about.service"
 import { updateHomePageContent } from "@/lib/api/services/home-page.service"
 import {
@@ -263,14 +267,58 @@ export async function saveFaqAction(formData: FormData, locale: string, faqId?: 
   }
 }
 
-export async function saveSettingAction(key: string, formData: FormData, locale: string) {
+export async function saveSettingAction(
+  key: string,
+  data: { value: string; type?: string; is_public?: string },
+  locale: string
+) {
   try {
     const { token } = await requireAdmin(locale)
+
+    // Rebuild FormData on the server. Passing client FormData through Server
+    // Actions can truncate large payloads (e.g. long privacy/terms HTML).
+    const formData = new FormData()
+    formData.append("value", data.value ?? "")
+    formData.append("type", data.type ?? "string")
+    formData.append("is_public", data.is_public ?? "1")
+
     await updateSetting(key, formData, token, locale)
     revalidatePath(`/${locale}/dashboard/admin/settings`)
     return { ok: true as const }
   } catch (err) {
     const message = err instanceof ApiError ? err.message : "Failed to save setting"
+    return { ok: false as const, message }
+  }
+}
+
+/** Save legal HTML (privacy / terms / legal info) as one settings JSON value. */
+export async function saveLegalDocumentAction(
+  key: string,
+  doc: LegalDocumentState,
+  locale: string
+) {
+  try {
+    const { token } = await requireAdmin(locale)
+
+    const formData = new FormData()
+    formData.append(
+      "value",
+      JSON.stringify({
+        title: { ar: doc.titleAr, en: doc.titleEn, de: doc.titleDe },
+        content: { ar: doc.contentAr, en: doc.contentEn, de: doc.contentDe },
+      })
+    )
+    formData.append("type", "json")
+    formData.append("is_public", "1")
+    await updateSetting(key, formData, token, locale)
+
+    revalidatePath(`/${locale}/dashboard/admin/settings`)
+    revalidatePath(`/${locale}/privacy`)
+    revalidatePath(`/${locale}/terms`)
+    revalidatePath(`/${locale}/legal-information`)
+    return { ok: true as const }
+  } catch (err) {
+    const message = err instanceof ApiError ? err.message : "Failed to save legal document"
     return { ok: false as const, message }
   }
 }
