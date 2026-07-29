@@ -93,7 +93,11 @@ export default async function AdminCategoriesPage({
       id: base.id,
       name: nameObj,
       slug: base.slug ?? "",
-      icon: base.icon ?? arCat?.icon ?? enCat?.icon ?? deCat?.icon ?? null,
+      icon: {
+        ar: arCat?.icon ?? base.icon ?? null,
+        en: enCat?.icon ?? base.icon ?? null,
+        de: deCat?.icon ?? base.icon ?? null,
+      },
       sub_categories: mergedSubs,
       __allLocales: { ar: arCat, en: enCat, de: deCat },
     }

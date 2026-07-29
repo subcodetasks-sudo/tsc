@@ -1146,8 +1146,8 @@
       "serviceImage": "Dienstleistungsbild",
       "serviceIcon": "Dienstleistungssymbol",
       "errors": {
-        "titleRequired": "Titel der Dienstleistung ist erforderlich",
-        "descriptionRequired": "Beschreibung der Dienstleistung ist erforderlich"
+        "titleRequired": "Arabischer und deutscher Dienstleistungstitel sind erforderlich",
+        "descriptionRequired": "Arabische und deutsche Dienstleistungsbeschreibung sind erforderlich"
       },
       "coreServiceData": "Kerndaten der Dienstleistung",
       "titleLabel": "Titel der Dienstleistung",
@@ -1307,11 +1307,15 @@
     "mediaUpload": {
       "change": "Bild ändern",
       "upload": "Bild hochladen",
+      "compressing": "Bild wird optimiert...",
       "remove": "Entfernen",
+      "download": "Herunterladen",
       "hint": "PNG, JPG oder WEBP · Max. 5MB",
+      "hintAll": "Beliebiger Bildtyp · Max. 5MB",
       "aspectRatio": "Seitenverhältnis auf der Website: {ratio}",
       "errors": {
         "unsupportedFileType": "Nicht unterstützter Dateityp. Verwenden Sie PNG, JPG oder WEBP",
+        "unsupportedImageType": "Nicht unterstützter Dateityp. Bitte laden Sie eine Bilddatei hoch",
         "fileTooLarge": "Datei ist größer als 5MB"
       }
     },

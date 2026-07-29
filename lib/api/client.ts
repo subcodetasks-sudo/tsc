@@ -19,6 +19,15 @@ export class ApiError extends Error {
 
 type FetchOptions = RequestInit & { locale?: string; token?: string; timeout?: number; requestId?: string }
 
+const SECRET_FIELD_PATTERN =
+  /("?(?:access_token|refresh_token|id_token|token|accessToken|refreshToken)"?\s*:\s*)"([^"]*)"/gi
+
+/** Truncate a response body for logging and mask any credentials inside it. */
+function redactBodyForLog(text: string, maxLength = 4096): string {
+  const sample = text.length > maxLength ? `${text.slice(0, maxLength)}…` : text
+  return sample.replace(SECRET_FIELD_PATTERN, `$1"[REDACTED]"`)
+}
+
 function ensureBrowserSafeRequest(endpoint: string) {
   if (!isBrowser) {
     return
@@ -120,7 +129,8 @@ async function fetchApi<T>(endpoint: string, options: FetchOptions = {}): Promis
     }
 
     // For FormData do not set Content-Type (browser/node fetch will set it)
-    if (!(fetchOptions.body instanceof FormData)) {
+    const isMultipartUpload = fetchOptions.body instanceof FormData
+    if (!isMultipartUpload) {
       if (!headers["Content-Type"]) {
         headers["Content-Type"] = "application/json"
       }
@@ -131,9 +141,11 @@ async function fetchApi<T>(endpoint: string, options: FetchOptions = {}): Promis
       (fetchOptions as unknown as { cache?: RequestCache }).cache ??
       (nextOption ? undefined : "no-store")
 
-    // Add an AbortController-based timeout to avoid hanging requests
+    // Add an AbortController-based timeout to avoid hanging requests.
+    // Multipart bodies carry image uploads (CMS forms send one file per locale,
+    // up to 5 MB each), so they need far more headroom than a JSON call.
     const controller = new AbortController()
-    const timeoutMs = timeout ?? 20000
+    const timeoutMs = timeout ?? (isMultipartUpload ? 120000 : 20000)
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
 
     const start = Date.now()
@@ -190,9 +202,17 @@ async function fetchApi<T>(endpoint: string, options: FetchOptions = {}): Promis
       })
     } catch (err: any) {
       clearTimeout(timeoutId)
+      const elapsed = Date.now() - start
       if (err && err.name === "AbortError") {
+        console.error(
+          `[API] ${method} ${requestUrl} aborted after ${elapsed}ms (timeout ${timeoutMs}ms, requestId ${requestId})`
+        )
         throw new ApiError(0, `Request timed out after ${timeoutMs}ms`)
       }
+      console.error(
+        `[API] ${method} ${requestUrl} network error after ${elapsed}ms (requestId ${requestId}): ${err?.message || err}`,
+        err?.cause ?? ""
+      )
       throw new ApiError(0, err?.message || "Network error")
     }
     clearTimeout(timeoutId)
@@ -210,6 +230,15 @@ async function fetchApi<T>(endpoint: string, options: FetchOptions = {}): Promis
       const message = errorData?.message || `Request failed with status ${res.status}`
       const errors = errorData?.errors as Record<string, string[]> | undefined
 
+      console.error(
+        `[API] ${method} ${requestUrl} failed with ${res.status} ${res.statusText} in ${Date.now() - start}ms (requestId ${requestId})`,
+        {
+          message,
+          errors: errors ?? null,
+          body: rawText ? redactBodyForLog(rawText) : "<empty body>",
+        }
+      )
+
       throw new ApiError(res.status, message, errors)
     }
 
@@ -221,9 +250,9 @@ async function fetchApi<T>(endpoint: string, options: FetchOptions = {}): Promis
     } catch (err) {
       if (!isBrowser) {
         try {
-          let sample = rawText.length > 4096 ? `${rawText.slice(0, 4096)}…` : rawText
-          sample = sample.replace(/("?(?:access_token|refresh_token|id_token|token|accessToken|refreshToken)"?\s*:\s*)\"([^\"]*)\"/gi, `$1"[REDACTED]"`)
-          console.warn(`[API] Invalid JSON response from ${requestUrl} (status ${res.status}). Sample: ${sample}`)
+          console.warn(
+            `[API] Invalid JSON response from ${requestUrl} (status ${res.status}). Sample: ${redactBodyForLog(rawText)}`
+          )
         } catch {}
       }
       throw new ApiError(res.status || 500, `Invalid JSON response from ${requestUrl}`)

@@ -9,6 +9,7 @@ import { resolveImageUrl } from "@/lib/utils"
 import { User as UserIcon, Eye, EyeOff } from "lucide-react"
 import { toast } from "sonner"
 import { compressImageFile } from "@/lib/images/compress-image"
+import { ImageDownloadButton } from "@/components/image-download-button"
 
 type Props = {
   locale: string
@@ -369,6 +370,15 @@ export default function UserProfileClient({ locale, initialProfile }: Props) {
                   <Image src="/update.svg" alt="update" width={16} height={16} />
                   <input accept="image/*" onChange={handleAvatarChange} type="file" className="hidden" />
                 </label>
+                {avatarPreview && avatarPreview.trim() !== "" ? (
+                  <div className="absolute bottom-1 left-1 z-10">
+                    <ImageDownloadButton
+                      src={resolveImageUrl(avatarPreview)}
+                      filename="avatar.jpg"
+                      size="icon"
+                    />
+                  </div>
+                ) : null}
               </div>
             </div>
 

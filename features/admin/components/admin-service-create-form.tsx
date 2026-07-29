@@ -40,8 +40,10 @@ export function AdminServiceCreateForm({ locale }: { locale: string }) {
     defaultValues: initialServiceFormValues(),
   })
 
-  const imagePreview = watch("imagePreview")
-  const iconPreview = watch("iconPreview")
+  const imageFiles = watch("imageFiles")
+  const imagePreviews = watch("imagePreviews")
+  const iconFiles = watch("iconFiles")
+  const iconPreviews = watch("iconPreviews")
 
   const onSubmit = handleSubmit((values) => {
     setSubmitError(null)
@@ -104,6 +106,7 @@ export function AdminServiceCreateForm({ locale }: { locale: string }) {
           register={register}
           fieldPath={`title.${editLocale}`}
           required
+          requiredLocales={["ar", "de"]}
         />
         {errors.title?.message && <p className="text-xs text-red-500">{errors.title.message}</p>}
 
@@ -116,6 +119,7 @@ export function AdminServiceCreateForm({ locale }: { locale: string }) {
           fieldPath={`description.${editLocale}`}
           rich
           required
+          requiredLocales={["ar", "de"]}
           rows={4}
         />
         {errors.description?.message && <p className="text-xs text-red-500">{errors.description.message}</p>}
@@ -123,33 +127,35 @@ export function AdminServiceCreateForm({ locale }: { locale: string }) {
 
       <AdminImageUploadField
         title={t("serviceImage")}
-        imageSrc={imagePreview ?? null}
-        hasNewFile={Boolean(imagePreview)}
+        locale={editLocale}
+        imageSrc={imagePreviews?.[editLocale] ?? null}
+        hasNewFile={Boolean(imageFiles?.[editLocale])}
         aspectRatio="21:9"
         onSelect={(file) => {
-          setValue("imageFile", file, { shouldDirty: true })
-          setValue("imagePreview", URL.createObjectURL(file), { shouldDirty: true })
+          setValue(`imageFiles.${editLocale}`, file, { shouldDirty: true })
+          setValue(`imagePreviews.${editLocale}`, URL.createObjectURL(file), { shouldDirty: true })
         }}
         onRemove={() => {
-          setValue("imageFile", null)
-          setValue("imagePreview", null)
+          setValue(`imageFiles.${editLocale}`, null)
+          setValue(`imagePreviews.${editLocale}`, null)
         }}
         onError={setSubmitError}
       />
 
       <AdminImageUploadField
         title={t("serviceIcon")}
-        imageSrc={iconPreview ?? null}
-        hasNewFile={Boolean(iconPreview)}
+        locale={editLocale}
+        imageSrc={iconPreviews?.[editLocale] ?? null}
+        hasNewFile={Boolean(iconFiles?.[editLocale])}
         shape="circle"
         aspectRatio="1:1"
         onSelect={(file) => {
-          setValue("iconFile", file, { shouldDirty: true })
-          setValue("iconPreview", URL.createObjectURL(file), { shouldDirty: true })
+          setValue(`iconFiles.${editLocale}`, file, { shouldDirty: true })
+          setValue(`iconPreviews.${editLocale}`, URL.createObjectURL(file), { shouldDirty: true })
         }}
         onRemove={() => {
-          setValue("iconFile", null)
-          setValue("iconPreview", null)
+          setValue(`iconFiles.${editLocale}`, null)
+          setValue(`iconPreviews.${editLocale}`, null)
         }}
         onError={setSubmitError}
       />

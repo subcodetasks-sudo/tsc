@@ -1,4 +1,9 @@
 import { z } from "zod"
+import {
+  localizedMediaFilesSchema,
+  localizedMediaPreviewsSchema,
+  localizedMediaUrlsSchema,
+} from "./localized-media"
 
 export const LOCALES = ["ar", "en", "de"] as const
 export type LocaleKey = (typeof LOCALES)[number]
@@ -26,9 +31,9 @@ export function createSuccessStoryFormSchema(messages: SuccessStoryFormMessages)
       message: messages.locationRequired,
     }),
     quote: localizedTextSchema,
-    imageFile: z.custom<File | null | undefined>().optional(),
-    imagePreview: z.string().nullable().optional(),
-    existingImage: z.string().optional(),
+    imageFiles: localizedMediaFilesSchema,
+    imagePreviews: localizedMediaPreviewsSchema,
+    existingImages: localizedMediaUrlsSchema,
   })
 }
 

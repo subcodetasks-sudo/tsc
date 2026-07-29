@@ -46,8 +46,9 @@ export function AdminNewsEditForm({ newsItem, locale }: { newsItem: any; locale:
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newsItem?.id, locale])
 
-  const imagePreview = watch("imagePreview")
-  const existingImage = watch("existingImage")
+  const imageFiles = watch("imageFiles")
+  const imagePreviews = watch("imagePreviews")
+  const existingImages = watch("existingImages")
 
   const onSubmit = handleSubmit((values) => {
     setError(null)
@@ -126,16 +127,18 @@ export function AdminNewsEditForm({ newsItem, locale }: { newsItem: any; locale:
 
       <AdminImageUploadField
         title={t("fields.image")}
-        imageSrc={imagePreview || existingImage || null}
-        hasNewFile={Boolean(imagePreview)}
+        locale={editLocale}
+        imageSrc={imagePreviews?.[editLocale] || existingImages?.[editLocale] || null}
+        hasNewFile={Boolean(imageFiles?.[editLocale])}
         aspectRatio="3:2"
+        acceptAllImages
         onSelect={(file) => {
-          setValue("imageFile", file, { shouldDirty: true })
-          setValue("imagePreview", URL.createObjectURL(file), { shouldDirty: true })
+          setValue(`imageFiles.${editLocale}`, file, { shouldDirty: true })
+          setValue(`imagePreviews.${editLocale}`, URL.createObjectURL(file), { shouldDirty: true })
         }}
         onRemove={() => {
-          setValue("imageFile", null)
-          setValue("imagePreview", null)
+          setValue(`imageFiles.${editLocale}`, null)
+          setValue(`imagePreviews.${editLocale}`, null)
         }}
         onError={setError}
       />

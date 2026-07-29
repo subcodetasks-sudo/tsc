@@ -5,6 +5,13 @@ import {
   type ServiceFeatureFormValues,
   type ServiceFormValues,
 } from "./service-form-schema"
+import {
+  appendLocalizedFiles,
+  emptyLocalizedMediaFiles,
+  emptyLocalizedMediaPreviews,
+  emptyLocalizedMediaUrls,
+  mapLocalizedMediaFromAllLocales,
+} from "./localized-media"
 
 export function emptyLocalizedText(): LocalizedText {
   return { ar: "", en: "", de: "" }
@@ -36,8 +43,8 @@ export function buildServiceFormData(values: ServiceFormValues): FormData {
     formData.append(`description[${lang}]`, description)
   }
 
-  if (values.imageFile) formData.append("image", values.imageFile)
-  if (values.iconFile) formData.append("icon", values.iconFile)
+  appendLocalizedFiles(formData, "image", values.imageFiles)
+  appendLocalizedFiles(formData, "icon", values.iconFiles)
 
   values.features.forEach((feature, index) => {
     // Existing feature DB ids MUST be sent on update so Laravel updates
@@ -63,12 +70,12 @@ export function initialServiceFormValues(): ServiceFormValues {
   return {
     title: emptyLocalizedText(),
     description: emptyLocalizedText(),
-    imageFile: null,
-    imagePreview: null,
-    existingImage: "",
-    iconFile: null,
-    iconPreview: null,
-    existingIcon: "",
+    imageFiles: emptyLocalizedMediaFiles(),
+    imagePreviews: emptyLocalizedMediaPreviews(),
+    existingImages: emptyLocalizedMediaUrls(),
+    iconFiles: emptyLocalizedMediaFiles(),
+    iconPreviews: emptyLocalizedMediaPreviews(),
+    existingIcons: emptyLocalizedMediaUrls(),
     features: [],
   }
 }
@@ -154,20 +161,15 @@ export function mapServiceToFormDefaults(service: any, locale: string): ServiceF
       }
     }
 
-    const existingImage =
-      allLocales[locale as LocaleKey]?.image ?? allLocales.ar?.image ?? allLocales.en?.image ?? allLocales.de?.image ?? ""
-    const existingIcon =
-      allLocales[locale as LocaleKey]?.icon ?? allLocales.ar?.icon ?? allLocales.en?.icon ?? allLocales.de?.icon ?? ""
-
     return {
       title,
       description,
-      imageFile: null,
-      imagePreview: null,
-      existingImage,
-      iconFile: null,
-      iconPreview: null,
-      existingIcon,
+      imageFiles: emptyLocalizedMediaFiles(),
+      imagePreviews: emptyLocalizedMediaPreviews(),
+      existingImages: mapLocalizedMediaFromAllLocales(allLocales, ["image", "imageUrl", "image_url"]),
+      iconFiles: emptyLocalizedMediaFiles(),
+      iconPreviews: emptyLocalizedMediaPreviews(),
+      existingIcons: mapLocalizedMediaFromAllLocales(allLocales, ["icon", "iconUrl", "icon_url"]),
       features,
     }
   }
@@ -185,15 +187,26 @@ export function mapServiceToFormDefaults(service: any, locale: string): ServiceF
       }))
     : []
 
+  const existingImages = emptyLocalizedMediaUrls()
+  const existingIcons = emptyLocalizedMediaUrls()
+  const sharedImage = service?.image ?? ""
+  const sharedIcon = service?.icon ?? ""
+  if (sharedImage) {
+    for (const loc of LOCALES) existingImages[loc] = sharedImage
+  }
+  if (sharedIcon) {
+    for (const loc of LOCALES) existingIcons[loc] = sharedIcon
+  }
+
   return {
     title,
     description,
-    imageFile: null,
-    imagePreview: null,
-    existingImage: service?.image ?? "",
-    iconFile: null,
-    iconPreview: null,
-    existingIcon: service?.icon ?? "",
+    imageFiles: emptyLocalizedMediaFiles(),
+    imagePreviews: emptyLocalizedMediaPreviews(),
+    existingImages,
+    iconFiles: emptyLocalizedMediaFiles(),
+    iconPreviews: emptyLocalizedMediaPreviews(),
+    existingIcons,
     features,
   }
 }

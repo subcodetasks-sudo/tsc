@@ -1,5 +1,12 @@
 import { type LocaleKey, type LocalizedText, type SuccessStoryFormValues } from "./success-story-form-schema"
 import { LOCALES } from "./success-story-form-schema"
+import {
+  appendLocalizedFiles,
+  emptyLocalizedMediaFiles,
+  emptyLocalizedMediaPreviews,
+  emptyLocalizedMediaUrls,
+  mapLocalizedMediaFromAllLocales,
+} from "./localized-media"
 
 export function emptyLocalizedText(): LocalizedText {
   return { ar: "", en: "", de: "" }
@@ -11,9 +18,9 @@ export function initialSuccessStoryFormValues(): SuccessStoryFormValues {
     role: emptyLocalizedText(),
     location: emptyLocalizedText(),
     quote: emptyLocalizedText(),
-    imageFile: null,
-    imagePreview: null,
-    existingImage: "",
+    imageFiles: emptyLocalizedMediaFiles(),
+    imagePreviews: emptyLocalizedMediaPreviews(),
+    existingImages: emptyLocalizedMediaUrls(),
   }
 }
 
@@ -32,7 +39,7 @@ export function buildSuccessStoryFormData(values: SuccessStoryFormValues, id?: n
     if (quote) formData.append(`quote[${lang}]`, quote)
   }
 
-  if (values.imageFile) formData.append("image", values.imageFile)
+  appendLocalizedFiles(formData, "image", values.imageFiles)
 
   return formData
 }
@@ -60,25 +67,14 @@ export function mapStoryToFormDefaults(story: any, locale: string): SuccessStory
       quote[loc] = item.quote ?? ""
     }
 
-    const existingImage =
-      allLocales[locale as LocaleKey]?.image_url ??
-      allLocales[locale as LocaleKey]?.image ??
-      allLocales.ar?.image_url ??
-      allLocales.ar?.image ??
-      allLocales.en?.image_url ??
-      allLocales.en?.image ??
-      allLocales.de?.image_url ??
-      allLocales.de?.image ??
-      ""
-
     return {
       name,
       role,
       location,
       quote,
-      imageFile: null,
-      imagePreview: null,
-      existingImage,
+      imageFiles: emptyLocalizedMediaFiles(),
+      imagePreviews: emptyLocalizedMediaPreviews(),
+      existingImages: mapLocalizedMediaFromAllLocales(allLocales, ["image_url", "image", "avatar"]),
     }
   }
 
@@ -88,13 +84,19 @@ export function mapStoryToFormDefaults(story: any, locale: string): SuccessStory
   location[loc] = story?.location ?? ""
   quote[loc] = story?.quote ?? ""
 
+  const existingImages = emptyLocalizedMediaUrls()
+  const sharedImage = story?.image_url ?? story?.image ?? ""
+  if (sharedImage) {
+    for (const l of LOCALES) existingImages[l] = sharedImage
+  }
+
   return {
     name,
     role,
     location,
     quote,
-    imageFile: null,
-    imagePreview: null,
-    existingImage: story?.image_url ?? story?.image ?? "",
+    imageFiles: emptyLocalizedMediaFiles(),
+    imagePreviews: emptyLocalizedMediaPreviews(),
+    existingImages,
   }
 }

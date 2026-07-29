@@ -124,27 +124,18 @@ function normalizeAbout(raw: unknown, locale = "ar"): AboutPageContent | null {
     pickLocalizedField(data, "description_right", locale) ||
     pickLocalizedField(data, "description_left", locale)
 
-  // image: API returns imageUrl (not image)
   const image =
-    typeof data.imageUrl === "string"
-      ? data.imageUrl
-      : typeof data.image === "string"
-        ? data.image
-        : typeof data.image_url === "string"
-          ? data.image_url
-          : null
+    pickLocalizedString(data.imageUrl ?? data.image ?? data.image_url, locale) || null
 
   // secondImage: from secondSection.imageUrl
   const secondImage =
-    typeof secondSection?.imageUrl === "string"
-      ? secondSection.imageUrl
-      : typeof data.second_image === "string"
-        ? data.second_image
-        : typeof data.second_image_url === "string"
-          ? data.second_image_url
-          : typeof data.secondImage === "string"
-            ? data.secondImage
-            : null
+    pickLocalizedString(
+      secondSection?.imageUrl ??
+        data.second_image ??
+        data.second_image_url ??
+        data.secondImage,
+      locale
+    ) || null
 
   // video: API returns videoUrl
   const video =

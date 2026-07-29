@@ -3,7 +3,7 @@ import parse from "html-react-parser"
 import { getServices } from "@/lib/api/services/services.service"
 import { SectionShell, StaggerInView, StaggerItem } from "@/features/shared-home"
 import Image from "next/image"
-import { cn } from "@/lib/utils"
+import { cn, resolveImageUrl } from "@/lib/utils"
 import { Globe, ArrowUpRight, ArrowUpLeft } from "lucide-react"
 import { Link } from "@/i18n/navigation"
 
@@ -99,7 +99,7 @@ export default async function ServicesPage() {
                             <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#40A0CA] bg-white transition-colors group-hover:border-white group-hover:bg-white">
                               {service.icon ? (
                                 <Image
-                                  src={service.icon}
+                                  src={resolveImageUrl(service.icon)}
                                   alt=""
                                   fill
                                   sizes="48px"

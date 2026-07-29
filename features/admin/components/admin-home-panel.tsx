@@ -5,6 +5,7 @@ import { useState, useTransition, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { PrimaryButton } from "@/components/ui/primary-button";
+import { ImageDownloadButton } from "@/components/image-download-button";
 import { compressImageFile as compressImageLib } from "@/lib/images/compress-image";
 import type { HomePageContent } from "@/lib/api/services/home-page.service";
 import { saveHomeContentAction } from "@/features/admin/actions/admin-actions";
@@ -286,9 +287,9 @@ export function AdminHomePanel({
   const [translations, setTranslations] = useState<Record<LocaleCode, FormState>>(initialTranslations)
   const [editLocale, setEditLocale] = useState<LocaleCode>(locale as LocaleCode)
 
-  // Uploaded icon files for steps (shared across locales)
-  const [stepFiles, setStepFiles] = useState<Record<number, File | null>>({})
-  const [stepPreviews, setStepPreviews] = useState<Record<number, string | null>>({})
+  // Uploaded icon files for steps — one file per language per step
+  const [stepFiles, setStepFiles] = useState<Record<number, Partial<Record<LocaleCode, File | null>>>>({})
+  const [stepPreviews, setStepPreviews] = useState<Record<number, Partial<Record<LocaleCode, string | null>>>>({})
 
   // NOTE: `AdminHomePanel` is mounted with a `key` derived from the server
   // `content` prop (see page.tsx). When the server content changes we rely on
@@ -324,25 +325,12 @@ export function AdminHomePanel({
   ) {
     setTranslations((prev) => {
       const updated = { ...prev }
-      if (field === "icon") {
-        for (const loc of SUPPORTED_LOCALES) {
-          if (updated[loc]) {
-            updated[loc] = {
-              ...updated[loc],
-              steps: updated[loc].steps.map((step: StepForm, currentIndex: number) =>
-                currentIndex === index ? { ...step, icon: value } : step
-              ),
-            }
-          }
-        }
-      } else {
-        if (updated[editLocale]) {
-          updated[editLocale] = {
-            ...updated[editLocale],
-            steps: updated[editLocale].steps.map((step: StepForm, currentIndex: number) =>
-              currentIndex === index ? { ...step, [field]: value } : step
-            ),
-          }
+      if (updated[editLocale]) {
+        updated[editLocale] = {
+          ...updated[editLocale],
+          steps: updated[editLocale].steps.map((step: StepForm, currentIndex: number) =>
+            currentIndex === index ? { ...step, [field]: value } : step
+          ),
         }
       }
       return updated
@@ -354,33 +342,34 @@ export function AdminHomePanel({
   }
 
   async function handleStepFileSelect(index: number, file?: File | null) {
-    // remove
+    // remove for current language only
     if (!file) {
-      const prev = stepPreviews[index]
+      const prev = stepPreviews[index]?.[editLocale]
       if (prev) URL.revokeObjectURL(prev)
-      setStepFiles((s) => {
-        const copy = { ...s }
-        delete copy[index]
-        return copy
-      })
-      setStepPreviews((p) => {
-        const copy = { ...p }
-        delete copy[index]
-        return copy
-      })
-      updateStep(index, "icon", "") // Revert path text so it defaults correctly
+      setStepFiles((s) => ({
+        ...s,
+        [index]: { ...s[index], [editLocale]: null },
+      }))
+      setStepPreviews((p) => ({
+        ...p,
+        [index]: { ...p[index], [editLocale]: null },
+      }))
+      updateStep(index, "icon", "")
       return
     }
     // Skip compressing vector images
     const compressed = isSvgFile(file)
       ? file
       : await compressImageLib(file, { maxWidth: 800, quality: 0.8, maxBytes: 400 * 1024, mimeType: "image/jpeg" })
-    setStepFiles((s) => ({ ...s, [index]: compressed }))
+    setStepFiles((s) => ({
+      ...s,
+      [index]: { ...s[index], [editLocale]: compressed },
+    }))
     const url = URL.createObjectURL(compressed)
     setStepPreviews((p) => {
-      const prev = p[index]
+      const prev = p[index]?.[editLocale]
       if (prev) URL.revokeObjectURL(prev)
-      return { ...p, [index]: url }
+      return { ...p, [index]: { ...p[index], [editLocale]: url } }
     })
   }
 
@@ -443,42 +432,25 @@ export function AdminHomePanel({
       })
       if (!anyStep) continue
 
-      // id and order/icon: prefer primary (ar) then others
+      // id and order: prefer primary (ar) then others
       let chosenId: number | undefined
       let chosenOrder: number | undefined
-      let chosenIcon: string | undefined
       for (const loc of SUPPORTED_LOCALES) {
         const st = translations[loc]?.steps[index]
         if (!st) continue
         if (chosenId === undefined && typeof st.id === "number") chosenId = st.id
         if (chosenOrder === undefined && typeof st.order === "number") chosenOrder = st.order
-        if (!chosenIcon && st.icon?.trim()) chosenIcon = st.icon
       }
 
       if (chosenId !== undefined) formData.append(`steps[${index}][id]`, String(chosenId))
       if (chosenOrder !== undefined) formData.append(`steps[${index}][order]`, String(chosenOrder))
 
-      if (stepFiles[index]) {
-        formData.append(`steps[${index}][icon]`, stepFiles[index] as Blob)
-      } else {
-        const finalIcon = normalizeImagePath(chosenIcon) || DEFAULT_STEP_ICONS[index]
-        if (finalIcon.startsWith("/process/")) {
-          try {
-            const resp = await fetch(finalIcon)
-            if (resp.ok) {
-              const blob = await resp.blob()
-              const filename = finalIcon.split("/").pop() || "icon.svg"
-              const file = new File([blob], filename, { type: "image/svg+xml" })
-              formData.append(`steps[${index}][icon]`, file)
-            } else {
-              formData.append(`steps[${index}][icon]`, finalIcon)
-            }
-          } catch (fetchErr) {
-            console.error("Failed to fetch default icon blob:", fetchErr)
-            formData.append(`steps[${index}][icon]`, finalIcon)
-          }
-        } else {
-          formData.append(`steps[${index}][icon]`, finalIcon)
+      // Per-locale step icons — only newly uploaded files (partial update).
+      // Omitting a locale leaves the previous backend image untouched.
+      for (const loc of SUPPORTED_LOCALES) {
+        const uploaded = stepFiles[index]?.[loc]
+        if (uploaded instanceof File) {
+          formData.append(`steps[${index}][icon][${loc}]`, uploaded)
         }
       }
 
@@ -595,9 +567,15 @@ export function AdminHomePanel({
             >
               <div className="flex items-center gap-3">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-sm overflow-hidden">
-                  {stepPreviews[index] ? (
+                  {stepPreviews[index]?.[editLocale] ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={stepPreviews[index] ?? undefined} alt="" width={32} height={32} className="h-full w-full object-contain" />
+                    <img
+                      src={stepPreviews[index]![editLocale] ?? undefined}
+                      alt=""
+                      width={32}
+                      height={32}
+                      className="h-full w-full object-contain"
+                    />
                   ) : (
                     <Image
                       src={normalizeImagePath(step.icon) || DEFAULT_STEP_ICONS[index]}
@@ -628,18 +606,22 @@ export function AdminHomePanel({
                   />
                 </InputLabel>
 
-                <InputLabel label={t("fields.stepIcon")}>
+                <InputLabel label={`${t("fields.stepIcon")} (${editLocale.toUpperCase()})`}>
                   <div className="flex flex-col gap-2">
                     {/* Path input — read-only when a file is pending upload */}
                     <input
-                      value={stepFiles[index] ? `📁 ${stepFiles[index]!.name}` : (step.icon ?? "")}
-                      readOnly={Boolean(stepFiles[index])}
+                      value={
+                        stepFiles[index]?.[editLocale]
+                          ? `📁 ${stepFiles[index]![editLocale]!.name}`
+                          : (step.icon ?? "")
+                      }
+                      readOnly={Boolean(stepFiles[index]?.[editLocale])}
                       placeholder={DEFAULT_STEP_ICONS[index]}
                       onChange={(e) => {
-                        if (!stepFiles[index]) updateStep(index, "icon", e.target.value)
+                        if (!stepFiles[index]?.[editLocale]) updateStep(index, "icon", e.target.value)
                       }}
                       className={`mt-1 w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-1 ${
-                        stepFiles[index]
+                        stepFiles[index]?.[editLocale]
                           ? "border-[#006EA8] bg-[#EFF8FF] text-[#006EA8] focus:border-[#006EA8] focus:ring-[#006EA8]"
                           : "border-[#E5E7EB] focus:border-[#006EA8] focus:ring-[#006EA8]"
                       }`}
@@ -647,8 +629,8 @@ export function AdminHomePanel({
 
                     <div className="flex items-center gap-2 flex-wrap">
                       {/* Styled file upload button */}
-                      <label className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-[#006EA8] bg-white px-3 py-1.5 text-xs font-medium text-[#006EA8] hover:bg-[#EFF8FF] transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-[#006EA8] bg-white px-4 py-2 text-sm font-medium text-[#006EA8] hover:bg-[#EFF8FF] transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                           <polyline points="17 8 12 3 7 8"/>
                           <line x1="12" y1="3" x2="12" y2="15"/>
@@ -668,14 +650,23 @@ export function AdminHomePanel({
                         />
                       </label>
 
+                      <ImageDownloadButton
+                        src={
+                          stepPreviews[index]?.[editLocale] ||
+                          normalizeImagePath(step.icon) ||
+                          DEFAULT_STEP_ICONS[index]
+                        }
+                        filename={`step-icon-${index + 1}-${editLocale}.png`}
+                      />
+
                       {/* Remove button — only visible when file/preview exists */}
-                      {(stepFiles[index] || stepPreviews[index]) && (
+                      {(stepFiles[index]?.[editLocale] || stepPreviews[index]?.[editLocale]) && (
                         <button
                           type="button"
                           onClick={() => handleStepFileSelect(index, undefined)}
-                          className="flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-100 transition-colors"
+                          className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-100 transition-colors"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
                           </svg>
                           {t("fields.removeImage") || "حذف"}
@@ -688,10 +679,10 @@ export function AdminHomePanel({
                     </p>
 
                     {/* Preview thumbnail */}
-                    {stepPreviews[index] && (
+                    {stepPreviews[index]?.[editLocale] && (
                       <div className="mt-1 flex items-center gap-2 rounded-lg border border-[#006EA8]/20 bg-[#EFF8FF] px-3 py-2">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={stepPreviews[index]!} alt="" className="h-8 w-8 rounded object-contain" />
+                        <img src={stepPreviews[index]![editLocale]!} alt="" className="h-8 w-8 rounded object-contain" />
                         <span className="text-xs text-[#006EA8]">{t("fields.preview") || "معاينة"}</span>
                       </div>
                     )}

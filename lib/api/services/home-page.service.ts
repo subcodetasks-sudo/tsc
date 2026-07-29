@@ -61,7 +61,17 @@ function pickLocalizedString(value: unknown, locale = "ar"): string | undefined 
   }
 
   const record = value as Record<string, unknown>
-  return trimText(record[locale])
+  for (const key of [locale, "ar", "en", "de"]) {
+    const found = trimText(record[key])
+    if (found) return found
+  }
+
+  for (const candidate of Object.values(record)) {
+    const found = trimText(candidate)
+    if (found) return found
+  }
+
+  return undefined
 }
 
 function normalizeSection(raw: unknown, locale = "ar"): HomeSectionOverride {
@@ -173,7 +183,7 @@ function normalizeSteps(raw: unknown, locale = "ar"): NormalizedStep[] {
       id: typeof record.id === "number" ? record.id : undefined,
       title,
       description,
-      icon: trimText(record.icon) || undefined,
+      icon: pickLocalizedString(record.icon, locale) || undefined,
       order: typeof record.order === "number" ? record.order : undefined,
     })
   }
@@ -191,7 +201,9 @@ function normalizeHero(raw: unknown, locale = "ar"): HomeHeroOverride {
   return {
     title: pickLocalizedString(record.title, locale),
     description: pickLocalizedString(record.description, locale),
-    image: trimText(record.image ?? record.imageUrl ?? record.image_url),
+    image:
+      pickLocalizedString(record.image ?? record.imageUrl ?? record.image_url, locale) ||
+      trimText(record.image ?? record.imageUrl ?? record.image_url),
   }
 }
 

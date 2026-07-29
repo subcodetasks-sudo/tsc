@@ -45,7 +45,7 @@ export function extractMediaUrl(value: unknown): string | null {
   }
   if (typeof value === "object") {
     const obj = value as Record<string, unknown>
-    for (const key of ["url", "path", "src", "original_url", "full_url", "icon"]) {
+    for (const key of ["url", "path", "src", "original_url", "full_url", "icon", "ar", "en", "de"]) {
       const nested = obj[key]
       if (typeof nested === "string" && nested.trim()) return nested.trim()
     }

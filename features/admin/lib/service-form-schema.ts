@@ -1,4 +1,9 @@
 import { z } from "zod"
+import {
+  localizedMediaFilesSchema,
+  localizedMediaPreviewsSchema,
+  localizedMediaUrlsSchema,
+} from "./localized-media"
 
 export const LOCALES = ["ar", "en", "de"] as const
 export type LocaleKey = (typeof LOCALES)[number]
@@ -33,18 +38,20 @@ function hasRichTextContent(value: string) {
 
 export function createServiceFormSchema(messages: ServiceFormMessages) {
   return z.object({
-    title: localizedTextSchema.refine((value) => Boolean(value.ar.trim()), {
-      message: messages.titleRequired,
-    }),
-    description: localizedTextSchema.refine((value) => hasRichTextContent(value.ar), {
-      message: messages.descriptionRequired,
-    }),
-    imageFile: z.custom<File | null | undefined>().optional(),
-    imagePreview: z.string().nullable().optional(),
-    existingImage: z.string().optional(),
-    iconFile: z.custom<File | null | undefined>().optional(),
-    iconPreview: z.string().nullable().optional(),
-    existingIcon: z.string().optional(),
+    title: localizedTextSchema.refine(
+      (value) => Boolean(value.ar.trim() && value.de.trim()),
+      { message: messages.titleRequired }
+    ),
+    description: localizedTextSchema.refine(
+      (value) => hasRichTextContent(value.ar) && hasRichTextContent(value.de),
+      { message: messages.descriptionRequired }
+    ),
+    imageFiles: localizedMediaFilesSchema,
+    imagePreviews: localizedMediaPreviewsSchema,
+    existingImages: localizedMediaUrlsSchema,
+    iconFiles: localizedMediaFilesSchema,
+    iconPreviews: localizedMediaPreviewsSchema,
+    existingIcons: localizedMediaUrlsSchema,
     features: z.array(serviceFeatureSchema),
   })
 }

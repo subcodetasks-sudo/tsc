@@ -202,7 +202,7 @@ export async function saveSuccessStoryAction(formData: FormData, locale: string,
     revalidatePath(`/${locale}`)
     return { ok: true as const }
   } catch (err) {
-    const message = err instanceof ApiError ? err.message : "Failed to save story"
+    const message = formatApiValidationMessage(err, "Failed to save story")
     return { ok: false as const, message }
   }
 }
@@ -219,7 +219,7 @@ export async function saveNewsAction(formData: FormData, locale: string, newsId?
     revalidatePath(`/${locale}/news`)
     return { ok: true as const }
   } catch (err) {
-    const message = err instanceof ApiError ? err.message : "Failed to save news"
+    const message = formatApiValidationMessage(err, "Failed to save news")
     return { ok: false as const, message }
   }
 }
@@ -331,7 +331,7 @@ export async function saveAboutAction(formData: FormData, locale: string) {
     revalidatePath(`/${locale}/dashboard/admin/about`)
     return { ok: true as const }
   } catch (err) {
-    const message = err instanceof ApiError ? err.message : "Failed to save about page"
+    const message = formatApiValidationMessage(err, "Failed to save about page")
     return { ok: false as const, message }
   }
 }
@@ -344,7 +344,7 @@ export async function saveHomeContentAction(formData: FormData, locale: string) 
     revalidatePath(`/${locale}/dashboard/admin/home`)
     return { ok: true as const }
   } catch (err) {
-    const message = err instanceof ApiError ? err.message : "Failed to save home content"
+    const message = formatApiValidationMessage(err, "Failed to save home content")
     return { ok: false as const, message }
   }
 }
@@ -409,7 +409,7 @@ export async function saveServiceAction(
     revalidatePath(`/${locale}/dashboard/admin/services`)
     return { ok: true as const }
   } catch (err) {
-    const message = err instanceof ApiError ? err.message : "Failed to save service"
+    const message = formatApiValidationMessage(err, "Failed to save service")
     return { ok: false as const, message }
   }
 }

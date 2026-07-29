@@ -49,10 +49,7 @@ function normalizeNews(item: unknown, index: number, locale?: string): News | nu
     new Date().toISOString()
 
   const image =
-    (row.image as string | null) ??
-    (row.image_url as string | null) ??
-    (row.thumbnail as string | null) ??
-    undefined
+    pickLocalizedString(row.image ?? row.image_url ?? row.thumbnail, locale) || undefined
 
   if (!title && !excerpt) return null
 
@@ -62,7 +59,7 @@ function normalizeNews(item: unknown, index: number, locale?: string): News | nu
     slug,
     excerpt: excerpt || "",
     content: content || excerpt || "",
-    image: image ?? undefined,
+    image: image || undefined,
     published_at,
   }
 }

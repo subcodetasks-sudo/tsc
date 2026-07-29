@@ -46,11 +46,34 @@ export function CategoryFormModal({
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
-  const previewUrlRef = useRef<string | null>(null)
+  const previewUrlRefs = useRef<Partial<Record<LocaleKey, string>>>({})
 
-  const [iconFile, setIconFile] = useState<File | null>(null)
-  const [iconPreview, setIconPreview] = useState<string | null>(null)
-  const existingIcon = extractMediaUrl((initial as unknown as { icon?: unknown })?.icon)
+  const [iconFiles, setIconFiles] = useState<Partial<Record<LocaleKey, File | null>>>({})
+  const [iconPreviews, setIconPreviews] = useState<Partial<Record<LocaleKey, string | null>>>({})
+
+  const allLocales = (initial as { __allLocales?: Record<string, { icon?: unknown }> } | undefined)?.__allLocales
+  const initialIcon = (initial as unknown as { icon?: unknown })?.icon
+  const initialIconMap =
+    initialIcon && typeof initialIcon === "object" && !Array.isArray(initialIcon)
+      ? (initialIcon as Record<string, unknown>)
+      : null
+  const existingIcons: Record<LocaleKey, string> = {
+    ar:
+      extractMediaUrl(allLocales?.ar?.icon) ||
+      (typeof initialIconMap?.ar === "string" ? initialIconMap.ar : null) ||
+      extractMediaUrl(initialIcon) ||
+      "",
+    en:
+      extractMediaUrl(allLocales?.en?.icon) ||
+      (typeof initialIconMap?.en === "string" ? initialIconMap.en : null) ||
+      extractMediaUrl(initialIcon) ||
+      "",
+    de:
+      extractMediaUrl(allLocales?.de?.icon) ||
+      (typeof initialIconMap?.de === "string" ? initialIconMap.de : null) ||
+      extractMediaUrl(initialIcon) ||
+      "",
+  }
 
   const schema = createCategoryFormSchema({ nameRequired: t("errors.nameRequired") })
 
@@ -70,36 +93,40 @@ export function CategoryFormModal({
     reset(mapCategoryToFormDefaults(initial))
     setError(null)
     setEditLocale(EDIT_LOCALES[0])
-    if (previewUrlRef.current) {
-      URL.revokeObjectURL(previewUrlRef.current)
-      previewUrlRef.current = null
+    for (const url of Object.values(previewUrlRefs.current)) {
+      if (url) URL.revokeObjectURL(url)
     }
-    setIconFile(null)
-    setIconPreview(null)
+    previewUrlRefs.current = {}
+    setIconFiles({})
+    setIconPreviews({})
   }, [open, initial, id, reset])
 
   useEffect(() => {
     return () => {
-      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
+      for (const url of Object.values(previewUrlRefs.current)) {
+        if (url) URL.revokeObjectURL(url)
+      }
     }
   }, [])
 
   function handleIconChange(file: File) {
-    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
+    const prev = previewUrlRefs.current[editLocale]
+    if (prev) URL.revokeObjectURL(prev)
     const preview = URL.createObjectURL(file)
-    previewUrlRef.current = preview
-    setIconFile(file)
-    setIconPreview(preview)
+    previewUrlRefs.current[editLocale] = preview
+    setIconFiles((s) => ({ ...s, [editLocale]: file }))
+    setIconPreviews((s) => ({ ...s, [editLocale]: preview }))
     setError(null)
   }
 
   function handleIconRemove() {
-    if (previewUrlRef.current) {
-      URL.revokeObjectURL(previewUrlRef.current)
-      previewUrlRef.current = null
+    const prev = previewUrlRefs.current[editLocale]
+    if (prev) {
+      URL.revokeObjectURL(prev)
+      delete previewUrlRefs.current[editLocale]
     }
-    setIconFile(null)
-    setIconPreview(null)
+    setIconFiles((s) => ({ ...s, [editLocale]: null }))
+    setIconPreviews((s) => ({ ...s, [editLocale]: null }))
   }
 
   const onSubmit = handleSubmit((values) => {
@@ -116,8 +143,11 @@ export function CategoryFormModal({
     const slug = slugify(filledName.en || filledName.de || filledName.ar || "")
     if (slug) formData.append("slug", slug)
 
-    if (iconFile) {
-      formData.append("icon", iconFile, iconFile.name || "category-icon.png")
+    for (const lang of LOCALES) {
+      const file = iconFiles[lang]
+      if (file) {
+        formData.append(`icon[${lang}]`, file, file.name || `category-icon-${lang}.png`)
+      }
     }
 
     const subs = values.subCategories.filter((s) => Object.values(s.name).some((v) => v.trim()))
@@ -144,8 +174,8 @@ export function CategoryFormModal({
     })
   })
 
-  const resolvedExisting = existingIcon ? resolveImageUrl(existingIcon) : ""
-  const iconSrc = iconPreview || resolvedExisting || null
+  const resolvedExisting = existingIcons[editLocale] ? resolveImageUrl(existingIcons[editLocale]) : ""
+  const iconSrc = iconPreviews[editLocale] || resolvedExisting || null
   const title = id ? t("editCategory") : t("createCategory")
 
   return (
@@ -235,8 +265,9 @@ export function CategoryFormModal({
             />
 
             <CategoryIconUpload
+              locale={editLocale}
               iconSrc={iconSrc}
-              hasNewFile={Boolean(iconFile)}
+              hasNewFile={Boolean(iconFiles[editLocale])}
               labels={{
                 icon: t("icon"),
                 changeIcon: t("changeIcon"),

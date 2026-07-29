@@ -49,7 +49,7 @@ function normalizeFeature(item: unknown, locale = "ar"): ServiceFeature | null {
     id: typeof row.id === "number" ? row.id : 0,
     title,
     description,
-    icon: typeof row.icon === "string" ? row.icon : undefined,
+    icon: pickLocalizedString(row.icon, locale) || undefined,
     sortOrder:
       typeof row.sortOrder === "number"
         ? row.sortOrder
@@ -81,8 +81,8 @@ function normalizeService(item: unknown, locale = "ar"): Service | null {
     id: typeof row.id === "number" ? row.id : 0,
     title,
     description,
-    icon: typeof row.icon === "string" ? row.icon : undefined,
-    image: typeof row.image === "string" ? row.image : undefined,
+    icon: pickLocalizedString(row.icon ?? row.icon_url, locale) || undefined,
+    image: pickLocalizedString(row.image ?? row.image_url, locale) || undefined,
     features,
   }
 }

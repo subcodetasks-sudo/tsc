@@ -17,6 +17,7 @@ import {
   Loader2,
   ShieldCheck,
 } from "lucide-react"
+import { ImageDownloadButton } from "@/components/image-download-button"
 
 type Props = {
   locale: string
@@ -225,6 +226,11 @@ export default function AdminProfileClient({ locale, initialProfile }: Props) {
             >
               <Camera className="w-4 h-4" />
             </button>
+            {avatar ? (
+              <div className="absolute bottom-0 start-0">
+                <ImageDownloadButton src={avatar} filename="avatar.jpg" size="icon" />
+              </div>
+            ) : null}
             <input
               ref={fileInputRef}
               type="file"

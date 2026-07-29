@@ -51,8 +51,9 @@ export function AdminSuccessStoryEditForm({ story, locale }: { story: any; local
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [story?.id, locale])
 
-  const imagePreview = watch("imagePreview")
-  const existingImage = watch("existingImage")
+  const imageFiles = watch("imageFiles")
+  const imagePreviews = watch("imagePreviews")
+  const existingImages = watch("existingImages")
 
   const onSubmit = handleSubmit((values, e) => {
     e?.preventDefault()
@@ -150,15 +151,16 @@ export function AdminSuccessStoryEditForm({ story, locale }: { story: any; local
 
       <AdminImageUploadField
         title={t("sections.profilePicture")}
-        imageSrc={imagePreview || existingImage || null}
-        hasNewFile={Boolean(imagePreview)}
+        locale={editLocale}
+        imageSrc={imagePreviews?.[editLocale] || existingImages?.[editLocale] || null}
+        hasNewFile={Boolean(imageFiles?.[editLocale])}
         onSelect={(file) => {
-          setValue("imageFile", file, { shouldDirty: true })
-          setValue("imagePreview", URL.createObjectURL(file), { shouldDirty: true })
+          setValue(`imageFiles.${editLocale}`, file, { shouldDirty: true })
+          setValue(`imagePreviews.${editLocale}`, URL.createObjectURL(file), { shouldDirty: true })
         }}
         onRemove={() => {
-          setValue("imageFile", null)
-          setValue("imagePreview", null)
+          setValue(`imageFiles.${editLocale}`, null)
+          setValue(`imagePreviews.${editLocale}`, null)
         }}
         onError={setError}
         shape="circle"

@@ -53,6 +53,20 @@ function parseSubCategory(raw: Record<string, unknown>, locale: string): SubCate
   }
 }
 
+function pickLocalizedMedia(value: unknown, locale: string): string | undefined {
+  if (typeof value === "string" && value.trim()) return value.trim()
+  if (!value || typeof value !== "object") return undefined
+  const map = value as Record<string, unknown>
+  for (const key of [locale, "ar", "en", "de"]) {
+    const candidate = map[key]
+    if (typeof candidate === "string" && candidate.trim()) return candidate.trim()
+  }
+  for (const candidate of Object.values(map)) {
+    if (typeof candidate === "string" && candidate.trim()) return candidate.trim()
+  }
+  return undefined
+}
+
 function parseCategory(raw: Record<string, unknown>, locale: string): Category | null {
   const id = Number(raw.id)
   if (!Number.isFinite(id) || id <= 0) return null
@@ -80,7 +94,7 @@ function parseCategory(raw: Record<string, unknown>, locale: string): Category |
     id,
     name,
     slug: String(raw.slug || ""),
-    icon: typeof raw.icon === "string" ? raw.icon : undefined,
+    icon: pickLocalizedMedia(raw.icon ?? raw.icon_url, locale),
     jobs_count:
       raw.jobs_count != null
         ? Number(raw.jobs_count)

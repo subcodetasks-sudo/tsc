@@ -3,6 +3,7 @@
 import { useRef } from "react"
 import { Tag, Pencil } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { ImageDownloadButton } from "@/components/image-download-button"
 
 const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp"]
 const MAX_SIZE_BYTES = 5 * 1024 * 1024
@@ -15,6 +16,7 @@ export function CategoryIconUpload({
   onRemove,
   onError,
   aspectRatio = "1:1",
+  locale,
 }: {
   iconSrc: string | null
   hasNewFile: boolean
@@ -23,6 +25,7 @@ export function CategoryIconUpload({
   onRemove: () => void
   onError?: (message: string) => void
   aspectRatio?: string
+  locale?: string
 }) {
   const tMedia = useTranslations("Admin.mediaUpload")
   const inputRef = useRef<HTMLInputElement>(null)
@@ -46,7 +49,14 @@ export function CategoryIconUpload({
 
   return (
     <div className="rounded-[8px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 space-y-2">
-      <p className="text-xs font-bold uppercase tracking-widest text-[#006EA8]">{labels.icon}</p>
+      <div className="flex items-center gap-2">
+        <p className="text-xs font-bold uppercase tracking-widest text-[#006EA8]">{labels.icon}</p>
+        {locale ? (
+          <span className="rounded bg-[#EAF4FB] px-1.5 py-0.5 text-xs font-bold text-[#006EA8]">
+            {locale.toUpperCase()}
+          </span>
+        ) : null}
+      </div>
       <div className="flex items-center gap-3">
         <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border border-[#78A3BE] bg-white">
           {iconSrc ? (
@@ -57,8 +67,8 @@ export function CategoryIconUpload({
           )}
         </div>
         <label className="cursor-pointer">
-          <span className="inline-flex items-center gap-2 rounded-lg border border-[#006EA8] px-3 py-1.5 text-sm font-medium text-[#006EA8] hover:bg-[#006EA8]/10 transition-colors">
-            <Pencil className="h-3.5 w-3.5" />
+          <span className="inline-flex items-center gap-2 rounded-lg border border-[#006EA8] px-4 py-2 text-sm font-medium text-[#006EA8] hover:bg-[#006EA8]/10 transition-colors">
+            <Pencil className="h-4 w-4" />
             {iconSrc ? labels.changeIcon : labels.uploadIcon}
           </span>
           <input
@@ -69,6 +79,7 @@ export function CategoryIconUpload({
             onChange={handleFileChange}
           />
         </label>
+        {iconSrc ? <ImageDownloadButton src={iconSrc} filename="category-icon.jpg" /> : null}
         {hasNewFile && (
           <button type="button" onClick={onRemove} className="text-xs text-red-500 hover:underline">
             {labels.remove}

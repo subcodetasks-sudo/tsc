@@ -1,4 +1,11 @@
 import { LOCALES, type LocaleKey, type LocalizedText, type NewsFormValues } from "./news-form-schema"
+import {
+  appendLocalizedFiles,
+  emptyLocalizedMediaFiles,
+  emptyLocalizedMediaPreviews,
+  emptyLocalizedMediaUrls,
+  mapLocalizedMediaFromAllLocales,
+} from "./localized-media"
 
 export function emptyLocalizedText(): LocalizedText {
   return { ar: "", en: "", de: "" }
@@ -8,9 +15,9 @@ export function initialNewsFormValues(): NewsFormValues {
   return {
     title: emptyLocalizedText(),
     description: emptyLocalizedText(),
-    imageFile: null,
-    imagePreview: null,
-    existingImage: "",
+    imageFiles: emptyLocalizedMediaFiles(),
+    imagePreviews: emptyLocalizedMediaPreviews(),
+    existingImages: emptyLocalizedMediaUrls(),
   }
 }
 
@@ -25,7 +32,7 @@ export function buildNewsFormData(values: NewsFormValues, id?: number): FormData
     if (description) formData.append(`description[${lang}]`, description)
   }
 
-  if (values.imageFile) formData.append("image", values.imageFile)
+  appendLocalizedFiles(formData, "image", values.imageFiles)
 
   return formData
 }
@@ -85,21 +92,29 @@ export function mapNewsToFormDefaults(newsItem: any, locale: string): NewsFormVa
       description[loc] = parseLocalizedField(item.description ?? item.content ?? item, loc)[loc] || ""
     }
 
-    const existingImage =
-      allLocales[locale as LocaleKey]?.image ?? allLocales.ar?.image ?? allLocales.en?.image ?? allLocales.de?.image ?? ""
-
-    return { title, description, imageFile: null, imagePreview: null, existingImage }
+    return {
+      title,
+      description,
+      imageFiles: emptyLocalizedMediaFiles(),
+      imagePreviews: emptyLocalizedMediaPreviews(),
+      existingImages: mapLocalizedMediaFromAllLocales(allLocales, ["image", "imageUrl", "image_url", "thumbnail"]),
+    }
   }
 
   const title = parseLocalizedField(newsItem?.title, locale as LocaleKey)
   const fallbackDescription = newsItem?.content ?? newsItem?.excerpt ?? newsItem?.description
   const description = parseLocalizedField(fallbackDescription, locale as LocaleKey)
+  const existingImages = emptyLocalizedMediaUrls()
+  const sharedImage = newsItem?.image ?? newsItem?.image_url ?? ""
+  if (sharedImage) {
+    for (const loc of LOCALES) existingImages[loc] = sharedImage
+  }
 
   return {
     title,
     description,
-    imageFile: null,
-    imagePreview: null,
-    existingImage: newsItem?.image ?? "",
+    imageFiles: emptyLocalizedMediaFiles(),
+    imagePreviews: emptyLocalizedMediaPreviews(),
+    existingImages,
   }
 }

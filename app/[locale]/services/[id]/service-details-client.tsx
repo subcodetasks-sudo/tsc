@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl"
 import { ArrowLeft } from "lucide-react"
 import { Link } from "@/i18n/navigation"
 import { SectionShell, StaggerInView, StaggerItem } from "@/features/shared-home"
+import { resolveImageUrl } from "@/lib/utils"
 
 export function ServiceDetailsClient({
   service,
@@ -64,7 +65,7 @@ export function ServiceDetailsClient({
               <StaggerItem className="w-full mt-6">
                 <div className="relative aspect-[21/9] w-full max-w-5xl rounded-3xl overflow-hidden border border-gray-200 bg-gray-50 shadow-sm">
                   <Image
-                    src={service.image}
+                    src={resolveImageUrl(service.image)}
                     alt={service.title}
                     fill
                     className="object-cover"

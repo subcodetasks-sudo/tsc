@@ -47,8 +47,9 @@ function normalizeSuccessStory(item: unknown, index: number, locale?: string): S
     role: role || location || "",
     location: location || undefined,
     quote: quote || "",
-    image: (row.image as string | null) ?? null,
-    image_url: (row.image_url as string | null) ?? (row.avatar as string | null) ?? null,
+    image: pickLocalizedString(row.image, locale) || null,
+    image_url:
+      pickLocalizedString(row.image_url ?? row.avatar ?? row.image, locale) || null,
     is_active: row.is_active as boolean | undefined,
     sort_order: row.sort_order as number | undefined,
   }

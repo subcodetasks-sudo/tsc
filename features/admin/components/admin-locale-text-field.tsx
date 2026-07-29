@@ -18,6 +18,7 @@ export function AdminLocaleTextField<TFieldValues extends FieldValues>({
   rich = false,
   control,
   required = false,
+  requiredLocales = ["ar"],
   rows = 3,
 }: {
   label: string
@@ -28,6 +29,8 @@ export function AdminLocaleTextField<TFieldValues extends FieldValues>({
   rich?: boolean
   control?: Control<TFieldValues>
   required?: boolean
+  /** Locales that show the required asterisk when `required` is true. Defaults to Arabic only. */
+  requiredLocales?: string[]
   rows?: number
 }) {
   const dir = locale === "ar" ? "rtl" : "ltr"
@@ -39,7 +42,7 @@ export function AdminLocaleTextField<TFieldValues extends FieldValues>({
           {locale.toUpperCase()}
         </span>
         <span>{label}</span>
-        {required && locale === "ar" && <span className="text-red-500">*</span>}
+        {required && requiredLocales.includes(locale) && <span className="text-red-500">*</span>}
       </span>
       {rich && control ? (
         <Controller

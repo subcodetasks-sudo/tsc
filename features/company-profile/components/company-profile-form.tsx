@@ -12,6 +12,7 @@ import Image from "next/image";
 import { COUNTRIES } from "@/lib/countries";
 import { resolveImageUrl } from "@/lib/utils";
 import { compressImageFile } from "@/lib/images/compress-image";
+import { ImageDownloadButton } from "@/components/image-download-button";
 
 // Use SVG assets from /public/Linked_accounts for social icons
 
@@ -789,15 +790,24 @@ export default function CompanyProfileForm({
                 )}
               </div>
 
-              <label className="absolute inset-x-0 top-1/2 flex justify-center -translate-y-1/2 cursor-pointer z-20">
-                <span
-                  className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(0,110,168,0.3),_inset_0_1px_2px_rgba(255,255,255,0.2)] bg-gradient-to-b from-[#006EA8] to-[#005685] transition-all hover:scale-105 active:scale-95"
-                >
-                  <img src="/update.svg" alt="update" className="h-4 w-4" />
-                  {isAr ? "تغيير الغلاف" : isDe ? "Titelbild ändern" : "Replace Cover"}
-                </span>
-                <input type="file" accept="image/*" aria-label={isAr ? "تحميل صورة الغلاف" : isDe ? "Titelbild hochladen" : "Upload cover image"} className="hidden" onChange={handleCoverChange} />
-              </label>
+              <div className="absolute inset-x-0 top-1/2 flex justify-center -translate-y-1/2 z-20 gap-2">
+                <label className="cursor-pointer">
+                  <span
+                    className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(0,110,168,0.3),_inset_0_1px_2px_rgba(255,255,255,0.2)] bg-gradient-to-b from-[#006EA8] to-[#005685] transition-all hover:scale-105 active:scale-95"
+                  >
+                    <img src="/update.svg" alt="update" className="h-4 w-4" />
+                    {isAr ? "تغيير الغلاف" : isDe ? "Titelbild ändern" : "Replace Cover"}
+                  </span>
+                  <input type="file" accept="image/*" aria-label={isAr ? "تحميل صورة الغلاف" : isDe ? "Titelbild hochladen" : "Upload cover image"} className="hidden" onChange={handleCoverChange} />
+                </label>
+                {coverUrl ? (
+                  <ImageDownloadButton
+                    src={coverUrl}
+                    filename="company-cover.jpg"
+                    className="bg-white/95 shadow-md"
+                  />
+                ) : null}
+              </div>
 
               <div className="absolute left-1/2 top-full z-30 -translate-x-1/2 -translate-y-10 md:-translate-y-16">
                 <div className="relative h-[140px] w-[140px] md:h-[170px] md:w-[170px]">
@@ -820,6 +830,11 @@ export default function CompanyProfileForm({
                     <img src="/update.svg" alt="update" className="h-4 w-4 text-white" />
                     <input type="file" accept="image/*" aria-hidden className="hidden" onChange={handleAvatarChange} />
                   </label>
+                  {avatarUrl ? (
+                    <div className="absolute bottom-2 left-2 z-50">
+                      <ImageDownloadButton src={avatarUrl} filename="company-logo.jpg" size="icon" />
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>

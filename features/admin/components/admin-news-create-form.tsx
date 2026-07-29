@@ -38,7 +38,8 @@ export function AdminNewsCreateForm({ locale }: { locale: string }) {
     defaultValues: initialNewsFormValues(),
   })
 
-  const imagePreview = watch("imagePreview")
+  const imageFiles = watch("imageFiles")
+  const imagePreviews = watch("imagePreviews")
 
   const onSubmit = handleSubmit((values) => {
     setError(null)
@@ -107,16 +108,18 @@ export function AdminNewsCreateForm({ locale }: { locale: string }) {
 
       <AdminImageUploadField
         title={t("fields.image")}
-        imageSrc={imagePreview ?? null}
-        hasNewFile={Boolean(imagePreview)}
+        locale={editLocale}
+        imageSrc={imagePreviews?.[editLocale] ?? null}
+        hasNewFile={Boolean(imageFiles?.[editLocale])}
         aspectRatio="3:2"
+        acceptAllImages
         onSelect={(file) => {
-          setValue("imageFile", file, { shouldDirty: true })
-          setValue("imagePreview", URL.createObjectURL(file), { shouldDirty: true })
+          setValue(`imageFiles.${editLocale}`, file, { shouldDirty: true })
+          setValue(`imagePreviews.${editLocale}`, URL.createObjectURL(file), { shouldDirty: true })
         }}
         onRemove={() => {
-          setValue("imageFile", null)
-          setValue("imagePreview", null)
+          setValue(`imageFiles.${editLocale}`, null)
+          setValue(`imagePreviews.${editLocale}`, null)
         }}
         onError={setError}
       />

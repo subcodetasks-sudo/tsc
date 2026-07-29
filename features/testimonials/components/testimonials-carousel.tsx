@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils"
 import type { SuccessStory } from "@/lib/api/types"
 import { resolveStoryImageUrl } from "@/features/testimonials/lib/resolve-story-image"
 import { TestimonialArrowNext, TestimonialArrowPrev } from "@/features/testimonials/components/testimonial-arrows"
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog"
 import Portal from "@/components/ui/portal"
 
 
@@ -278,8 +279,8 @@ function StorySlideInner({
   const imageRef = useRef<HTMLDivElement | null>(null)
   const quoteRef = useRef<HTMLParagraphElement | null>(null)
   const [hovered, setHovered] = useState(false)
-  const [expanded, setExpanded] = useState(false)
   const [canExpand, setCanExpand] = useState(false)
+  const [detailsOpen, setDetailsOpen] = useState(false)
   const [rect, setRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null)
 
   useEffect(() => {
@@ -299,14 +300,14 @@ function StorySlideInner({
   }, [hovered])
 
   useEffect(() => {
-    if (!hovered || expanded) return
+    if (!hovered) return
     const el = quoteRef.current
     if (!el) return
     const measure = () => setCanExpand(el.scrollHeight > el.clientHeight + 1)
     measure()
     const frame = requestAnimationFrame(measure)
     return () => cancelAnimationFrame(frame)
-  }, [hovered, expanded, story.quote])
+  }, [hovered, story.quote])
 
   function handleEnter() {
     if (imageRef.current) {
@@ -318,8 +319,9 @@ function StorySlideInner({
 
   function handleLeave() {
     setHovered(false)
-    setExpanded(false)
   }
+
+  const showMoreLabel = isRtl ? "عرض المزيد" : "Show more"
 
   return (
     <>
@@ -368,29 +370,20 @@ function StorySlideInner({
                   <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden">
                     <p
                       ref={quoteRef}
-                      className={cn(
-                        "min-h-0 text-[14px] leading-[1.45] sm:text-[15px] lg:text-[16px]",
-                        expanded ? "overflow-y-auto" : "line-clamp-3"
-                      )}
+                      className="min-h-0 line-clamp-3 text-[14px] leading-[1.45] sm:text-[15px] lg:text-[16px]"
                     >
                       &ldquo;{story.quote}&rdquo;
                     </p>
-                    {(canExpand || expanded) && (
+                    {canExpand && (
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation()
-                          setExpanded((prev) => !prev)
+                          setDetailsOpen(true)
                         }}
                         className="shrink-0 self-start text-[12px] font-semibold underline underline-offset-2 opacity-90 transition-opacity hover:opacity-100"
                       >
-                        {expanded
-                          ? isRtl
-                            ? "عرض أقل"
-                            : "Show less"
-                          : isRtl
-                            ? "عرض المزيد"
-                            : "Show more"}
+                        {showMoreLabel}
                       </button>
                     )}
                   </div>
@@ -415,9 +408,46 @@ function StorySlideInner({
           )}
         >
           <p className="text-[14px] leading-[1.5] text-[#525252] sm:text-[16px]">&ldquo;{story.quote}&rdquo;</p>
+          {story.quote.length > 220 ? (
+            <button
+              type="button"
+              onClick={() => setDetailsOpen(true)}
+              className="text-[13px] font-semibold text-[#006EA8] underline underline-offset-2 transition-opacity hover:opacity-80"
+            >
+              {showMoreLabel}
+            </button>
+          ) : null}
           <StoryMeta role={role} location={location} muted />
           <p className="text-[24px] font-bold leading-[1.5] text-[#171717] sm:text-[28px]">{story.name}</p>
         </div>
+
+        <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
+          <DialogContent
+            showCloseButton
+            className={cn(
+              "w-[min(92vw,720px)] max-w-[720px] gap-0 overflow-hidden rounded-[28px] border-0 bg-[url('/contact/button-noise.png'),linear-gradient(180deg,#006EA8_0%,#005685_100%)] bg-[length:120px_120px,auto] bg-blend-[plus-lighter,normal] p-0 text-white shadow-[0px_42px_107px_rgba(123,190,255,0.34),0px_24px_32px_rgba(0,86,133,0.19),0px_10px_13px_rgba(0,86,133,0.22),0px_4px_5px_rgba(0,86,133,0.15),0px_0px_0px_4px_#E8F2FF,0px_0px_0px_5px_#FFFFFF,inset_0px_1px_18px_2px_#E8F2FF,inset_0px_1px_4px_2px_#C2DDFF]",
+              isRtl && "text-end"
+            )}
+          >
+            <DialogTitle className="sr-only">{story.name}</DialogTitle>
+            <DialogDescription className="sr-only">
+              {isRtl ? "عرض نص التوصية بالكامل" : "View the full testimonial"}
+            </DialogDescription>
+            <div className="flex max-h-[min(86vh,760px)] min-h-0 flex-col">
+              <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-5 pb-5 pt-14 sm:px-7 sm:pb-7 sm:pt-16">
+                <div className="space-y-3">
+                  <StoryMeta role={role} location={location} inverted />
+                  <p className="text-[24px] font-bold leading-[1.2] sm:text-[28px] lg:text-[32px]">{story.name}</p>
+                </div>
+                <div className="min-h-0 overflow-y-auto pe-1">
+                  <p className="whitespace-pre-wrap text-[15px] leading-[1.8] text-white/95 sm:text-[17px]">
+                    &ldquo;{story.quote}&rdquo;
+                  </p>
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </motion.article>
     </>
   )

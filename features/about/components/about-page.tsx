@@ -3,6 +3,7 @@ import { ProcessSection } from "@/features/process"
 import { SupportSection } from "@/features/support"
 import { getAbout } from "@/lib/api/services/about.service"
 import { getHomePageContent } from "@/lib/api/services/home-page.service"
+import { resolveImageUrl } from "@/lib/utils"
 
 import { AboutIntroSection } from "./about-intro-section"
 import { AboutStorySection } from "./about-story-section"
@@ -29,9 +30,12 @@ export async function AboutPage() {
     aboutContent?.secondDescription || aboutT("story.descriptionOne")
   const storyDescriptionTwo = aboutT("story.descriptionTwo")
 
-  const primaryImage = aboutContent?.image || "/home/content/news-2.png"
-  const storyImage = aboutContent?.secondImage || "/home/content/news-feature.png"
-  const videoUrl = aboutContent?.video
+  const primaryImage = aboutContent?.image
+    ? resolveImageUrl(aboutContent.image)
+    : "/home/content/news-2.png"
+  const storyImage = aboutContent?.secondImage
+    ? resolveImageUrl(aboutContent.secondImage)
+    : "/home/content/news-feature.png"
   const features = aboutContent?.features ?? []
 
   return (
@@ -52,7 +56,6 @@ export async function AboutPage() {
             ? "مشهد توضيحي عن الدعم المهني"
             : "Professional support visual"
         }
-        videoUrl={videoUrl}
       />
 
       {/* <ProcessSection

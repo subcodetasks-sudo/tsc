@@ -4,6 +4,7 @@ import Image from "next/image"
 import { useRef, useState } from "react"
 import { Loader2, Upload } from "lucide-react"
 import { useTranslations } from "next-intl"
+import { ImageDownloadButton } from "@/components/image-download-button"
 import { compressImageFile } from "@/lib/images/compress-image"
 import { cn } from "@/lib/utils"
 
@@ -143,6 +144,11 @@ export function JobImageUpload({
               <p className="text-xs font-medium text-[#006EA8]">
                 {tMedia("aspectRatio", { ratio: aspectRatio })}
               </p>
+            ) : null}
+            {previewUrl ? (
+              <div className="flex flex-wrap gap-2">
+                <ImageDownloadButton src={previewUrl} filename={file?.name || "job-image.jpg"} />
+              </div>
             ) : null}
             {file ? (
               <>

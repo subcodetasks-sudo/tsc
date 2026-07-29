@@ -1,3 +1,5 @@
+import { resolveImageUrl } from "@/lib/utils"
+
 const FALLBACK_IMAGES = [
   "/home/content/testimonial-left.png",
   "/home/content/testimonial-center.png",
@@ -9,14 +11,14 @@ export function resolveStoryImageUrl(image?: string | null, index = 0): string {
   const src = image?.trim()
   if (!src) return FALLBACK_IMAGES[index % FALLBACK_IMAGES.length]
 
-  if (src.startsWith("http://") || src.startsWith("https://") || src.startsWith("/")) {
+  if (src.startsWith("http://") || src.startsWith("https://") || src.startsWith("data:") || src.startsWith("blob:")) {
     return src
   }
 
-  const base = (process.env.NEXT_PUBLIC_STORAGE_URL || process.env.NEXT_PUBLIC_API_URL || "").replace(
-    /\/api\/v1\/?$/,
-    ""
-  )
-  if (!base) return FALLBACK_IMAGES[index % FALLBACK_IMAGES.length]
-  return `${base.replace(/\/$/, "")}/${src.replace(/^\//, "")}`
+  if (src.startsWith("/home/") || src.startsWith("/process/") || src.startsWith("/footer/")) {
+    return src
+  }
+
+  const resolved = resolveImageUrl(src)
+  return resolved || FALLBACK_IMAGES[index % FALLBACK_IMAGES.length]
 }

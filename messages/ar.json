@@ -1148,8 +1148,8 @@
       "serviceImage": "صورة الخدمة",
       "serviceIcon": "أيقونة الخدمة",
       "errors": {
-        "titleRequired": "عنوان الخدمة مطلوب",
-        "descriptionRequired": "وصف الخدمة مطلوب"
+        "titleRequired": "عنوان الخدمة بالعربية والألمانية مطلوب",
+        "descriptionRequired": "وصف الخدمة بالعربية والألمانية مطلوب"
       },
       "coreServiceData": "بيانات الخدمة الأساسية",
       "titleLabel": "عنوان الخدمة",
@@ -1309,11 +1309,15 @@
     "mediaUpload": {
       "change": "تغيير الصورة",
       "upload": "رفع صورة",
+      "compressing": "جارٍ تحسين الصورة...",
       "remove": "إزالة",
+      "download": "تحميل",
       "hint": "PNG أو JPG أو WEBP · حجم أقصى 5MB",
+      "hintAll": "أي نوع صورة · حجم أقصى 5MB",
       "aspectRatio": "نسبة العرض إلى الارتفاع في الموقع: {ratio}",
       "errors": {
         "unsupportedFileType": "نوع الملف غير مدعوم. استخدم PNG أو JPG أو WEBP",
+        "unsupportedImageType": "نوع الملف غير مدعوم. يرجى رفع ملف صورة",
         "fileTooLarge": "حجم الملف أكبر من 5MB"
       }
     },

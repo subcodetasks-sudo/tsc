@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useMemo, useRef, useState, useTransition } from "react"
+import { useRef, useState, useTransition } from "react"
 import { useTranslations } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { PrimaryButton } from "@/components/ui/primary-button"
@@ -9,6 +9,7 @@ import type { AboutPageContent, AboutFeature } from "@/lib/api/services/about.se
 import { saveAboutAction } from "@/features/admin/actions/admin-actions"
 import { Upload, X, Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react"
 import { RichTextEditor } from "@/components/ui/rich-text-editor"
+import { ImageDownloadButton } from "@/components/image-download-button"
 
 const LOCALES = ["ar", "en", "de"] as const
 type LocaleKey = (typeof LOCALES)[number]
@@ -131,11 +132,14 @@ function ImageUploadBox({
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
-            className="inline-flex items-center gap-2 rounded-lg border border-[#006EA8] px-3 py-1.5 text-sm font-medium text-[#006EA8] hover:bg-[#006EA8]/10 transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg border border-[#006EA8] px-4 py-2 text-sm font-medium text-[#006EA8] hover:bg-[#006EA8]/10 transition-colors"
           >
-            <Upload className="h-3.5 w-3.5" />
+            <Upload className="h-4 w-4" />
             {displaySrc ? "تغيير" : "رفع صورة"}
           </button>
+          {displaySrc ? (
+            <ImageDownloadButton src={displaySrc} filename="about-image.jpg" />
+          ) : null}
           {(preview || file) && (
             <button
               type="button"
@@ -209,13 +213,51 @@ export function AdminAboutPanel({
 
   const currentTranslation = translations[editLocale]
 
-  // Image files
-  const [primaryImage, setPrimaryImage] = useState<File | null>(null)
-  const [primaryPreview, setPrimaryPreview] = useState<string | null>(null)
-  const [secondaryImage, setSecondaryImage] = useState<File | null>(null)
-  const [secondaryPreview, setSecondaryPreview] = useState<string | null>(null)
+  // Image files — one upload per language (synced with editLocale tabs)
+  const [primaryImages, setPrimaryImages] = useState<Record<LocaleKey, File | null>>({
+    ar: null,
+    en: null,
+    de: null,
+  })
+  const [primaryPreviews, setPrimaryPreviews] = useState<Record<LocaleKey, string | null>>({
+    ar: null,
+    en: null,
+    de: null,
+  })
+  const [existingPrimaryImages] = useState<Record<LocaleKey, string>>(() => ({
+    ar: (allLocalesContent?.ar as AboutPageContent | undefined)?.image
+      ?? content?.image
+      ?? "",
+    en: (allLocalesContent?.en as AboutPageContent | undefined)?.image
+      ?? content?.image
+      ?? "",
+    de: (allLocalesContent?.de as AboutPageContent | undefined)?.image
+      ?? content?.image
+      ?? "",
+  }))
+  const [secondaryImages, setSecondaryImages] = useState<Record<LocaleKey, File | null>>({
+    ar: null,
+    en: null,
+    de: null,
+  })
+  const [secondaryPreviews, setSecondaryPreviews] = useState<Record<LocaleKey, string | null>>({
+    ar: null,
+    en: null,
+    de: null,
+  })
+  const [existingSecondaryImages] = useState<Record<LocaleKey, string>>(() => ({
+    ar: (allLocalesContent?.ar as AboutPageContent | undefined)?.secondImage
+      ?? content?.secondImage
+      ?? "",
+    en: (allLocalesContent?.en as AboutPageContent | undefined)?.secondImage
+      ?? content?.secondImage
+      ?? "",
+    de: (allLocalesContent?.de as AboutPageContent | undefined)?.secondImage
+      ?? content?.secondImage
+      ?? "",
+  }))
 
-  // Video file (must be a file, not a URL string)
+  // Video file (must be a file, not a URL string) — shared across locales for now
   const [videoFile, setVideoFile] = useState<File | null>(null)
   const [videoPreview, setVideoPreview] = useState<string | null>(null)
   const videoInputRef = useRef<HTMLInputElement>(null)
@@ -244,12 +286,12 @@ export function AdminAboutPanel({
   }
 
   function handlePrimaryImage(f: File) {
-    setPrimaryImage(f)
-    setPrimaryPreview(URL.createObjectURL(f))
+    setPrimaryImages((prev) => ({ ...prev, [editLocale]: f }))
+    setPrimaryPreviews((prev) => ({ ...prev, [editLocale]: URL.createObjectURL(f) }))
   }
   function handleSecondaryImage(f: File) {
-    setSecondaryImage(f)
-    setSecondaryPreview(URL.createObjectURL(f))
+    setSecondaryImages((prev) => ({ ...prev, [editLocale]: f }))
+    setSecondaryPreviews((prev) => ({ ...prev, [editLocale]: URL.createObjectURL(f) }))
   }
   function handleVideoFile(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0]
@@ -302,9 +344,11 @@ export function AdminAboutPanel({
       if (trans.second.secondDescription[lang]?.trim()) fd.append(`second_description[${lang}]`, trans.second.secondDescription[lang])
     }
 
-    // Images - only file uploads (never URL strings to avoid "حقل video يجب أن يكون ملفًا")
-    if (primaryImage) fd.append("image", primaryImage)
-    if (secondaryImage) fd.append("second_image", secondaryImage)
+    // Images — per-locale file uploads (never URL strings)
+    for (const lang of LOCALES) {
+      if (primaryImages[lang]) fd.append(`image[${lang}]`, primaryImages[lang] as File)
+      if (secondaryImages[lang]) fd.append(`second_image[${lang}]`, secondaryImages[lang] as File)
+    }
     if (videoFile) fd.append("video", videoFile)
 
     // Features - use data from all locales
@@ -409,12 +453,15 @@ export function AdminAboutPanel({
           </div>
 
           <ImageUploadBox
-            label={isRTL ? "الصورة الرئيسية" : "Primary Image"}
-            file={primaryImage}
-            preview={primaryPreview}
-            existingUrl={content?.image}
+            label={`${isRTL ? "الصورة الرئيسية" : "Primary Image"} (${editLocale.toUpperCase()})`}
+            file={primaryImages[editLocale]}
+            preview={primaryPreviews[editLocale]}
+            existingUrl={existingPrimaryImages[editLocale] || null}
             onFile={handlePrimaryImage}
-            onClear={() => { setPrimaryImage(null); setPrimaryPreview(null) }}
+            onClear={() => {
+              setPrimaryImages((prev) => ({ ...prev, [editLocale]: null }))
+              setPrimaryPreviews((prev) => ({ ...prev, [editLocale]: null }))
+            }}
             aspectRatio="21:9"
           />
         </div>
@@ -437,12 +484,15 @@ export function AdminAboutPanel({
           </div>
 
           <ImageUploadBox
-            label={isRTL ? "صورة القسم الثاني" : "Second Section Image"}
-            file={secondaryImage}
-            preview={secondaryPreview}
-            existingUrl={content?.secondImage}
+            label={`${isRTL ? "صورة القسم الثاني" : "Second Section Image"} (${editLocale.toUpperCase()})`}
+            file={secondaryImages[editLocale]}
+            preview={secondaryPreviews[editLocale]}
+            existingUrl={existingSecondaryImages[editLocale] || null}
             onFile={handleSecondaryImage}
-            onClear={() => { setSecondaryImage(null); setSecondaryPreview(null) }}
+            onClear={() => {
+              setSecondaryImages((prev) => ({ ...prev, [editLocale]: null }))
+              setSecondaryPreviews((prev) => ({ ...prev, [editLocale]: null }))
+            }}
             aspectRatio="4:3"
           />
 

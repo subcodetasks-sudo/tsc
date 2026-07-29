@@ -1,6 +1,7 @@
 import { getLocale, getTranslations, setRequestLocale } from "next-intl/server"
 import { SectionShell, StaggerInView } from "@/features/shared-home"
 import { getProcessSteps } from "@/features/process/services/process.service"
+import { resolveImageUrl } from "@/lib/utils"
 import Image from "next/image"
 
 const defaultStepIcons = ["/process/profile.svg", "/process/info.svg", "/process/job.svg"]
@@ -21,6 +22,14 @@ function normalizeImagePath(path?: string): string {
     clean = "/" + clean
   }
   return clean
+}
+
+function resolveStepIcon(path?: string, fallback?: string): string {
+  const normalized = normalizeImagePath(path)
+  if (!normalized) return fallback || ""
+  // Local public assets (e.g. /process/*.svg) stay as-is
+  if (normalized.startsWith("/process/") || normalized.startsWith("/home/")) return normalized
+  return resolveImageUrl(normalized) || fallback || ""
 }
 
 type ProcessStep = {
@@ -143,7 +152,8 @@ export async function ProcessSection({ steps: overrideSteps, title: titleOverrid
             <StepConnector index={1} rtl={isRtl} />
 
             {steps.map((step, index) => {
-              const src = normalizeImagePath(step.icon) || defaultStepIcons[index % defaultStepIcons.length]
+              const src =
+                resolveStepIcon(step.icon) || defaultStepIcons[index % defaultStepIcons.length]
 
               return (
                 <div key={`${step.title}-${index}`} className="relative z-[1] flex flex-col items-center text-center">
