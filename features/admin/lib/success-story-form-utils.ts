@@ -1,6 +1,10 @@
 import { type LocaleKey, type LocalizedText, type SuccessStoryFormValues } from "./success-story-form-schema"
 import { LOCALES } from "./success-story-form-schema"
 import {
+  TESTIMONIAL_QUOTE_MAX_CHARS,
+  truncateWithoutSpaces,
+} from "@/lib/quote-limits"
+import {
   appendLocalizedFiles,
   emptyLocalizedMediaFiles,
   emptyLocalizedMediaPreviews,
@@ -36,7 +40,7 @@ export function buildSuccessStoryFormData(values: SuccessStoryFormValues, id?: n
     if (name) formData.append(`name[${lang}]`, name)
     if (role) formData.append(`role[${lang}]`, role)
     if (location) formData.append(`location[${lang}]`, location)
-    if (quote) formData.append(`quote[${lang}]`, quote)
+    if (quote) formData.append(`quote[${lang}]`, truncateWithoutSpaces(quote, TESTIMONIAL_QUOTE_MAX_CHARS))
   }
 
   appendLocalizedFiles(formData, "image", values.imageFiles)
@@ -64,7 +68,7 @@ export function mapStoryToFormDefaults(story: any, locale: string): SuccessStory
       name[loc] = item.name ?? ""
       role[loc] = item.role ?? ""
       location[loc] = item.location ?? ""
-      quote[loc] = item.quote ?? ""
+      quote[loc] = truncateWithoutSpaces(item.quote ?? "", TESTIMONIAL_QUOTE_MAX_CHARS)
     }
 
     return {
@@ -82,7 +86,7 @@ export function mapStoryToFormDefaults(story: any, locale: string): SuccessStory
   name[loc] = story?.name ?? ""
   role[loc] = story?.role ?? ""
   location[loc] = story?.location ?? ""
-  quote[loc] = story?.quote ?? ""
+  quote[loc] = truncateWithoutSpaces(story?.quote ?? "", TESTIMONIAL_QUOTE_MAX_CHARS)
 
   const existingImages = emptyLocalizedMediaUrls()
   const sharedImage = story?.image_url ?? story?.image ?? ""

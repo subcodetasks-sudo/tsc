@@ -356,6 +356,8 @@
       "eyebrow": "Echter Impact",
       "title": "Erfolgsgeschichten aus unserer Community",
       "description": "Entdecke, wie wir Talente und Arbeitgeber beim Wachstum im deutschen Arbeitsmarkt unterstützt haben.",
+      "showMore": "Mehr anzeigen",
+      "viewFull": "Vollständiges Testimonial anzeigen",
       "items": {
         "jacob": {
           "initials": "JJ",
@@ -1059,6 +1061,7 @@
         "profilePicture": "Profilbild"
       },
       "nameRequired": "Mindestens ein arabischer Name ist erforderlich",
+      "quoteMaxLength": "Das Zitat darf höchstens {max} Zeichen haben (Leerzeichen zählen nicht)",
       "savedRedirect": "✓ Erfolgreich gespeichert, Weiterleitung...",
       "actions": {
         "saving": "Speichern...",

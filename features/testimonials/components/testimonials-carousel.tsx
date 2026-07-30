@@ -13,6 +13,8 @@ import { resolveStoryImageUrl } from "@/features/testimonials/lib/resolve-story-
 import { TestimonialArrowNext, TestimonialArrowPrev } from "@/features/testimonials/components/testimonial-arrows"
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog"
 import Portal from "@/components/ui/portal"
+import { useTranslations } from "next-intl"
+import { previewQuoteWithoutSpaces } from "@/lib/quote-limits"
 
 
 export type TestimonialsLabels = {
@@ -276,12 +278,12 @@ function StorySlideInner({
   isRtl: boolean
   tilt: number
 }) {
+  const t = useTranslations("Landing.testimonials")
   const imageRef = useRef<HTMLDivElement | null>(null)
-  const quoteRef = useRef<HTMLParagraphElement | null>(null)
   const [hovered, setHovered] = useState(false)
-  const [canExpand, setCanExpand] = useState(false)
   const [detailsOpen, setDetailsOpen] = useState(false)
   const [rect, setRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null)
+  const { full: quote, preview: quotePreview, canShowMore } = previewQuoteWithoutSpaces(story.quote ?? "")
 
   useEffect(() => {
     function handleUpdate() {
@@ -299,16 +301,6 @@ function StorySlideInner({
     }
   }, [hovered])
 
-  useEffect(() => {
-    if (!hovered) return
-    const el = quoteRef.current
-    if (!el) return
-    const measure = () => setCanExpand(el.scrollHeight > el.clientHeight + 1)
-    measure()
-    const frame = requestAnimationFrame(measure)
-    return () => cancelAnimationFrame(frame)
-  }, [hovered, story.quote])
-
   function handleEnter() {
     if (imageRef.current) {
       const r = imageRef.current.getBoundingClientRect()
@@ -320,8 +312,6 @@ function StorySlideInner({
   function handleLeave() {
     setHovered(false)
   }
-
-  const showMoreLabel = isRtl ? "عرض المزيد" : "Show more"
 
   return (
     <>
@@ -368,22 +358,22 @@ function StorySlideInner({
                   )}
                 >
                   <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden">
-                    <p
-                      ref={quoteRef}
-                      className="min-h-0 line-clamp-3 text-[14px] leading-[1.45] sm:text-[15px] lg:text-[16px]"
-                    >
-                      &ldquo;{story.quote}&rdquo;
+                    <p className="text-[14px] leading-[1.45] sm:text-[15px] lg:text-[16px]">
+                      &ldquo;{quotePreview}&rdquo;
                     </p>
-                    {canExpand && (
+                    {canShowMore && (
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation()
                           setDetailsOpen(true)
                         }}
-                        className="shrink-0 self-start text-[12px] font-semibold underline underline-offset-2 opacity-90 transition-opacity hover:opacity-100"
+                        className={cn(
+                          "shrink-0 text-[12px] font-semibold underline underline-offset-2 opacity-90 transition-opacity hover:opacity-100",
+                          isRtl ? "self-end" : "self-start"
+                        )}
                       >
-                        {showMoreLabel}
+                        {t("showMore")}
                       </button>
                     )}
                   </div>
@@ -407,14 +397,14 @@ function StorySlideInner({
             isRtl ? "lg:items-end lg:text-end" : "lg:items-start lg:text-start"
           )}
         >
-          <p className="text-[14px] leading-[1.5] text-[#525252] sm:text-[16px]">&ldquo;{story.quote}&rdquo;</p>
-          {story.quote.length > 220 ? (
+          <p className="text-[14px] leading-[1.5] text-[#525252] sm:text-[16px]">&ldquo;{quotePreview}&rdquo;</p>
+          {canShowMore ? (
             <button
               type="button"
               onClick={() => setDetailsOpen(true)}
               className="text-[13px] font-semibold text-[#006EA8] underline underline-offset-2 transition-opacity hover:opacity-80"
             >
-              {showMoreLabel}
+              {t("showMore")}
             </button>
           ) : null}
           <StoryMeta role={role} location={location} muted />
@@ -430,9 +420,7 @@ function StorySlideInner({
             )}
           >
             <DialogTitle className="sr-only">{story.name}</DialogTitle>
-            <DialogDescription className="sr-only">
-              {isRtl ? "عرض نص التوصية بالكامل" : "View the full testimonial"}
-            </DialogDescription>
+            <DialogDescription className="sr-only">{t("viewFull")}</DialogDescription>
             <div className="flex max-h-[min(86vh,760px)] min-h-0 flex-col">
               <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-5 pb-5 pt-14 sm:px-7 sm:pb-7 sm:pt-16">
                 <div className="space-y-3">
@@ -441,7 +429,7 @@ function StorySlideInner({
                 </div>
                 <div className="min-h-0 overflow-y-auto pe-1">
                   <p className="whitespace-pre-wrap text-[15px] leading-[1.8] text-white/95 sm:text-[17px]">
-                    &ldquo;{story.quote}&rdquo;
+                    &ldquo;{quote}&rdquo;
                   </p>
                 </div>
               </div>
@@ -452,3 +440,4 @@ function StorySlideInner({
     </>
   )
 }
+

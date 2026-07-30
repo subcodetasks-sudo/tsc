@@ -7,6 +7,10 @@ import Image from "next/image"
 import type { SuccessStory } from "@/lib/api/types"
 import { resolveStoryImageUrl } from "@/features/testimonials/lib/resolve-story-image"
 import { deleteSuccessStoryAction } from "@/features/admin/actions/admin-actions"
+import {
+  TESTIMONIAL_QUOTE_MAX_CHARS,
+  truncateWithoutSpaces,
+} from "@/lib/quote-limits"
 import { AdminTableCell, AdminTableRow, AdminTableShell } from "./admin-table-shell"
 import { Plus, Trash2, AlertTriangle, Pencil } from "lucide-react"
 import { AdminPageLayout } from "./admin-page-layout"
@@ -145,7 +149,7 @@ export function AdminSuccessStoriesPanel({ stories }: { stories: SuccessStory[] 
                 {story.location || "—"}
               </AdminTableCell>
               <AdminTableCell className="w-[26%] truncate text-sm text-gray-600">
-                {story.quote}
+                {truncateWithoutSpaces(story.quote ?? "", TESTIMONIAL_QUOTE_MAX_CHARS)}
               </AdminTableCell>
               <AdminTableCell className="w-[12%] text-center">
                 <div className="flex items-center justify-center gap-2">

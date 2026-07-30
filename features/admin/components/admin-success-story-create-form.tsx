@@ -16,6 +16,7 @@ import {
   type SuccessStoryFormValues,
 } from "@/features/admin/lib/success-story-form-schema"
 import { buildSuccessStoryFormData, initialSuccessStoryFormValues } from "@/features/admin/lib/success-story-form-utils"
+import { TESTIMONIAL_QUOTE_MAX_CHARS } from "@/lib/quote-limits"
 import { AdminLocaleTextField } from "./admin-locale-text-field"
 import { AdminImageUploadField } from "./admin-image-upload-field"
 
@@ -30,10 +31,12 @@ export function AdminSuccessStoryCreateForm({ locale }: { locale: string }) {
   const schema = createSuccessStoryFormSchema({
     nameRequired: t("nameRequired"),
     locationRequired: t("locationRequired"),
+    quoteMaxLength: t("quoteMaxLength", { max: TESTIMONIAL_QUOTE_MAX_CHARS }),
   })
 
   const {
     register,
+    control,
     handleSubmit,
     setValue,
     watch,
@@ -123,10 +126,15 @@ export function AdminSuccessStoryCreateForm({ locale }: { locale: string }) {
           label={t("fields.quote")}
           locale={editLocale}
           register={register}
+          control={control}
           fieldPath={`quote.${editLocale}`}
           multiline
           rows={4}
+          maxCharsWithoutSpaces={TESTIMONIAL_QUOTE_MAX_CHARS}
         />
+        {errors.quote?.[editLocale]?.message && (
+          <p className="text-xs text-red-500">{errors.quote[editLocale]?.message}</p>
+        )}
       </div>
 
       <AdminImageUploadField

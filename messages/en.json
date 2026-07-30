@@ -356,6 +356,8 @@
       "eyebrow": "Real Impact",
       "title": "Success Stories from Our Community",
       "description": "Discover how we have empowered both talents and employers to thrive and grow within the German job market.",
+      "showMore": "Show more",
+      "viewFull": "View the full testimonial",
       "items": {
         "jacob": {
           "initials": "JJ",
@@ -1059,6 +1061,7 @@
         "profilePicture": "Profile Picture"
       },
       "nameRequired": "At least Arabic name is required",
+      "quoteMaxLength": "Quote must be at most {max} characters (spaces not counted)",
       "savedRedirect": "✓ Saved successfully, redirecting...",
       "actions": {
         "saving": "Saving...",
