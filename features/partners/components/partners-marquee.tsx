@@ -50,7 +50,7 @@ function PartnerItem({ partner }: { partner: Partner }) {
 export function PartnersMarquee({ partners, isRtl = false }: PartnersMarqueeProps) {
   const visible = partners.filter((p) => p.logo_url || p.logo)
   if (visible.length === 0) return null
-
+console.log("partners", partners)
   // Duplicate the strip so the CSS loop can scroll seamlessly.
   const strip = [...visible, ...visible]
 
