@@ -1077,7 +1077,7 @@
     },
     "partners": {
       "title": "Partner",
-      "description": "Partner-Logos für den Marquee unter dem Support-Bereich der Startseite verwalten.",
+      "description": "Partner-Logos für den Marquee unter dem Support-Bereich der About-Seite verwalten.",
       "hint": "Partnername, optionale Website und Logo hinzufügen. Empfohlenes Seitenverhältnis des Logos: 3:1 (z. B. 600×200).",
       "loadError": "Partner konnten nicht vom API geladen werden",
       "columns": {

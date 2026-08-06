@@ -3,7 +3,6 @@ import { HeroSection } from "@/features/hero"
 import { JobsSection } from "@/features/jobs"
 import { NewsSection } from "@/features/news"
 import { ProcessSection } from "@/features/process"
-import { PartnersSection } from "@/features/partners"
 import { SupportSection } from "@/features/support"
 import { TestimonialsSection } from "@/features/testimonials"
 import { getHomePageContent } from "@/lib/api/services/home-page.service"
@@ -34,7 +33,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <TestimonialsSection override={homeContent.sections.testimonials} />
       <NewsSection override={homeContent.sections.news} />
       <SupportSection override={homeContent.sections.footer} />
-      <PartnersSection />
     </main>
   )
 }

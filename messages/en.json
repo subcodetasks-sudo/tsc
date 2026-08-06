@@ -1077,7 +1077,7 @@
     },
     "partners": {
       "title": "Partners",
-      "description": "Manage partner logos shown in the homepage marquee under the support section.",
+      "description": "Manage partner logos shown in the About page marquee under the support section.",
       "hint": "Add a partner name, optional website, and a logo. Recommended logo aspect ratio is 3:1 (e.g. 600×200).",
       "loadError": "Could not load partners from the API",
       "columns": {

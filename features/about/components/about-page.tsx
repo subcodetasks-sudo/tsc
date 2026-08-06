@@ -1,4 +1,5 @@
 import { getLocale, getTranslations, setRequestLocale } from "next-intl/server"
+import { PartnersSection } from "@/features/partners"
 import { ProcessSection } from "@/features/process"
 import { SupportSection } from "@/features/support"
 import { getAbout } from "@/lib/api/services/about.service"
@@ -82,6 +83,7 @@ export async function AboutPage() {
       /> */}
 
       <SupportSection override={homeContent.sections.footer} />
+      <PartnersSection />
     </main>
   )
 }

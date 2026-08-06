@@ -5,15 +5,15 @@
   mask-image: linear-gradient(
     to right,
     transparent 0%,
-    #000 8%,
-    #000 92%,
+    #000 6%,
+    #000 94%,
     transparent 100%
   );
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0%,
-    #000 8%,
-    #000 92%,
+    #000 6%,
+    #000 94%,
     transparent 100%
   );
 }
@@ -22,10 +22,10 @@
 .trackRtl {
   display: flex;
   width: max-content;
-  align-items: center;
-  gap: 2.5rem;
-  padding-block: 0.25rem;
-  animation: partners-marquee-ltr 40s linear infinite;
+  align-items: flex-start;
+  gap: 3rem;
+  padding-block: 0.35rem 0.15rem;
+  animation: partners-marquee-ltr 42s linear infinite;
 }
 
 .trackRtl {
@@ -37,28 +37,24 @@
   animation-play-state: paused;
 }
 
-.logoSlot {
+.item {
+  display: flex;
+  width: 168px;
+  flex-shrink: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  text-decoration: none;
+  color: inherit;
+  outline: none;
+}
+
+.logoFrame {
   display: flex;
   height: 56px;
-  width: 160px;
-  flex-shrink: 0;
+  width: 100%;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
-  background: #ffffff;
-  padding: 0.5rem 0.75rem;
-  box-shadow: 0 0 0 1px rgba(194, 227, 250, 0.7);
-}
-
-.logoLink {
-  display: block;
-  flex-shrink: 0;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.logoLink:hover {
-  opacity: 0.85;
-  transform: translateY(-1px);
 }
 
 .logoImage {
@@ -66,26 +62,62 @@
   width: 100%;
   object-fit: contain;
   object-position: center;
+  opacity: 0.72;
+  filter: grayscale(0.15);
+  transition:
+    opacity 0.25s ease,
+    filter 0.25s ease,
+    transform 0.25s ease;
 }
 
-.fadeStart,
-.fadeEnd {
-  pointer-events: none;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 48px;
-  z-index: 1;
+.partnerName {
+  max-width: 100%;
+  text-align: center;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  color: #475569;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.fadeStart {
-  inset-inline-start: 0;
-  background: linear-gradient(to right, #f8fbff, transparent);
+/* Desktop: name reveals on hover */
+@media (hover: hover) and (pointer: fine) {
+  .partnerName {
+    opacity: 0;
+    transform: translateY(4px);
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease;
+  }
+
+  .item:hover .partnerName,
+  .item:focus-visible .partnerName {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .item:hover .logoImage,
+  .item:focus-visible .logoImage {
+    opacity: 1;
+    filter: grayscale(0);
+    transform: translateY(-2px);
+  }
 }
 
-.fadeEnd {
-  inset-inline-end: 0;
-  background: linear-gradient(to left, #f8fbff, transparent);
+/* Mobile / touch: name always under the logo */
+@media (hover: none), (pointer: coarse) {
+  .partnerName {
+    opacity: 1;
+    transform: none;
+  }
+
+  .logoImage {
+    opacity: 0.88;
+    filter: none;
+  }
 }
 
 @keyframes partners-marquee-ltr {
@@ -113,5 +145,11 @@
     flex-wrap: wrap;
     justify-content: center;
     width: 100%;
+    gap: 2rem 2.5rem;
+  }
+
+  .partnerName {
+    opacity: 1;
+    transform: none;
   }
 }

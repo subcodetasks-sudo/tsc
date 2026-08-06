@@ -218,6 +218,7 @@ export async function deletePartnerAction(id: number, locale: string) {
     const { token } = await requireAdmin(locale)
     await deletePartner(id, token, locale)
     revalidatePath(`/${locale}/dashboard/admin/partners`)
+    revalidatePath(`/${locale}/about`)
     revalidatePath(`/${locale}`)
     return { ok: true as const }
   } catch (err) {
@@ -235,6 +236,7 @@ export async function savePartnerAction(formData: FormData, locale: string, part
       await createPartner(formData, token, locale)
     }
     revalidatePath(`/${locale}/dashboard/admin/partners`)
+    revalidatePath(`/${locale}/about`)
     revalidatePath(`/${locale}`)
     return { ok: true as const }
   } catch (err) {

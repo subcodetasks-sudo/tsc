@@ -10,21 +10,24 @@ type PartnersMarqueeProps = {
   isRtl?: boolean
 }
 
-function PartnerLogo({ partner }: { partner: Partner }) {
+function PartnerItem({ partner }: { partner: Partner }) {
   const src = resolveImageUrl(partner.logo_url ?? partner.logo)
   if (!src) return null
 
-  const content = (
-    <span className={styles.logoSlot}>
-      <Image
-        src={src}
-        alt={partner.name}
-        width={160}
-        height={54}
-        className={styles.logoImage}
-        unoptimized
-      />
-    </span>
+  const inner = (
+    <>
+      <span className={styles.logoFrame}>
+        <Image
+          src={src}
+          alt={partner.name}
+          width={168}
+          height={56}
+          className={styles.logoImage}
+          unoptimized
+        />
+      </span>
+      <span className={styles.partnerName}>{partner.name}</span>
+    </>
   )
 
   if (partner.website_url) {
@@ -33,15 +36,15 @@ function PartnerLogo({ partner }: { partner: Partner }) {
         href={partner.website_url}
         target="_blank"
         rel="noopener noreferrer"
-        className={styles.logoLink}
+        className={styles.item}
         aria-label={partner.name}
       >
-        {content}
+        {inner}
       </a>
     )
   }
 
-  return content
+  return <div className={styles.item}>{inner}</div>
 }
 
 export function PartnersMarquee({ partners, isRtl = false }: PartnersMarqueeProps) {
@@ -53,11 +56,9 @@ export function PartnersMarquee({ partners, isRtl = false }: PartnersMarqueeProp
 
   return (
     <div className={styles.viewport} dir={isRtl ? "rtl" : "ltr"}>
-      <div className={styles.fadeStart} aria-hidden />
-      <div className={styles.fadeEnd} aria-hidden />
       <div className={isRtl ? styles.trackRtl : styles.track}>
         {strip.map((partner, index) => (
-          <PartnerLogo key={`${partner.id}-${index}`} partner={partner} />
+          <PartnerItem key={`${partner.id}-${index}`} partner={partner} />
         ))}
       </div>
     </div>

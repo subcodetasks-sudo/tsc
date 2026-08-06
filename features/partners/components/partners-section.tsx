@@ -22,13 +22,13 @@ export async function PartnersSection() {
   if (partners.length === 0) return null
 
   return (
-    <SectionShell stagger={false} className="overflow-x-clip bg-[#f8fbff] py-10 sm:py-12 lg:py-14">
-      <div className="mb-8 space-y-2 text-center">
-        <p className="text-[13px] font-semibold tracking-[0.06em] text-[#006EA8]">{t("eyebrow")}</p>
+    <SectionShell stagger={false} className="overflow-x-clip bg-[#f8fbff] pb-14 pt-2 sm:pb-16 sm:pt-4 lg:pb-20">
+      <div className="mb-8 space-y-2 text-center sm:mb-10">
+        <p className="text-[13px] font-semibold tracking-[0.08em] text-[#006EA8]">{t("eyebrow")}</p>
         <h2 className="font-[family-name:var(--font-encode-sans-narrow)] text-[26px] font-bold leading-tight text-[#0F172A] sm:text-[32px]">
           {t("title")}
         </h2>
-        <p className="mx-auto max-w-[560px] text-sm leading-7 text-[#64748B] sm:text-base">
+        <p className="mx-auto max-w-[520px] text-sm leading-7 text-[#64748B] sm:text-base">
           {t("description")}
         </p>
       </div>
