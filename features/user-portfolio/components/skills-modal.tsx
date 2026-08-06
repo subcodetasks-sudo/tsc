@@ -8,7 +8,12 @@ import { toast } from "sonner"
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { gradientTitleClasses, inputClass, labelClass } from "../lib/style-constants"
 import { createSkillsFormSchema, type SkillsFormValues } from "../lib/skills-form-schema"
-import { SUGGESTED_SKILLS } from "../lib/suggested-skills"
+import {
+  SUGGESTED_SKILL_CATEGORIES,
+  SUGGESTED_SKILLS,
+  findSuggestedSkill,
+  type SuggestedSkill,
+} from "../lib/suggested-skills"
 import type { SkillItem } from "../types/portfolio.types"
 
 export function SkillsModal({
@@ -64,8 +69,26 @@ export function SkillsModal({
     }
   }, [isOtherMode])
 
+  function skillLabel(skill: SuggestedSkill) {
+    return t(`skills.suggested.${skill.key}`)
+  }
+
+  function displaySkillName(name: string) {
+    const match = findSuggestedSkill(name)
+    return match ? skillLabel(match) : name
+  }
+
   function isDuplicate(name: string) {
-    return currentSkills.some((s) => s.skillName.toLowerCase() === name.toLowerCase())
+    const needle = name.trim().toLowerCase()
+    return currentSkills.some((s) => {
+      const existing = findSuggestedSkill(s.skillName)
+      const existingLabel = existing ? skillLabel(existing).toLowerCase() : s.skillName.toLowerCase()
+      return (
+        s.skillName.toLowerCase() === needle ||
+        existingLabel === needle ||
+        (existing !== undefined && existing.value.toLowerCase() === needle)
+      )
+    })
   }
 
   function addSkill(name: string) {
@@ -75,15 +98,16 @@ export function SkillsModal({
       toast.error(t("skills.modal.duplicateError"))
       return
     }
-    append({ tempId: `skill-${Date.now()}`, skillName: text })
+    const known = findSuggestedSkill(text)
+    append({ tempId: `skill-${Date.now()}`, skillName: known ? known.value : text })
     setSearchInput("")
     setCustomSkill("")
     setIsOtherMode(false)
     setShowDropdown(false)
   }
 
-  function selectSuggested(name: string) {
-    addSkill(name)
+  function selectSuggested(skill: SuggestedSkill) {
+    addSkill(skill.value)
   }
 
   function selectOther(initial?: string) {
@@ -104,9 +128,17 @@ export function SkillsModal({
     onOpenChange(false)
   })
 
-  const suggestions = SUGGESTED_SKILLS.filter(
-    (s) => s.toLowerCase().includes(searchInput.toLowerCase()) && !isDuplicate(s)
-  )
+  const query = searchInput.trim().toLowerCase()
+  const suggestions = SUGGESTED_SKILLS.filter((s) => {
+    if (isDuplicate(s.value)) return false
+    if (!query) return true
+    return skillLabel(s).toLowerCase().includes(query) || s.value.toLowerCase().includes(query)
+  })
+
+  const groupedSuggestions = SUGGESTED_SKILL_CATEGORIES.map((category) => ({
+    category,
+    items: suggestions.filter((s) => s.category === category),
+  })).filter((group) => group.items.length > 0)
 
   const otherMatchesSearch =
     !searchInput.trim() ||
@@ -138,7 +170,7 @@ export function SkillsModal({
                     key={field.id}
                     className="flex items-center gap-1.5 px-3 py-1 border border-[#006EA8] text-[#006EA8] bg-white rounded-full text-xs font-semibold"
                   >
-                    <span>{field.skillName}</span>
+                    <span>{displaySkillName(field.skillName)}</span>
                     <button
                       type="button"
                       onClick={() => remove(idx)}
@@ -229,7 +261,7 @@ export function SkillsModal({
                 </div>
 
                 {showDropdown && (
-                  <div className="absolute z-50 left-0 right-0 mt-1 bg-white border border-[#E5E7EB] rounded-[8px] shadow-lg max-h-[220px] overflow-y-auto">
+                  <div className="absolute z-50 left-0 right-0 mt-1 bg-white border border-[#E5E7EB] rounded-[8px] shadow-lg max-h-[280px] overflow-y-auto">
                     {otherMatchesSearch && (
                       <>
                         <button
@@ -251,15 +283,22 @@ export function SkillsModal({
                       </>
                     )}
 
-                    {suggestions.map((item) => (
-                      <button
-                        key={item}
-                        type="button"
-                        onClick={() => selectSuggested(item)}
-                        className="w-full text-start px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition"
-                      >
-                        {item}
-                      </button>
+                    {groupedSuggestions.map((group) => (
+                      <div key={group.category}>
+                        <div className="sticky top-0 z-10 bg-[#F8FAFC] px-4 py-1.5 text-[11px] font-bold uppercase tracking-wide text-[#64748B] border-b border-[#E5E7EB]">
+                          {t(`skills.categories.${group.category}`)}
+                        </div>
+                        {group.items.map((item) => (
+                          <button
+                            key={item.key}
+                            type="button"
+                            onClick={() => selectSuggested(item)}
+                            className="w-full text-start px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition"
+                          >
+                            {skillLabel(item)}
+                          </button>
+                        ))}
+                      </div>
                     ))}
 
                     {suggestions.length === 0 && searchInput.trim() !== "" && (

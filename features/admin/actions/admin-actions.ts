@@ -9,6 +9,11 @@ import {
   updateSuccessStory,
 } from "@/lib/api/services/success-stories.service"
 import {
+  createPartner,
+  deletePartner,
+  updatePartner,
+} from "@/lib/api/services/partners.service"
+import {
   createNewsItem,
   deleteNewsItem,
   updateNewsItem,
@@ -64,6 +69,7 @@ function revalidateAdmin(locale: string) {
   revalidatePath(`${base}/users`)
   revalidatePath(`${base}/companies`)
   revalidatePath(`${base}/success-stories`)
+  revalidatePath(`${base}/partners`)
   revalidatePath(`${base}/settings`)
   revalidatePath(`/${locale}`)
 }
@@ -203,6 +209,36 @@ export async function saveSuccessStoryAction(formData: FormData, locale: string,
     return { ok: true as const }
   } catch (err) {
     const message = formatApiValidationMessage(err, "Failed to save story")
+    return { ok: false as const, message }
+  }
+}
+
+export async function deletePartnerAction(id: number, locale: string) {
+  try {
+    const { token } = await requireAdmin(locale)
+    await deletePartner(id, token, locale)
+    revalidatePath(`/${locale}/dashboard/admin/partners`)
+    revalidatePath(`/${locale}`)
+    return { ok: true as const }
+  } catch (err) {
+    const message = err instanceof ApiError ? err.message : "Failed to delete"
+    return { ok: false as const, message }
+  }
+}
+
+export async function savePartnerAction(formData: FormData, locale: string, partnerId?: number) {
+  try {
+    const { token } = await requireAdmin(locale)
+    if (partnerId) {
+      await updatePartner(partnerId, formData, token, locale)
+    } else {
+      await createPartner(formData, token, locale)
+    }
+    revalidatePath(`/${locale}/dashboard/admin/partners`)
+    revalidatePath(`/${locale}`)
+    return { ok: true as const }
+  } catch (err) {
+    const message = formatApiValidationMessage(err, "Failed to save partner")
     return { ok: false as const, message }
   }
 }
@@ -549,7 +585,14 @@ export async function suspendUserAction(
 
 export async function updateAdminUserAction(
   userId: number | string | { id?: number | string; uuid?: string | null; email?: string | null },
-  data: { name?: string; email?: string; password?: string; status?: string; email_verified?: boolean | number },
+  data: {
+    name?: string
+    email?: string
+    password?: string
+    password_confirmation?: string
+    status?: string
+    email_verified?: boolean | number
+  },
   locale: string
 ) {
   try {
@@ -559,7 +602,19 @@ export async function updateAdminUserAction(
     revalidateAdmin(locale)
     return { ok: true as const }
   } catch (err) {
-    const message = err instanceof ApiError ? err.message : "Failed to update user profile"
+    if (err instanceof ApiError) {
+      console.error(
+        "[updateAdminUserAction] failed",
+        JSON.stringify(
+          { userId, data, status: err.status, message: err.message, errors: err.errors },
+          null,
+          2
+        )
+      )
+      return { ok: false as const, message: err.message, status: err.status, errors: err.errors }
+    }
+    const message = err instanceof Error ? err.message : "Failed to update user profile"
+    console.error("[updateAdminUserAction] failed", message)
     return { ok: false as const, message }
   }
 }

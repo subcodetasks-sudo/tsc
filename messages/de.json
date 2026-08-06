@@ -486,6 +486,11 @@
         "contact": "Kontakt"
       }
     },
+    "partners": {
+      "eyebrow": "Vertrauensnetzwerk",
+      "title": "Unsere Partner",
+      "description": "Unternehmen und Gesundheitsanbieter, die Talent SC vertrauen."
+    },
     "about": {
       "intro": {
         "eyebrow": "Unsere Identitaet",
@@ -1070,6 +1075,47 @@
         "back": "Zurück"
       }
     },
+    "partners": {
+      "title": "Partner",
+      "description": "Partner-Logos für den Marquee unter dem Support-Bereich der Startseite verwalten.",
+      "hint": "Partnername, optionale Website und Logo hinzufügen. Empfohlenes Seitenverhältnis des Logos: 3:1 (z. B. 600×200).",
+      "loadError": "Partner konnten nicht vom API geladen werden",
+      "columns": {
+        "logo": "Logo",
+        "name": "Name",
+        "website": "Website",
+        "sortOrder": "Reihenfolge",
+        "actions": "Aktionen"
+      },
+      "fields": {
+        "name": "Partnername",
+        "website": "Website-URL",
+        "sortOrder": "Sortierung",
+        "logo": "Logo"
+      },
+      "add": "+ Partner hinzufügen",
+      "createTitle": "Neuer Partner",
+      "editTitle": "Partner bearbeiten",
+      "delete": "Löschen",
+      "deleteConfirm": "Möchten Sie diesen Partner wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "empty": "Noch keine Partner",
+      "error": "Speichern fehlgeschlagen",
+      "nameRequired": "Mindestens ein Name (Arabisch, Englisch oder Deutsch) ist erforderlich",
+      "savedRedirect": "✓ Erfolgreich gespeichert, Weiterleitung...",
+      "labels": {
+        "language": "Sprache:"
+      },
+      "sections": {
+        "partnerDetails": "Partnerdaten",
+        "logo": "Partner-Logo (Seitenverhältnis 3:1)"
+      },
+      "actions": {
+        "saving": "Speichern...",
+        "create": "Partner erstellen",
+        "saveChanges": "Änderungen speichern",
+        "back": "Zurück"
+      }
+    },
     "categories": {
       "manageCategories": "Kategorien verwalten",
       "manageCategoriesDesc": "Jobkategorien hinzufügen und bearbeiten, die auf der Jobs- und Startseite angezeigt werden",
@@ -1485,6 +1531,71 @@
     "skills": {
       "heading": "Fähigkeiten",
       "empty": "Bisher keine Fähigkeiten hinzugefügt",
+      "categories": {
+        "it": "IT & Digital",
+        "soft": "Soft Skills",
+        "industry": "Technische Fähigkeiten (Industrie)",
+        "healthcare": "Pflege & Gesundheitswesen"
+      },
+      "suggested": {
+        "react": "React",
+        "nextjs": "Next.js",
+        "typescript": "TypeScript",
+        "javascript": "JavaScript",
+        "html": "HTML",
+        "css": "CSS",
+        "tailwind": "Tailwind CSS",
+        "nodejs": "Node.js",
+        "python": "Python",
+        "php": "PHP",
+        "sql": "SQL",
+        "git": "Git",
+        "docker": "Docker",
+        "graphql": "GraphQL",
+        "restApi": "REST API",
+        "figma": "Figma",
+        "wordpress": "WordPress",
+        "uiux": "UI/UX Design",
+        "laravel": "Laravel",
+        "angular": "Angular",
+        "vuejs": "Vue.js",
+        "teamwork": "Teamfähigkeit",
+        "communication": "Kommunikationsfähigkeit",
+        "responsibility": "Verantwortungsbewusstsein",
+        "reliability": "Zuverlässigkeit",
+        "flexibility": "Flexibilität",
+        "willingnessToLearn": "Lernbereitschaft",
+        "independentWorking": "Selbstständiges Arbeiten",
+        "problemSolving": "Problemlösungskompetenz",
+        "resilience": "Belastbarkeit",
+        "organizationalSkills": "Organisationstalent",
+        "customerOrientation": "Kundenorientierung",
+        "leadershipExperience": "Führungserfahrung",
+        "machineOperation": "Maschinenbedienung",
+        "cnc": "CNC",
+        "plcProgramming": "SPS-Programmierung",
+        "electricalEngineering": "Elektrotechnik",
+        "mechatronics": "Mechatronik",
+        "welding": "Schweißen",
+        "hydraulics": "Hydraulik",
+        "pneumatics": "Pneumatik",
+        "qualityControl": "Qualitätskontrolle",
+        "maintenance": "Wartung & Instandhaltung",
+        "cadDesign": "CAD-Konstruktion",
+        "robotics": "Robotik",
+        "automationTechnology": "Automatisierungstechnik",
+        "basicCare": "Grundpflege",
+        "treatmentCare": "Behandlungspflege",
+        "intensiveCare": "Intensivpflege",
+        "operatingRoomExperience": "OP-Erfahrung",
+        "elderlyCare": "Altenpflege",
+        "emergencyCare": "Notfallversorgung",
+        "woundManagement": "Wundmanagement",
+        "medicationAdministration": "Medikamentengabe",
+        "documentation": "Dokumentation",
+        "hygieneRegulations": "Hygienevorschriften",
+        "patientCare": "Patientenbetreuung"
+      },
       "modal": {
         "description": "Fähigkeiten in Ihrem Portfolio hinzufügen und bearbeiten",
         "label": "Fähigkeit *",

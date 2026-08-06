@@ -880,7 +880,14 @@ export async function suspendUser(
 
 export async function updateAdminUser(
   userId: number | string | { id?: number | string; uuid?: string | null; email?: string | null },
-  data: { name?: string; email?: string; password?: string; status?: string; email_verified?: number | boolean },
+  data: {
+    name?: string
+    email?: string
+    password?: string
+    password_confirmation?: string
+    status?: string
+    email_verified?: number | boolean
+  },
   token: string,
   locale = "ar"
 ): Promise<void> {
@@ -888,11 +895,34 @@ export async function updateAdminUser(
   const formData = new FormData()
   if (data.name) formData.append("name", data.name)
   if (data.email) formData.append("email", data.email)
-  if (data.password) formData.append("password", data.password)
+  if (data.password) {
+    formData.append("password", data.password)
+    formData.append("password_confirmation", data.password_confirmation ?? data.password)
+  }
   if (data.status) formData.append("status", data.status)
   if (data.email_verified !== undefined) {
     formData.append("email_verified", data.email_verified ? "1" : "0")
   }
 
-  await api.post(`/users/${routeId}`, formData, { token, locale })
+  try {
+    const response = await api.post(`/users/${routeId}`, formData, { token, locale })
+    console.log(
+      "[updateAdminUser] upstream OK",
+      JSON.stringify({ routeId, payload: data, response }, null, 2)
+    )
+  } catch (err) {
+    if (err instanceof ApiError) {
+      console.error(
+        "[updateAdminUser] upstream ERROR",
+        JSON.stringify(
+          { routeId, payload: data, status: err.status, message: err.message, errors: err.errors },
+          null,
+          2
+        )
+      )
+    } else {
+      console.error("[updateAdminUser] upstream ERROR", err)
+    }
+    throw err
+  }
 }

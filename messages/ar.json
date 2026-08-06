@@ -452,6 +452,11 @@
         "contact": "تواصل معنا"
       }
     },
+    "partners": {
+      "eyebrow": "شبكة موثوقة",
+      "title": "شركاؤنا",
+      "description": "شركات ومقدمو رعاية صحية يثقون في Talent SC."
+    },
     "about": {
       "intro": {
         "eyebrow": "هويتنا",
@@ -1072,6 +1077,47 @@
         "back": "رجوع"
       }
     },
+    "partners": {
+      "title": "الشركاء",
+      "description": "إدارة شعارات الشركاء المعروضة في شريط التمرير أسفل قسم الدعم في الصفحة الرئيسية.",
+      "hint": "أضف اسم الشريك ورابط الموقع اختياريًا والشعار. نسبة العرض إلى الارتفاع الموصى بها للشعار هي 3:1 (مثل 600×200).",
+      "loadError": "تعذر تحميل الشركاء من الخادم",
+      "columns": {
+        "logo": "الشعار",
+        "name": "الاسم",
+        "website": "الموقع",
+        "sortOrder": "الترتيب",
+        "actions": "الإجراءات"
+      },
+      "fields": {
+        "name": "اسم الشريك",
+        "website": "رابط الموقع",
+        "sortOrder": "ترتيب العرض",
+        "logo": "الشعار"
+      },
+      "add": "+ إضافة شريك",
+      "createTitle": "شريك جديد",
+      "editTitle": "تعديل الشريك",
+      "delete": "حذف",
+      "deleteConfirm": "هل أنت متأكد من حذف هذا الشريك؟ لا يمكن التراجع عن هذا الإجراء.",
+      "empty": "لا يوجد شركاء بعد",
+      "error": "تعذر الحفظ",
+      "nameRequired": "يجب إدخال الاسم بلغة واحدة على الأقل (عربي أو إنجليزي أو ألماني)",
+      "savedRedirect": "✓ تم الحفظ بنجاح، جاري التوجيه...",
+      "labels": {
+        "language": "اللغة:"
+      },
+      "sections": {
+        "partnerDetails": "بيانات الشريك",
+        "logo": "شعار الشريك (نسبة العرض إلى الارتفاع 3:1)"
+      },
+      "actions": {
+        "saving": "جاري الحفظ...",
+        "create": "إنشاء الشريك",
+        "saveChanges": "حفظ التغييرات",
+        "back": "رجوع"
+      }
+    },
     "categories": {
       "manageCategories": "إدارة الفئات",
       "manageCategoriesDesc": "أضف وعدّل فئات الوظائف المعروضة في صفحة الوظائف والرئيسية",
@@ -1487,6 +1533,71 @@
     "skills": {
       "heading": "المهارات",
       "empty": "لم يتم إضافة مهارات بعد",
+      "categories": {
+        "it": "تقنية المعلومات والرقمنة",
+        "soft": "المهارات الشخصية",
+        "industry": "المهارات التقنية (الصناعة)",
+        "healthcare": "الرعاية والرعاية الصحية"
+      },
+      "suggested": {
+        "react": "React",
+        "nextjs": "Next.js",
+        "typescript": "TypeScript",
+        "javascript": "JavaScript",
+        "html": "HTML",
+        "css": "CSS",
+        "tailwind": "Tailwind CSS",
+        "nodejs": "Node.js",
+        "python": "Python",
+        "php": "PHP",
+        "sql": "SQL",
+        "git": "Git",
+        "docker": "Docker",
+        "graphql": "GraphQL",
+        "restApi": "REST API",
+        "figma": "Figma",
+        "wordpress": "WordPress",
+        "uiux": "تصميم واجهة وتجربة المستخدم",
+        "laravel": "Laravel",
+        "angular": "Angular",
+        "vuejs": "Vue.js",
+        "teamwork": "العمل الجماعي",
+        "communication": "مهارات التواصل",
+        "responsibility": "الشعور بالمسؤولية",
+        "reliability": "الموثوقية",
+        "flexibility": "المرونة",
+        "willingnessToLearn": "الاستعداد للتعلم",
+        "independentWorking": "العمل بشكل مستقل",
+        "problemSolving": "حل المشكلات",
+        "resilience": "القدرة على التحمل",
+        "organizationalSkills": "مهارات التنظيم",
+        "customerOrientation": "التوجه نحو العملاء",
+        "leadershipExperience": "خبرة قيادية",
+        "machineOperation": "تشغيل الآلات",
+        "cnc": "CNC",
+        "plcProgramming": "برمجة PLC / SPS",
+        "electricalEngineering": "الهندسة الكهربائية",
+        "mechatronics": "الميكاترونيك",
+        "welding": "اللحام",
+        "hydraulics": "الهيدروليك",
+        "pneumatics": "الهواء المضغوط (بنوماتيك)",
+        "qualityControl": "مراقبة الجودة",
+        "maintenance": "الصيانة والإصلاح",
+        "cadDesign": "تصميم CAD",
+        "robotics": "الروبوتات",
+        "automationTechnology": "تقنية الأتمتة",
+        "basicCare": "الرعاية الأساسية",
+        "treatmentCare": "رعاية علاجية",
+        "intensiveCare": "العناية المركزة",
+        "operatingRoomExperience": "خبرة غرفة العمليات",
+        "elderlyCare": "رعاية المسنين",
+        "emergencyCare": "الرعاية الطارئة",
+        "woundManagement": "إدارة الجروح",
+        "medicationAdministration": "إعطاء الأدوية",
+        "documentation": "التوثيق",
+        "hygieneRegulations": "قواعد النظافة",
+        "patientCare": "رعاية المرضى"
+      },
       "modal": {
         "description": "إضافة وتعديل المهارات في سيرتك الذاتية",
         "label": "المهارة *",
@@ -1497,8 +1608,8 @@
         "otherOption": "أخرى",
         "otherCaption": "اكتب مهارتك",
         "otherHint": "اكتب مهارة غير موجودة في القائمة",
-        "otherPlaceholder": "مثال: Kubernetes، Salesforce…",
         "backToList": "العودة للقائمة",
+        "otherPlaceholder": "مثال: Kubernetes، Salesforce…",
         "noMatch": "لا توجد مهارات مطابقة",
         "add": "إضافة"
       }

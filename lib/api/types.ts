@@ -259,6 +259,19 @@ export interface SuccessStory {
   updated_at?: string
 }
 
+/** Partner logo shown in the homepage partners marquee. */
+export interface Partner {
+  id: number
+  name: string
+  logo?: string | null
+  logo_url?: string | null
+  website_url?: string | null
+  is_active?: boolean
+  sort_order?: number
+  created_at?: string
+  updated_at?: string
+}
+
 export interface About {
   title: string
   description: string

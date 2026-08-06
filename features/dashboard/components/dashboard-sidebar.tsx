@@ -174,6 +174,11 @@ function getAdminGroups(locale: string): SidebarGroup[] {
           href: "/dashboard/admin/success-stories",
         },
         {
+          icon: "/dashboard/profile.svg",
+          label: getLabel(locale, "الشركاء", "Partners", "Partner"),
+          href: "/dashboard/admin/partners",
+        },
+        {
           icon: "/dashboard/tickets.svg",
           label: getLabel(locale, "الأخبار", "News", "Neuigkeiten"),
           href: "/dashboard/admin/news",

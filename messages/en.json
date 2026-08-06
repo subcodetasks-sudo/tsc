@@ -486,6 +486,11 @@
         "contact": "Contact Us"
       }
     },
+    "partners": {
+      "eyebrow": "Trusted Network",
+      "title": "Our Partners",
+      "description": "Companies and healthcare providers who trust Talent SC."
+    },
     "about": {
       "intro": {
         "eyebrow": "Our Identity",
@@ -1070,6 +1075,47 @@
         "back": "Back"
       }
     },
+    "partners": {
+      "title": "Partners",
+      "description": "Manage partner logos shown in the homepage marquee under the support section.",
+      "hint": "Add a partner name, optional website, and a logo. Recommended logo aspect ratio is 3:1 (e.g. 600×200).",
+      "loadError": "Could not load partners from the API",
+      "columns": {
+        "logo": "Logo",
+        "name": "Name",
+        "website": "Website",
+        "sortOrder": "Order",
+        "actions": "Actions"
+      },
+      "fields": {
+        "name": "Partner name",
+        "website": "Website URL",
+        "sortOrder": "Sort order",
+        "logo": "Logo"
+      },
+      "add": "+ Add partner",
+      "createTitle": "New partner",
+      "editTitle": "Edit partner",
+      "delete": "Delete",
+      "deleteConfirm": "Are you sure you want to delete this partner? This cannot be undone.",
+      "empty": "No partners yet",
+      "error": "Save failed",
+      "nameRequired": "At least one name (Arabic, English, or German) is required",
+      "savedRedirect": "✓ Saved successfully, redirecting...",
+      "labels": {
+        "language": "Language:"
+      },
+      "sections": {
+        "partnerDetails": "Partner details",
+        "logo": "Partner logo (aspect ratio 3:1)"
+      },
+      "actions": {
+        "saving": "Saving...",
+        "create": "Create partner",
+        "saveChanges": "Save changes",
+        "back": "Back"
+      }
+    },
     "categories": {
       "manageCategories": "Manage Categories",
       "manageCategoriesDesc": "Add and edit job categories shown on the jobs and home pages",
@@ -1485,6 +1531,71 @@
     "skills": {
       "heading": "Skills",
       "empty": "No skills added yet",
+      "categories": {
+        "it": "IT & Digital",
+        "soft": "Soft Skills",
+        "industry": "Technical Skills (Industry)",
+        "healthcare": "Care & Healthcare"
+      },
+      "suggested": {
+        "react": "React",
+        "nextjs": "Next.js",
+        "typescript": "TypeScript",
+        "javascript": "JavaScript",
+        "html": "HTML",
+        "css": "CSS",
+        "tailwind": "Tailwind CSS",
+        "nodejs": "Node.js",
+        "python": "Python",
+        "php": "PHP",
+        "sql": "SQL",
+        "git": "Git",
+        "docker": "Docker",
+        "graphql": "GraphQL",
+        "restApi": "REST API",
+        "figma": "Figma",
+        "wordpress": "WordPress",
+        "uiux": "UI/UX Design",
+        "laravel": "Laravel",
+        "angular": "Angular",
+        "vuejs": "Vue.js",
+        "teamwork": "Teamwork",
+        "communication": "Communication",
+        "responsibility": "Sense of Responsibility",
+        "reliability": "Reliability",
+        "flexibility": "Flexibility",
+        "willingnessToLearn": "Willingness to Learn",
+        "independentWorking": "Independent Working",
+        "problemSolving": "Problem Solving",
+        "resilience": "Resilience",
+        "organizationalSkills": "Organizational Skills",
+        "customerOrientation": "Customer Orientation",
+        "leadershipExperience": "Leadership Experience",
+        "machineOperation": "Machine Operation",
+        "cnc": "CNC",
+        "plcProgramming": "PLC Programming",
+        "electricalEngineering": "Electrical Engineering",
+        "mechatronics": "Mechatronics",
+        "welding": "Welding",
+        "hydraulics": "Hydraulics",
+        "pneumatics": "Pneumatics",
+        "qualityControl": "Quality Control",
+        "maintenance": "Maintenance & Servicing",
+        "cadDesign": "CAD Design",
+        "robotics": "Robotics",
+        "automationTechnology": "Automation Technology",
+        "basicCare": "Basic Care",
+        "treatmentCare": "Treatment Care",
+        "intensiveCare": "Intensive Care",
+        "operatingRoomExperience": "Operating Room Experience",
+        "elderlyCare": "Elderly Care",
+        "emergencyCare": "Emergency Care",
+        "woundManagement": "Wound Management",
+        "medicationAdministration": "Medication Administration",
+        "documentation": "Documentation",
+        "hygieneRegulations": "Hygiene Regulations",
+        "patientCare": "Patient Care"
+      },
       "modal": {
         "description": "Add and manage skills in your portfolio",
         "label": "Skill *",

@@ -1,6 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
+import { findSuggestedSkill } from "../lib/suggested-skills"
 import { PortfolioSectionCard } from "./portfolio-section-card"
 import type { SkillItem } from "../types/portfolio.types"
 
@@ -14,6 +15,11 @@ export function SkillsSection({
   onEdit: () => void
 }) {
   const t = useTranslations("UserPortfolio")
+
+  function displaySkillName(name: string) {
+    const match = findSuggestedSkill(name)
+    return match ? t(`skills.suggested.${match.key}`) : name
+  }
 
   return (
     <PortfolioSectionCard
@@ -36,7 +42,7 @@ export function SkillsSection({
               key={idx}
               className="px-4 py-1.5 border border-[#006EA8] text-[#006EA8] bg-white rounded-full text-sm font-semibold hover:bg-[#F0F9FF] transition"
             >
-              {s.skillName}
+              {displaySkillName(s.skillName)}
             </div>
           ))
         ) : (

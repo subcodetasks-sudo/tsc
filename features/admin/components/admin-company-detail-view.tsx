@@ -7,8 +7,9 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import type { User } from "@/lib/api/types"
 import { cn } from "@/lib/utils"
 import { updateAdminUserAction, suspendUserAction } from "@/features/admin/actions/admin-actions"
+import { validateNewPassword } from "@/lib/password-validation"
 import { toast } from "sonner"
-import { ShieldAlert } from "lucide-react"
+import { ShieldAlert, Eye, EyeOff } from "lucide-react"
 import { AdminConfirmDialog } from "./admin-confirm-dialog"
 
 export function AdminCompanyDetailView({ company, locale }: { company: User; locale: string }) {
@@ -23,6 +24,9 @@ export function AdminCompanyDetailView({ company, locale }: { company: User; loc
   const [name, setName] = useState(company.name || "")
   const [email, setEmail] = useState(company.email || "")
   const [password, setPassword] = useState("")
+  const [passwordConfirmation, setPasswordConfirmation] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
 
@@ -60,11 +64,29 @@ export function AdminCompanyDetailView({ company, locale }: { company: User; loc
     e.preventDefault()
     setError(null)
     setSuccess(null)
+
+    const trimmedPassword = password.trim()
+    if (trimmedPassword) {
+      const passwordError = validateNewPassword(trimmedPassword, passwordConfirmation.trim(), locale)
+      if (passwordError) {
+        setError(passwordError)
+        return
+      }
+    }
+
     startTransition(async () => {
-      const payload: { name?: string; email?: string; password?: string } = {}
+      const payload: {
+        name?: string
+        email?: string
+        password?: string
+        password_confirmation?: string
+      } = {}
       if (name.trim() !== company.name) payload.name = name.trim()
       if (email.trim() !== company.email) payload.email = email.trim()
-      if (password.trim() !== "") payload.password = password.trim()
+      if (trimmedPassword) {
+        payload.password = trimmedPassword
+        payload.password_confirmation = passwordConfirmation.trim()
+      }
 
       if (Object.keys(payload).length === 0) {
         setIsEditing(false)
@@ -79,6 +101,7 @@ export function AdminCompanyDetailView({ company, locale }: { company: User; loc
       setSuccess(isAr ? "تم تحديث البيانات بنجاح" : "Company updated successfully")
       setIsEditing(false)
       setPassword("")
+      setPasswordConfirmation("")
       setTimeout(() => location.reload(), 1000)
     })
   }
@@ -252,17 +275,58 @@ export function AdminCompanyDetailView({ company, locale }: { company: User; loc
                     required
                   />
                 </div>
-                <div className="md:col-span-2 flex flex-col gap-1.5">
-                  <label className="text-sm font-medium text-[#262626]">
-                    {isAr ? "كلمة المرور الجديدة (اتركها فارغة في حال عدم التغيير)" : "New Password (leave empty to keep current)"}
-                  </label>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className={fieldBase}
-                  />
+                <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-sm font-medium text-[#262626]">
+                      {isAr ? "كلمة المرور الجديدة (اتركها فارغة في حال عدم التغيير)" : "New Password (leave empty to keep current)"}
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="••••••••"
+                        className={cn(fieldBase, "pe-10")}
+                        autoComplete="new-password"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((v) => !v)}
+                        className="absolute end-0 top-1/2 -translate-y-1/2 p-1 text-[#A3A3A3] hover:text-[#525252]"
+                        aria-label={showPassword ? (isAr ? "إخفاء كلمة المرور" : "Hide password") : (isAr ? "إظهار كلمة المرور" : "Show password")}
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                    <p className="text-xs text-[#737373]">
+                      {isAr
+                        ? "8 أحرف على الأقل، حرف كبير وصغير، رقم، ورمز."
+                        : "At least 8 characters, upper & lower case, a number, and a symbol."}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-sm font-medium text-[#262626]">
+                      {isAr ? "تأكيد كلمة المرور" : "Confirm Password"}
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showPasswordConfirmation ? "text" : "password"}
+                        value={passwordConfirmation}
+                        onChange={(e) => setPasswordConfirmation(e.target.value)}
+                        placeholder="••••••••"
+                        className={cn(fieldBase, "pe-10")}
+                        autoComplete="new-password"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPasswordConfirmation((v) => !v)}
+                        className="absolute end-0 top-1/2 -translate-y-1/2 p-1 text-[#A3A3A3] hover:text-[#525252]"
+                        aria-label={showPasswordConfirmation ? (isAr ? "إخفاء كلمة المرور" : "Hide password") : (isAr ? "إظهار كلمة المرور" : "Show password")}
+                      >
+                        {showPasswordConfirmation ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
